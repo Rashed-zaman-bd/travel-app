@@ -13,10 +13,22 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            
+            // Made nullable to support social registration (Google/Facebook)
+            $table->string('name')->nullable();
+            $table->string('phone')->nullable()->unique();
+
+            $table->enum('role', ['admin', 'user'])->default('user');
+
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+
+            // Nullable for users authenticating purely via OAuth
+            $table->string('password')->nullable();
+
+            // Corrected typo from 'avater' to 'avatar'
+            $table->string('avatar')->nullable();
+
             $table->rememberToken();
             $table->timestamps();
         });

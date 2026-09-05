@@ -2,7 +2,7 @@
   <div>
     <button
       type="button"
-      class="flex items-center gap-2 text-base font-medium text-gray-700 transition hover:text-blue-600"
+      class="flex items-center gap-2 text-base font-medium text-gray-700 transition hover:text-blue-600 cursor-pointer"
       @click="openModal('login')"
     >
       <font-awesome-icon :icon="['far', 'circle-user']" class="text-lg" />
@@ -19,7 +19,7 @@
           
           <button 
             type="button" 
-            class="absolute right-4 top-4 text-gray-400 transition hover:text-gray-600"
+            class="absolute right-4 top-4 text-gray-400 transition hover:text-gray-600 cursor-pointer"
             @click="closeModal"
           >
             ✕
@@ -97,7 +97,7 @@
               <button
                 type="submit"
                 :disabled="isLoading"
-                class="w-full rounded-lg bg-blue-500 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+                class="w-full rounded-lg bg-blue-500 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 cursor-pointer"
               >
                 <span v-if="!isLoading">Sign In</span>
                 <span v-else>Signing in...</span>
@@ -108,7 +108,7 @@
               Don't have an account ?
               <button 
                 type="button" 
-                class="font-semibold text-blue-500 transition hover:underline"
+                class="font-semibold text-blue-500 transition hover:underline cursor-pointer"
                 @click="authMode = 'register'"
               >
                 Sign Up
@@ -206,7 +206,7 @@
               <button
                 type="submit"
                 :disabled="isLoading"
-                class="w-full rounded-lg bg-blue-500 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+                class="w-full rounded-lg bg-blue-500 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 cursor-pointer"
               >
                 <span v-if="!isLoading">Sign Up</span>
                 <span v-else>Creating account...</span>
@@ -217,7 +217,7 @@
               Already have an account?
               <button 
                 type="button" 
-                class="font-semibold text-blue-500 transition hover:underline"
+                class="font-semibold text-blue-500 transition hover:underline cursor-pointer"
                 @click="authMode = 'login'"
               >
                 Sign In
