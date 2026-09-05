@@ -1,0 +1,445 @@
+<template>
+  <!-- Added "sticky top-0 z-50" so it sticks to the top during scroll -->
+  <header class="sticky top-0 z-50 w-full bg-white shadow-sm">
+    <nav
+      class="mx-auto flex max-w-7xl items-center justify-between px-4 py-6 sm:px-6 lg:px-8"
+    >
+      <!-- Logo -->
+      <div class="shrink-0">
+        <a href="/" class="block">
+          <img
+            src="/images/travel-logo.png"
+            alt="Travel Logo"
+            class="h-5 w-auto object-contain sm:h-6"
+          />
+        </a>
+      </div>
+
+      <!-- Desktop & Laptop Navigation -->
+      <ul class="hidden items-center gap-5 lg:flex xl:gap-8">
+        <li>
+          <a
+            href="#"
+            class="whitespace-nowrap text-base font-medium text-gray-700 transition hover:text-blue-600"
+          >
+            Flight
+          </a>
+        </li>
+
+        <li>
+          <a
+            href="#"
+            class="whitespace-nowrap text-base font-medium text-gray-700 transition hover:text-blue-600"
+          >
+            Hotel
+          </a>
+        </li>
+
+        <li>
+          <a
+            href="#"
+            class="whitespace-nowrap text-base font-medium text-gray-700 transition hover:text-blue-600"
+          >
+            Holiday
+          </a>
+        </li>
+
+        <li>
+          <a
+            href="#"
+            class="whitespace-nowrap text-base font-medium text-gray-700 transition hover:text-blue-600"
+          >
+            Shop
+          </a>
+        </li>
+
+        <li>
+          <a
+            href="#"
+            class="whitespace-nowrap text-base font-medium text-gray-700 transition hover:text-blue-600"
+          >
+            Package
+          </a>
+        </li>
+
+        <!-- VISA DROPDOWN -->
+        <li class="group relative">
+          <button
+            type="button"
+            class="flex items-center gap-1 whitespace-nowrap text-base font-medium text-gray-700 transition hover:text-blue-600"
+            aria-haspopup="true"
+            :aria-expanded="visaOpen"
+            @click="visaOpen = !visaOpen"
+          >
+            Visa
+            <svg
+              class="h-4 w-4 transition-transform duration-200"
+              :class="{ 'rotate-180': visaOpen }"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+
+          <!-- Dropdown Menu -->
+          <div
+            class="pointer-events-none absolute left-1/2 top-full z-[9999] w-max -translate-x-1/2 pt-2 opacity-0 transition-all duration-200 group-hover:pointer-events-auto group-hover:opacity-100"
+            :class="{ '!pointer-events-auto !opacity-100': visaOpen }"
+          >
+            <div
+              class="w-full overflow-hidden rounded-lg bg-white py-2 shadow-xl ring-1 ring-black/5"
+            >
+              <a
+                href="#"
+                class="block whitespace-nowrap px-5 py-2.5 text-base font-medium text-gray-600 transition hover:bg-blue-50 hover:text-blue-600"
+              >
+                Visa Application
+              </a>
+              <a
+                href="#"
+                class="block whitespace-nowrap px-5 py-2.5 text-base font-medium text-gray-600 transition hover:bg-blue-50 hover:text-blue-600"
+              >
+                Visa Guide
+              </a>
+              <a
+                href="#"
+                class="block whitespace-nowrap px-5 py-2.5 text-base font-medium text-gray-600 transition hover:bg-blue-50 hover:text-blue-600"
+              >
+                Student Visa processing
+              </a>
+              <a
+                href="#"
+                class="block whitespace-nowrap px-5 py-2.5 text-base font-medium text-gray-600 transition hover:bg-blue-50 hover:text-blue-600"
+              >
+                On Arrival
+              </a>
+              <a
+                href="#"
+                class="block whitespace-nowrap px-5 py-2.5 text-base font-medium text-gray-600 transition hover:bg-blue-50 hover:text-blue-600"
+              >
+                Transit Visa
+              </a>
+            </div>
+          </div>
+        </li>
+
+        <!-- Car Rent -->
+        <li>
+          <a
+            href="#"
+            class="whitespace-nowrap text-base font-medium text-gray-700 transition hover:text-blue-600"
+          >
+            Car Rent
+          </a>
+        </li>
+
+        <!-- OTHERS DROPDOWN -->
+        <li class="group relative">
+          <button
+            type="button"
+            class="flex items-center gap-1 whitespace-nowrap text-base font-medium text-gray-700 transition hover:text-blue-600"
+            aria-haspopup="true"
+            :aria-expanded="othersOpen"
+            @click="othersOpen = !othersOpen"
+          >
+            Others
+            <svg
+              class="h-4 w-4 transition-transform duration-200"
+              :class="{ 'rotate-180': othersOpen }"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+
+          <!-- Dropdown Menu -->
+          <div
+            class="pointer-events-none absolute right-0 top-full z-[9999] w-max pt-2 opacity-0 transition-all duration-200 group-hover:pointer-events-auto group-hover:opacity-100"
+            :class="{ '!pointer-events-auto !opacity-100': othersOpen }"
+          >
+            <div
+              class="w-full overflow-hidden rounded-lg bg-white py-2 shadow-xl ring-1 ring-black/5"
+            >
+              <a
+                href="#"
+                class="block whitespace-nowrap px-5 py-2.5 text-base font-medium text-gray-600 transition hover:bg-blue-50 hover:text-blue-600"
+              >
+                About us
+              </a>
+              <a
+                href="#"
+                class="block whitespace-nowrap px-5 py-2.5 text-base font-medium text-gray-600 transition hover:bg-blue-50 hover:text-blue-600"
+              >
+                Blog
+              </a>
+              <a
+                href="#"
+                class="block whitespace-nowrap px-5 py-2.5 text-base font-medium text-gray-600 transition hover:bg-blue-50 hover:text-blue-600"
+              >
+                Tour Guide
+              </a>
+              <a
+                href="#"
+                class="block whitespace-nowrap px-5 py-2.5 text-base font-medium text-gray-600 transition hover:bg-blue-50 hover:text-blue-600"
+              >
+                Gift Card
+              </a>
+              <a
+                href="#"
+                class="block whitespace-nowrap px-5 py-2.5 text-base font-medium text-gray-600 transition hover:bg-blue-50 hover:text-blue-600"
+              >
+                FAQ & Support
+              </a>
+            </div>
+          </div>
+        </li>
+      </ul>
+
+      <!-- Desktop Right CTA & Mobile Toggle Button -->
+      <div class="flex items-center gap-4 shrink-0">
+        <!-- Login Button -->
+        <a
+          href="/login"
+          class="flex items-center gap-2 text-base font-medium text-gray-700 transition hover:text-blue-600"
+        >
+          <font-awesome-icon :icon="['far', 'circle-user']" class="text-lg" />
+          <span>Login</span>
+        </a>
+
+        <!-- Hamburger Button -->
+        <button
+          type="button"
+          class="flex h-10 w-10 items-center justify-center rounded-lg text-gray-700 hover:bg-gray-100 lg:hidden"
+          aria-label="Toggle Navigation"
+          @click="mobileMenuOpen = !mobileMenuOpen"
+        >
+          <svg
+            v-if="!mobileMenuOpen"
+            class="h-6 w-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+          <svg
+            v-else
+            class="h-6 w-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Mobile & Tablet Menu Drawer (Added max-h for scrolling on long mobile screens) -->
+    <div
+      v-show="mobileMenuOpen"
+      class="max-h-[calc(100vh-80px)] overflow-y-auto border-t border-gray-100 bg-white px-4 pb-6 pt-4 lg:hidden"
+    >
+      <ul class="flex flex-col gap-2">
+        <li>
+          <a
+            href="#"
+            class="block rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600"
+          >
+            Flight
+          </a>
+        </li>
+        <li>
+          <a
+            href="#"
+            class="block rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600"
+          >
+            Hotel
+          </a>
+        </li>
+        <li>
+          <a
+            href="#"
+            class="block rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600"
+          >
+            Holiday
+          </a>
+        </li>
+        <li>
+          <a
+            href="#"
+            class="block rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600"
+          >
+            Shop
+          </a>
+        </li>
+        <li>
+          <a
+            href="#"
+            class="block rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600"
+          >
+            Package
+          </a>
+        </li>
+
+        <!-- Mobile Visa Accordion -->
+        <li>
+          <button
+            type="button"
+            class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600"
+            @click="mobileVisaOpen = !mobileVisaOpen"
+          >
+            <span>Visa</span>
+            <svg
+              class="h-4 w-4 transition-transform duration-200"
+              :class="{ 'rotate-180': mobileVisaOpen }"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+          <div v-show="mobileVisaOpen" class="ml-4 space-y-1 pt-1">
+            <a
+              href="#"
+              class="block rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-blue-600"
+            >
+              Visa Application
+            </a>
+            <a
+              href="#"
+              class="block rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-blue-600"
+            >
+              Visa Guide
+            </a>
+            <a
+              href="#"
+              class="block rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-blue-600"
+            >
+              Student Visa processing
+            </a>
+            <a
+              href="#"
+              class="block rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-blue-600"
+            >
+              On Arrival
+            </a>
+            <a
+              href="#"
+              class="block rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-blue-600"
+            >
+              Transit Visa
+            </a>
+          </div>
+        </li>
+
+        <li>
+          <a
+            href="#"
+            class="block rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600"
+          >
+            Car Rent
+          </a>
+        </li>
+
+        <!-- Mobile Others Accordion -->
+        <li>
+          <button
+            type="button"
+            class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600"
+            @click="mobileOthersOpen = !mobileOthersOpen"
+          >
+            <span>Others</span>
+            <svg
+              class="h-4 w-4 transition-transform duration-200"
+              :class="{ 'rotate-180': mobileOthersOpen }"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+          <div v-show="mobileOthersOpen" class="ml-4 space-y-1 pt-1">
+            <a
+              href="#"
+              class="block rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-blue-600"
+            >
+              About us
+            </a>
+            <a
+              href="#"
+              class="block rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-blue-600"
+            >
+              Blog
+            </a>
+            <a
+              href="#"
+              class="block rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-blue-600"
+            >
+              Tour Guide
+            </a>
+            <a
+              href="#"
+              class="block rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-blue-600"
+            >
+              Gift Card
+            </a>
+            <a
+              href="#"
+              class="block rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-blue-600"
+            >
+              FAQ & Support
+            </a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </header>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const visaOpen = ref(false)
+const othersOpen = ref(false)
+
+const mobileMenuOpen = ref(false)
+const mobileVisaOpen = ref(false)
+const mobileOthersOpen = ref(false)
+</script>

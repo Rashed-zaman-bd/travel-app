@@ -1,15 +1,13 @@
-<!--layouts/DefaultLayout.vue-->
+<!-- layouts/DefaultLayout.vue -->
 
 <template>
+  <NavbarView />
 
-    <NavbarView/>
-    <main>
-        <RouterView/>
-    </main>
-
+  <main class="min-h-screen">
+    <RouterView />
+  </main>
 </template>
+
 <script setup lang="ts">
-import NavbarView from '@/views/NavbarView.vue';
-
-
+import NavbarView from '@/views/NavbarView.vue'
 </script>
