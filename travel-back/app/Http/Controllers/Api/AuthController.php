@@ -49,38 +49,35 @@ class AuthController extends Controller
     public function login(LoginRequest $request)
     {
         
-        $login = trim($request->login);
-        $password = $request->password;
+        $login = trim($request->input('login'));
+        $password = $request->input('password');
 
-        // Determine email or phone
-        if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
+        // Determine if login input is email or phone number
+        $isEmail = filter_var($login, FILTER_VALIDATE_EMAIL);
+
+        if ($isEmail) {
             $user = User::where('email', $login)->first();
         } else {
-            $user = User::where('phone', $login)->first();
-        }
+            // Strip non-numeric characters for phone search (e.g. "01712-345678" -> "01712345678")
+            $cleanedPhone = preg_replace('/[^0-9]/', '', $login);
+            
+            // Handle optional country code (+88017... -> 017...)
+            if (str_starts_with($cleanedPhone, '880')) {
+                $cleanedPhone = substr($cleanedPhone, 2);
+            }
 
-        // User not found
-        if (!$user) {
-            return response()->json([
-                'message' => 'ইমেইল/ফোন অথবা পাসওয়ার্ড সঠিক নয়।',
-            ], 401);
-        }
-
-        // Password missing
-        if (!$user->password) {
-            return response()->json([
-                'message' => 'এই অ্যাকাউন্টে পাসওয়ার্ড দিয়ে লগইন করা যাবে না।',
-            ], 401);
+            $user = User::where('phone', $cleanedPhone)->first();
         }
 
         // Check password
-        if (!Hash::check($password, $user->password)) {
+        if (!$user || !$user->password || !Hash::check($password, $user->password)) {
             return response()->json([
-                'message' => 'ইমেইল/ফোন অথবা পাসওয়ার্ড সঠিক নয়।',
+                'message' => 'Invalid email/phone or password.',
             ], 401);
         }
 
-        // Create Sanctum token
+        // Revoke old tokens & create new session token
+        $user->tokens()->delete();
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
