@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\AuthController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
@@ -20,7 +19,11 @@ Route::middleware('auth:sanctum')->group(function () {
 // Admin-only
 Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/users', [UserController::class, 'index']);
+    Route::post('/users', [UserController::class, 'store']);
     Route::get('/users/{user}', [UserController::class, 'show']);
+    Route::put('/users/{user}', [UserController::class, 'update']);
     Route::patch('/users/{user}/role', [UserController::class, 'updateRole']);
     Route::delete('/users/{user}', [UserController::class, 'destroy']);
+    Route::patch('/users/{id}/restore', [UserController::class, 'restore']);
 });
+

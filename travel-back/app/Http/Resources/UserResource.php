@@ -17,7 +17,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'phone' => $this->phone,
             'role' => $this->role,
-            'avatar_url' => $this->avatar 
+            'avatar' => $this->avatar 
                 ? Storage::disk('public')->url($this->avatar) 
                 : null,
             'email_verified' => !is_null($this->email_verified_at),
