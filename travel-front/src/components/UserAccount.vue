@@ -168,6 +168,7 @@
             <div class="mt-8 grid grid-cols-2 gap-3">
               <button
                 type="button"
+                @click="loginWithGoogle"
                 class="flex items-center justify-center gap-2 rounded-lg bg-gray-100 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-200"
               >
                 <svg class="h-5 w-5" viewBox="0 0 24 24">
@@ -181,6 +182,7 @@
 
               <button
                 type="button"
+                @click="loginWithFacebook"
                 class="flex items-center justify-center gap-2 rounded-lg bg-gray-100 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-200"
               >
                 <svg class="h-5 w-5 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24">
@@ -617,6 +619,20 @@ const redirectAfterAuth = (u: any) => {
   }, 800)
 }
 
+// LoginView.vue - script setup section
+const BACKEND_URL = import.meta.env.VITE_API_BASE_URL.replace(/\/+$/, '');
+
+const loginWithGoogle = () => {
+    // Appended /api to match your Laravel routes/api.php prefix
+    window.location.href = `${BACKEND_URL}/api/auth/google`;
+};
+
+// LoginView.vue - Script Setup
+const loginWithFacebook = () => {
+    window.location.href = `${BACKEND_URL}/api/auth/facebook`;
+};
+
+
 const handleLogin = async () => {
   clearErrors()
   isLoading.value = true
@@ -714,4 +730,6 @@ const handleLogout = async () => {
     router.push('/')
   }
 }
+
+
 </script>

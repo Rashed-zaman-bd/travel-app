@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Auth\SocialAuthController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -26,4 +27,8 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
     Route::delete('/users/{user}', [UserController::class, 'destroy']);
     Route::patch('/users/{id}/restore', [UserController::class, 'restore']);
 });
+
+//google or facebook login route
+Route::get('/auth/{provider}', [SocialAuthController::class, 'redirect']);
+Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback']);
 
