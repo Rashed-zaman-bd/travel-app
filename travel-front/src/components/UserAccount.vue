@@ -71,7 +71,7 @@
             </div>
 
             <router-link
-              to="/admin/profile"
+              to="#"
               class="block px-5 py-3 text-sm hover:bg-gray-50"
               @click="closeAccountMenu"
             >
@@ -121,7 +121,7 @@
         </div>
 
         <router-link
-          to="/admin/profile"
+          to="#"
           class="block px-4 py-2 hover:bg-gray-100"
           @click="closeAccountMenu"
         >
