@@ -13,18 +13,18 @@ const routes = [
         component: () => import('@/views/HomeView.vue'),
       },
       {
-        path: '/auth/callback',
-        name: 'auth.callback',
-        component: () => import('@/views/AuthCallbackView.vue'),
+        path: 'hero',
+        name: 'hero',
+        component: () => import ('@/components/hero.vue')
       },
     ],
   },
 
   {
-        path: '/auth/callback',
-        name: 'auth.callback',
-        component: () => import('@/views/AuthCallbackView.vue'),
-      },
+      path: '/auth/callback',
+      name: 'auth.callback',
+      component: () => import('@/views/AuthCallbackView.vue'),
+  },
 
   {
     path: '/admin',

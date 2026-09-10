@@ -4,39 +4,46 @@ import router from './router'
 import './assets/css/main.css'
 import { createPinia } from 'pinia'
 
-
+// Bootstrap Icons
 import 'bootstrap-icons/font/bootstrap-icons.css'
 
-/* Import Font Awesome core */
+// Font Awesome
 import { library } from '@fortawesome/fontawesome-svg-core'
-
-/* Import Font Awesome component */
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-/* Import Solid Icons */
-import { faUserSecret, faThumbsUp, faHouse, faPhone } from '@fortawesome/free-solid-svg-icons'
+// Solid Icons
+import {
+  faUserSecret,
+  faThumbsUp,
+  faHouse,
+  faPhone,
+  faSearch,
+} from '@fortawesome/free-solid-svg-icons'
 
-/* Import Regular Icons */
+// Regular Icons
 import { faCircleUser } from '@fortawesome/free-regular-svg-icons'
 
-/* Import Brands Icons */
+// Brands Icons
 import { faFacebook } from '@fortawesome/free-brands-svg-icons'
 
-/* Add all imported icons to the library */
+// Add icons to library
 library.add(
   faUserSecret,
   faThumbsUp,
   faHouse,
   faPhone,
+  faSearch,
   faCircleUser,
-  faFacebook
+  faFacebook,
 )
 
 const pinia = createPinia()
+
 const app = createApp(App)
 
 app.component('font-awesome-icon', FontAwesomeIcon)
-app.use(router)
 
+app.use(router)
 app.use(pinia)
+
 app.mount('#app')
