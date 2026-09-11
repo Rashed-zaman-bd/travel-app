@@ -17,6 +17,11 @@ const routes = [
         name: 'hero',
         component: () => import ('@/components/hero.vue')
       },
+      {
+        path: 'domesticgallery',
+        name: 'domesticgallery',
+        component: () => import('@/components/DomesticGallery.vue')
+      },
     ],
   },
 
