@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from 'vue'
-import api from '@/services/api'
+import axios from 'axios'
 
 interface Destination {
   name: string
@@ -40,8 +40,8 @@ async function fetchDestinations() {
   isLoading.value = true
   error.value = null
   try {
-    const { data } = await api.get<{ data: DestinationApiItem[] }>(
-      '/destinations/popular'
+    const { data } = await axios.get<{ data: DestinationApiItem[] }>(
+      `${import.meta.env.VITE_API_BASE_URL}/api/destinations/popular`
     )
     destinations.value = data.data.map((item) => ({
       name: item.name,
