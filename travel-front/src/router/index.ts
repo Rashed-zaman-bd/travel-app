@@ -46,6 +46,12 @@ const routes = [
         name: 'admin.user',
         component: () => import('@/views/admin/user.vue'),
         meta: {requiresAdmin: true},
+      },
+      {
+        path: 'topbanner',
+        name: 'admin.ads.topbanner',
+        component: () => import('@/views/admin/ads/TopBanner.vue'),
+        meta: { requiresAdmin: true },
       }
     ],
   },

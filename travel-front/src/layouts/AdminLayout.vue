@@ -114,7 +114,7 @@
           >
             <span class="flex items-center gap-2">
               <i class="bi bi-newspaper"></i>
-              Advertisment
+              All Ads
             </span>
             <i class="bi bi-chevron-down transition-transform" :class="{ 'rotate-180': openMenus.ads }"></i>
           </button>
@@ -129,28 +129,13 @@
           >
             <div v-if="openMenus.ads" class="ml-6 mt-1 space-y-1 overflow-hidden">
               <router-link
-                to="/admin/advertisement"
-                class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
-                active-class="bg-gray-800 text-emerald-400 font-semibold"
-              >
-                <i class="bi bi-chat-dots mr-2"></i>Details Page Ads
-              </router-link>
+              :to="{ name: 'admin.ads.topbanner' }"
+              class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
+              active-class="bg-gray-800 text-emerald-400 font-semibold"
+            >
+              <i class="bi bi-megaphone mr-2"></i>Top Banner
+            </router-link>
 
-              <router-link
-                :to="{ name: 'admin.ads.categorypageads' }"
-                class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
-                active-class="bg-gray-800 text-emerald-400 font-semibold"
-              >
-                Category Page Ads
-              </router-link>
-
-              <router-link
-                :to="{ name: 'admin.ads.frontpageads' }"
-                class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
-                active-class="bg-gray-800 text-emerald-400 font-semibold"
-              >
-                Front Page Ads
-              </router-link>
             </div>
           </Transition>
         </div>

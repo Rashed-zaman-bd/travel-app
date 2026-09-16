@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\TopBannerController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Auth\SocialAuthController;
@@ -31,4 +32,16 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
 //google or facebook login route
 Route::get('/auth/{provider}', [SocialAuthController::class, 'redirect']);
 Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback']);
+
+
+// Top banner routes
+Route::get('top-banners', [TopBannerController::class, 'index']);
+Route::get('top-banners/{topBanner}', [TopBannerController::class, 'show']);
+Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->group(function () {
+    Route::get('top-banners', [TopBannerController::class, 'adminIndex']);
+    Route::get('top-banners/{topBanner}', [TopBannerController::class, 'show']);
+    Route::post('top-banners', [TopBannerController::class, 'store']);
+    Route::put('top-banners/{topBanner}', [TopBannerController::class, 'update']);
+    Route::delete('top-banners/{topBanner}', [TopBannerController::class, 'destroy']);
+});
 
