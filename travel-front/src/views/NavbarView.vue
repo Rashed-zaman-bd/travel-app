@@ -6,7 +6,7 @@
   </div>
 
   <header class="sticky top-0 z-50 w-full bg-white shadow-md">
-    <nav class="mx-auto grid max-w-7xl grid-cols-3 items-center px-4 py-4 sm:flex sm:justify-between sm:px-6 sm:py-6 lg:px-8">
+    <nav class="mx-auto grid max-w-7xl grid-cols-3 items-center px-4 sm:flex sm:justify-between sm:px-6 sm:py-6 lg:px-">
 
       <div class="flex items-center sm:hidden">
         <button
