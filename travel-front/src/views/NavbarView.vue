@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!loading && firstBanner" class="h-10 w-full bg-blue-400">
+  <div v-if="!loading && firstBanner" class="h-10 w-full border-b border-blue-400">
     <div class="mx-auto flex h-full max-w-7xl items-center justify-center px-4">
       <img
         v-if="firstBanner.image"

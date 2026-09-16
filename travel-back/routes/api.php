@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Admin\TopBannerController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\LogoController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -43,5 +44,16 @@ Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->
     Route::post('top-banners', [TopBannerController::class, 'store']);
     Route::put('top-banners/{topBanner}', [TopBannerController::class, 'update']);
     Route::delete('top-banners/{topBanner}', [TopBannerController::class, 'destroy']);
+});
+
+
+// Public: fetch the current logo
+Route::get('logo', [LogoController::class, 'index']);
+
+// Admin: create/update/delete the logo
+Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->group(function () {
+    Route::post('logo', [LogoController::class, 'store']);
+    Route::put('logo/{logo}', [LogoController::class, 'update']);
+    Route::delete('logo/{logo}', [LogoController::class, 'destroy']);
 });
 
