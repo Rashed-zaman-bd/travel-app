@@ -50,9 +50,19 @@ const routes = [
       {
         path: 'topbanner',
         name: 'admin.ads.topbanner',
-        component: () => import('@/views/admin/ads/TopBanner.vue'),
+        component: () => import('@/views/admin/ads/topbanner.vue'),
         meta: { requiresAdmin: true },
-      }
+      },
+      {
+        path: 'logo',
+        name: 'admin.logo',
+        component: () => import('@/views/admin/logo.vue')
+      },
+      {
+        path: 'menu',
+        name: 'admin.menu',
+        component: () => import('@/views/admin/menu.vue')
+      },
     ],
   },
 ]

@@ -25,7 +25,7 @@
           >
             <span class="flex items-center gap-2">
               <i class="bi bi-folder2-open"></i>
-              Menu
+              Menu Name
             </span>
             <i class="bi bi-chevron-down transition-transform" :class="{ 'rotate-180': openMenus.category }"></i>
           </button>
@@ -40,11 +40,11 @@
           >
             <div v-if="openMenus.category" class="ml-6 mt-1 space-y-1 overflow-hidden">
               <router-link
-                to="/admin/category"
+                to="/admin/menu"
                 class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
                 active-class="bg-gray-800 text-emerald-400 font-semibold"
               >
-                All Categories
+                All Menu
               </router-link>
             </div>
           </Transition>

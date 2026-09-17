@@ -14,7 +14,7 @@
   </div>
 
   <header class="sticky top-0 z-50 w-full bg-white shadow-md">
-    <nav class="mx-auto grid max-w-7xl grid-cols-3 items-center px-4 sm:flex sm:justify-between sm:px-6 sm:py-6 lg:px-">
+    <nav class="mx-auto grid max-w-7xl grid-cols-3 items-center px-4 sm:flex sm:justify-between sm:px-6 sm:py-6 lg:px-8">
 
       <div class="flex items-center sm:hidden">
         <button type="button"
@@ -29,109 +29,61 @@
         </button>
       </div>
 
-      <div class="flex shrink-0 items-center justify-center sm:justify-start">
+      <div v-if="menuLogo" class="flex shrink-0 items-center justify-center sm:justify-start">
         <a href="/" class="block">
-          <img src="/images/travel-logo.png" alt="Travel Logo" class="h-5 w-auto object-contain sm:h-6" />
+          <img
+            v-if="menuLogo.text_logo"
+            :src="menuLogo.text_logo"
+            class="h-5 w-auto object-contain sm:h-6"
+          />
         </a>
       </div>
 
       <div class="flex items-center justify-end sm:flex-1 sm:justify-center">
         <ul class="hidden items-center gap-5 sm:flex lg:gap-7 xl:gap-8">
-          <li>
-            <a href="#" class="whitespace-nowrap text-base font-medium text-gray-700 transition hover:text-blue-500">
-              Flight
+          <li
+            v-for="item in navItems"
+            :key="item.id"
+            class="group relative"
+            @mouseenter="item.children.length && (openDropdownId = item.id)"
+            @mouseleave="item.children.length && (openDropdownId = null)"
+          >
+            <a
+              v-if="!item.children.length"
+              :href="item.url || '#'"
+              class="whitespace-nowrap text-base font-medium text-gray-700 transition hover:text-blue-500"
+            >
+              {{ item.title }}
             </a>
-          </li>
-          <li>
-            <a href="#" class="whitespace-nowrap text-base font-medium text-gray-700 transition hover:text-blue-500">
-              Hotel
-            </a>
-          </li>
-          <li>
-            <a href="#" class="whitespace-nowrap text-base font-medium text-gray-700 transition hover:text-blue-500">
-              Holiday
-            </a>
-          </li>
-          <li>
-            <a href="#" class="whitespace-nowrap text-base font-medium text-gray-700 transition hover:text-blue-500">
-              Shop
-            </a>
-          </li>
-          <li>
-            <a href="#" class="whitespace-nowrap text-base font-medium text-gray-700 transition hover:text-blue-500">
-              Package
-            </a>
-          </li>
 
-          <li class="group relative" @mouseenter="visaOpen = true" @mouseleave="visaOpen = false">
-            <button type="button"
+            <button
+              v-else
+              type="button"
               class="flex items-center gap-1 whitespace-nowrap text-base font-medium text-gray-700 transition hover:text-blue-500"
-              aria-haspopup="true" :aria-expanded="visaOpen">
-              Visa
-              <svg class="h-4 w-4 transition-transform duration-200" :class="{ 'rotate-180': visaOpen }" fill="none"
-                stroke="currentColor" viewBox="0 0 24 24">
+              aria-haspopup="true"
+              :aria-expanded="openDropdownId === item.id"
+            >
+              {{ item.title }}
+              <svg class="h-4 w-4 transition-transform duration-200" :class="{ 'rotate-180': openDropdownId === item.id }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7" />
               </svg>
             </button>
 
-            <div v-show="visaOpen"
+            <div
+              v-if="item.children.length"
+              v-show="openDropdownId === item.id"
               class="absolute left-1/2 top-full z-[9999] pt-6 -translate-x-1/2 transition-all duration-300 ease-out"
-              :class="visaOpen ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-2 pointer-events-none'">
+              :class="openDropdownId === item.id ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-2 pointer-events-none'"
+            >
               <div class="w-48 overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black/5">
-                <a href="#"
-                  class="block px-5 py-3 text-base font-medium text-gray-500 transition hover:bg-blue-50 hover:text-blue-500">Tourist
-                  Visa</a>
-                <a href="#"
-                  class="block px-5 py-3 text-base font-medium text-gray-500 transition hover:bg-blue-50 hover:text-blue-500">Student
-                  Visa</a>
-                <a href="#"
-                  class="block px-5 py-3 text-base font-medium text-gray-500 transition hover:bg-blue-50 hover:text-blue-500">Business
-                  Visa</a>
-                <a href="#"
-                  class="block px-5 py-3 text-base font-medium text-gray-500 transition hover:bg-blue-50 hover:text-blue-500">Work
-                  Visa</a>
-                <a href="#"
-                  class="block px-5 py-3 text-base font-medium text-gray-500 transition hover:bg-blue-50 hover:text-blue-500">Visa
-                  Assistance</a>
-              </div>
-            </div>
-          </li>
-
-          <li>
-            <a href="#" class="whitespace-nowrap text-base font-medium text-gray-700 transition hover:text-blue-500">
-              Car rent
-            </a>
-          </li>
-
-          <li class="group relative" @mouseenter="othersOpen = true" @mouseleave="othersOpen = false">
-            <button type="button"
-              class="flex items-center gap-1 whitespace-nowrap text-base font-medium text-gray-700 transition hover:text-blue-500"
-              aria-haspopup="true" :aria-expanded="othersOpen">
-              Others
-              <svg class="h-4 w-4 transition-transform duration-200" :class="{ 'rotate-180': othersOpen }" fill="none"
-                stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7" />
-              </svg>
-            </button>
-
-            <div v-show="othersOpen"
-              class="absolute left-1/2 top-full z-[9999] pt-6 -translate-x-1/2 transition-all duration-300 ease-out"
-              :class="othersOpen ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-2 pointer-events-none'">
-              <div class="w-48 overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black/5">
-                <a href="#"
-                  class="block px-5 py-3 text-base font-medium text-gray-500 transition hover:bg-blue-50 hover:text-blue-500">About</a>
-                <a href="#"
-                  class="block px-5 py-3 text-base font-medium text-gray-500 transition hover:bg-blue-50 hover:text-blue-500">FAQ
-                  & Support</a>
-                <a href="#"
-                  class="block px-5 py-3 text-base font-medium text-gray-500 transition hover:bg-blue-50 hover:text-blue-500">Tour
-                  Guide</a>
-                <a href="#"
-                  class="block px-5 py-3 text-base font-medium text-gray-500 transition hover:bg-blue-50 hover:text-blue-500">Gift
-                  Card</a>
-                <a href="#"
-                  class="block px-5 py-3 text-base font-medium text-gray-500 transition hover:bg-blue-50 hover:text-blue-500">Why
-                  Traviasa?</a>
+                <a
+                  v-for="child in item.children"
+                  :key="child.id"
+                  :href="child.url || '#'"
+                  class="block px-5 py-3 text-base font-medium text-gray-500 transition hover:bg-blue-50 hover:text-blue-500"
+                >
+                  {{ child.title }}
+                </a>
               </div>
             </div>
           </li>
@@ -146,94 +98,40 @@
     <Transition name="expand">
       <div v-if="mobileMenuOpen" class="overflow-hidden border-t border-gray-100 bg-white px-4 pb-6 pt-4 sm:hidden">
         <ul class="flex flex-col gap-2">
-          <li>
-            <a href="#"
-              class="block rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600">Flight</a>
-          </li>
-          <li>
-            <a href="#"
-              class="block rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600">Hotel</a>
-          </li>
-          <li>
-            <a href="#"
-              class="block rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600">Holiday</a>
-          </li>
-          <li>
-            <a href="#"
-              class="block rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600">Shop</a>
-          </li>
-          <li>
-            <a href="#"
-              class="block rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600">Package</a>
-          </li>
+          <li v-for="item in navItems" :key="item.id">
+            <a
+              v-if="!item.children.length"
+              :href="item.url || '#'"
+              class="block rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600"
+            >
+              {{ item.title }}
+            </a>
 
-          <li>
-            <button type="button"
-              class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600"
-              @click="mobileVisaOpen = !mobileVisaOpen">
-              <span>Visa</span>
-              <svg class="h-4 w-4 transition-transform duration-200" :class="{ 'rotate-180': mobileVisaOpen }"
-                fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
+            <template v-else>
+              <button
+                type="button"
+                class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600"
+                @click="openMobileDropdownId = openMobileDropdownId === item.id ? null : item.id"
+              >
+                <span>{{ item.title }}</span>
+                <svg class="h-4 w-4 transition-transform duration-200" :class="{ 'rotate-180': openMobileDropdownId === item.id }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
 
-            <Transition name="expand">
-              <div v-if="mobileVisaOpen" class="ml-4 overflow-hidden space-y-1 pt-1">
-                <a href="#"
-                  class="block rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-blue-600">Visa
-                  Application</a>
-                <a href="#"
-                  class="block rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-blue-600">Visa
-                  Guide</a>
-                <a href="#"
-                  class="block rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-blue-600">Student
-                  Visa processing</a>
-                <a href="#"
-                  class="block rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-blue-600">On
-                  Arrival</a>
-                <a href="#"
-                  class="block rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-blue-600">Transit
-                  Visa</a>
-              </div>
-            </Transition>
-          </li>
-
-          <li>
-            <a href="#"
-              class="block rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600">Car
-              Rent</a>
-          </li>
-
-          <li>
-            <button type="button"
-              class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600"
-              @click="mobileOthersOpen = !mobileOthersOpen">
-              <span>Others</span>
-              <svg class="h-4 w-4 transition-transform duration-200" :class="{ 'rotate-180': mobileOthersOpen }"
-                fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-
-            <Transition name="expand">
-              <div v-if="mobileOthersOpen" class="ml-4 overflow-hidden space-y-1 pt-1">
-                <a href="#"
-                  class="block rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-blue-600">About
-                  us</a>
-                <a href="#"
-                  class="block rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-blue-600">Blog</a>
-                <a href="#"
-                  class="block rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-blue-600">Tour
-                  Guide</a>
-                <a href="#"
-                  class="block rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-blue-600">Gift
-                  Card</a>
-                <a href="#"
-                  class="block rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-blue-600">FAQ &
-                  Support</a>
-              </div>
-            </Transition>
+              <Transition name="expand">
+                <div v-if="openMobileDropdownId === item.id" class="ml-4 overflow-hidden space-y-1 pt-1">
+                  <a
+                    v-for="child in item.children"
+                    :key="child.id"
+                    :href="child.url || '#'"
+                    class="block rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-blue-600"
+                  >
+                    {{ child.title }}
+                  </a>
+                </div>
+              </Transition>
+            </template>
           </li>
 
           <li class="pt-2 border-t border-gray-100">
@@ -264,22 +162,47 @@ interface BannerResponse {
   data: Banner[]
 }
 
+interface Logo {
+  id: number
+  title: string | null
+  text_logo: string | null
+  round_logo: string | null
+}
+
+interface LogoResponse {
+  message?: string
+  data: Logo
+}
+
+interface NavItem {
+  id: number
+  title: string
+  url: string | null
+  order: number
+  children: NavItem[]
+}
+
+interface NavItemResponse {
+  status: boolean
+  data: NavItem[]
+}
+
 const banners = ref<Banner[]>([])
 const loading = ref(true)
-
 const firstBanner = computed(() => banners.value[0] ?? null)
 
-const visaOpen = ref(false)
-const othersOpen = ref(false)
+const logo = ref<Logo | null>(null)
+const menuLogo = computed(() => logo.value)
+
+const navItems = ref<NavItem[]>([])
+const openDropdownId = ref<number | null>(null)
+const openMobileDropdownId = ref<number | null>(null)
 
 const mobileMenuOpen = ref(false)
-const mobileVisaOpen = ref(false)
-const mobileOthersOpen = ref(false)
 
 const fetchTopBanners = async () => {
   try {
     const response = await api.get<BannerResponse>('/top-banners')
-
     banners.value = response.data.status ? response.data.data : []
   } catch (error) {
     console.error('Failed to load top banners:', error)
@@ -289,8 +212,30 @@ const fetchTopBanners = async () => {
   }
 }
 
+const fetchLogo = async () => {
+  try {
+    const response = await api.get<LogoResponse>('/logo')
+    logo.value = response.data.data ?? null
+  } catch (error) {
+    console.error('Failed to load logo:', error)
+    logo.value = null
+  }
+}
+
+const fetchNavItems = async () => {
+  try {
+    const response = await api.get<NavItemResponse>('/nav-items')
+    navItems.value = response.data.status ? response.data.data : []
+  } catch (error) {
+    console.error('Failed to load nav items:', error)
+    navItems.value = []
+  }
+}
+
 onMounted(() => {
   fetchTopBanners()
+  fetchLogo()
+  fetchNavItems()
 })
 </script>
 
