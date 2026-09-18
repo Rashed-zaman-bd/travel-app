@@ -63,10 +63,8 @@ Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->
 Route::get('nav-items', [NavItemController::class, 'index']);
  
 // Admin — THIS GROUP WAS MISSING, which is why /admin/nav-items 404'd
-Route::middleware(['auth:sanctum', 'admin']) // swap in your real guard/middleware
-    ->prefix('admin')
-    ->group(function () {
-        Route::get('nav-items', [NavItemController::class, 'adminIndex']);
+Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/nav-items', [NavItemController::class, 'adminIndex']);
         Route::post('nav-items', [NavItemController::class, 'store']);
         Route::get('nav-items/{nav_item}', [NavItemController::class, 'show']);
         Route::put('nav-items/{nav_item}', [NavItemController::class, 'update']);

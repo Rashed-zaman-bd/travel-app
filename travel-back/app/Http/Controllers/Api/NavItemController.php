@@ -10,55 +10,45 @@ use Illuminate\Http\Request;
 
 class NavItemController extends Controller
 {
-    // Public: used by the site header
+    // Public: Site header menu
     public function index()
     {
-        $navItems = NavItem::whereNull('parent_id')
+        $navItems = NavItem::query()
+            ->whereNull('parent_id')
             ->where('is_active', true)
-            ->with('children')
+            ->with(['childrenRecursive' => fn ($q) => $q->where('is_active', true)->orderBy('order')])
             ->orderBy('order')
             ->get();
 
-        return response()->json([
-            'status'  => true,
-            'message' => 'Navigation items retrieved successfully.',
-            'data'    => NavItemResource::collection($navItems),
-        ]);
+        return NavItemResource::collection($navItems);
     }
 
-    // Admin: full tree, including inactive items — THIS WAS MISSING
+    // Admin: Full tree including inactive items
+   // Admin: Full tree including inactive items
     public function adminIndex()
     {
-        $navItems = NavItem::whereNull('parent_id')
-            ->with(['children' => function ($q) {
-                $q->orderBy('order');
-            }])
+        $navItems = NavItem::query()
+            ->whereNull('parent_id')
+            ->with(['childrenRecursive' => fn ($q) => $q->orderBy('order')])
             ->orderBy('order')
             ->get();
 
-        return response()->json([
-            'status' => true,
-            'data'   => NavItemResource::collection($navItems),
-        ]);
+        return NavItemResource::collection($navItems);
     }
 
     public function store(NavItemRequest $request)
     {
         $navItem = NavItem::create($request->validated());
 
-        return response()->json([
-            'status'  => true,
-            'message' => 'Navigation item created successfully.',
-            'data'    => new NavItemResource($navItem),
-        ], 201);
+        return (new NavItemResource($navItem))
+            ->additional(['status' => true, 'message' => 'Navigation item created successfully.'])
+            ->response()
+            ->setStatusCode(201);
     }
 
     public function show(NavItem $navItem)
     {
-        return response()->json([
-            'status' => true,
-            'data'   => new NavItemResource($navItem->load('children')),
-        ]);
+        return new NavItemResource($navItem->load('childrenRecursive'));
     }
 
     public function update(NavItemRequest $request, NavItem $navItem)
@@ -74,11 +64,8 @@ class NavItemController extends Controller
 
         $navItem->update($data);
 
-        return response()->json([
-            'status'  => true,
-            'message' => 'Navigation item updated successfully.',
-            'data'    => new NavItemResource($navItem->fresh()),
-        ]);
+        return (new NavItemResource($navItem->fresh()))
+            ->additional(['status' => true, 'message' => 'Navigation item updated successfully.']);
     }
 
     public function destroy(NavItem $navItem)

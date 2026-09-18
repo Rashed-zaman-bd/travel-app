@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class NavItem extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'parent_id',
         'title',
@@ -29,10 +32,19 @@ class NavItem extends Model
         return $this->belongsTo(NavItem::class, 'parent_id');
     }
 
+    /**
+     * Direct children relationship.
+     */
     public function children(): HasMany
     {
-        return $this->hasMany(NavItem::class, 'parent_id')
-            ->where('is_active', true)
-            ->orderBy('order');
+        return $this->hasMany(NavItem::class, 'parent_id')->orderBy('order');
+    }
+
+    /**
+     * Infinite recursive children relationship.
+     */
+    public function childrenRecursive(): HasMany
+    {
+        return $this->children()->with('childrenRecursive');
     }
 }

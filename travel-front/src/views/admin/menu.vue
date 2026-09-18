@@ -214,8 +214,19 @@ const openEdit = (item: NavItem) => {
 const fetchNavItems = async () => {
   loading.value = true
   try {
-    const response = await api.get<NavItemListResponse>('/admin/nav-items')
-    navItems.value = response.data.status ? response.data.data : []
+    const response = await api.get('/admin/nav-items')
+
+    // 1. Check if the backend returned Laravel's wrapped resource ({ data: [...] })
+    if (response.data && Array.isArray(response.data.data)) {
+      navItems.value = response.data.data
+    } 
+    // 2. Fallback check if backend returns a direct array ([...])
+    else if (Array.isArray(response.data)) {
+      navItems.value = response.data
+    } 
+    else {
+      navItems.value = []
+    }
   } catch (error) {
     console.error('Failed to load nav items:', error)
     navItems.value = []

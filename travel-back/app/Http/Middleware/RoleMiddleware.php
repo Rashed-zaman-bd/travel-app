@@ -9,11 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RoleMiddleware
 {
-    /**
-     * Roles that a given role also satisfies (role hierarchy).
-     *
-     * @var array<string, array<string>>
-     */
+    
     protected array $hierarchy = [
         User::ROLE_SUPER_ADMIN => [User::ROLE_SUPER_ADMIN, User::ROLE_ADMIN, User::ROLE_USER],
         User::ROLE_ADMIN => [User::ROLE_ADMIN, User::ROLE_USER],

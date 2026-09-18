@@ -19,12 +19,13 @@ class NavItemResource extends JsonResource
             'is_active' => (bool) $this->is_active,
             'open_new_tab' => (bool) $this->open_new_tab,
 
+            // Automatically maps recursively if loaded
             'children' => NavItemResource::collection(
-                $this->whenLoaded('children')
+                $this->whenLoaded('childrenRecursive', fn() => $this->childrenRecursive, fn() => $this->whenLoaded('children'))
             ),
 
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'created_at' => $this->created_at?->toIso8601String(),
+            'updated_at' => $this->updated_at?->toIso8601String(),
         ];
     }
 }
