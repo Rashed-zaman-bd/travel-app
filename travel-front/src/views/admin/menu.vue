@@ -12,11 +12,7 @@
 
     <div v-if="loading" class="text-sm text-gray-500">Loading...</div>
 
-    <div v-else-if="!navItems.length" class="text-sm text-gray-500">
-      No navigation items yet. (If you expect items here, check that
-      <code>GET /admin/nav-items</code> exists on the backend.)
-    </div>
-
+    
     <div v-else class="overflow-hidden rounded-lg border border-gray-200">
       <table class="w-full text-sm">
         <thead class="bg-gray-50 text-left text-gray-500">
