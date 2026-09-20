@@ -3,7 +3,7 @@
     <div class="flex items-center justify-between mb-6">
       <h1 class="text-xl font-semibold text-gray-800">Navigation Menu</h1>
       <button
-        class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+        class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
         @click="openCreate()"
       >
         + Add Nav Item
@@ -12,7 +12,10 @@
 
     <div v-if="loading" class="text-sm text-gray-500">Loading...</div>
 
-    
+    <div v-else-if="!navItems || navItems.length === 0" class="rounded-lg border border-gray-200 p-6 text-center text-gray-500">
+      No navigation items found.
+    </div>
+
     <div v-else class="overflow-hidden rounded-lg border border-gray-200">
       <table class="w-full text-sm">
         <thead class="bg-gray-50 text-left text-gray-500">
@@ -25,46 +28,47 @@
             <th class="px-4 py-3 text-right">Actions</th>
           </tr>
         </thead>
-        <tbody>
-          <template v-for="item in navItems" :key="item.id">
-            <tr class="border-t border-gray-100">
-              <td class="px-4 py-3 font-medium text-gray-800">{{ item.title }}</td>
-              <td class="px-4 py-3 text-gray-500">{{ item.url || '—' }}</td>
-              <td class="px-4 py-3">{{ item.order }}</td>
-              <td class="px-4 py-3">
-                <span :class="item.is_active ? 'text-green-600' : 'text-gray-400'">
-                  {{ item.is_active ? 'Yes' : 'No' }}
-                </span>
-              </td>
-              <td class="px-4 py-3">{{ item.open_new_tab ? 'Yes' : 'No' }}</td>
-              <td class="px-4 py-3 text-right space-x-2">
-                <button class="text-blue-600 hover:underline" @click="openCreate(item.id)">+ Child</button>
-                <button class="text-blue-600 hover:underline" @click="openEdit(item)">Edit</button>
-                <button class="text-red-600 hover:underline" @click="remove(item)">Delete</button>
-              </td>
-            </tr>
+        
+        <tbody v-for="item in navItems" :key="item.id" class="divide-y divide-gray-100 border-t border-gray-200">
+          <!-- Top Level Parent Item -->
+          <tr class="bg-white hover:bg-gray-50/50">
+            <td class="px-4 py-3 font-semibold text-gray-800">{{ item.title }}</td>
+            <td class="px-4 py-3 text-gray-500">{{ item.url || '—' }}</td>
+            <td class="px-4 py-3">{{ item.order }}</td>
+            <td class="px-4 py-3">
+              <span :class="item.is_active ? 'text-green-600 font-medium' : 'text-gray-400'">
+                {{ item.is_active ? 'Yes' : 'No' }}
+              </span>
+            </td>
+            <td class="px-4 py-3">{{ item.open_new_tab ? 'Yes' : 'No' }}</td>
+            <td class="px-4 py-3 text-right space-x-2">
+              <button class="text-blue-600 hover:underline" @click="openCreate(item.id)">+ Child</button>
+              <button class="text-blue-600 hover:underline" @click="openEdit(item)">Edit</button>
+              <button class="text-red-600 hover:underline" @click="remove(item)">Delete</button>
+            </td>
+          </tr>
 
-            <tr v-for="child in item.children" :key="child.id" class="border-t border-gray-50 bg-gray-50/50">
-              <td class="px-4 py-3 pl-10 text-gray-700">↳ {{ child.title }}</td>
-              <td class="px-4 py-3 text-gray-500">{{ child.url || '—' }}</td>
-              <td class="px-4 py-3">{{ child.order }}</td>
-              <td class="px-4 py-3">
-                <span :class="child.is_active ? 'text-green-600' : 'text-gray-400'">
-                  {{ child.is_active ? 'Yes' : 'No' }}
-                </span>
-              </td>
-              <td class="px-4 py-3">{{ child.open_new_tab ? 'Yes' : 'No' }}</td>
-              <td class="px-4 py-3 text-right space-x-2">
-                <button class="text-blue-600 hover:underline" @click="openEdit(child)">Edit</button>
-                <button class="text-red-600 hover:underline" @click="remove(child)">Delete</button>
-              </td>
-            </tr>
-          </template>
+          <!-- Nested Child Items -->
+          <tr v-for="child in (item.children || [])" :key="child.id" class="bg-gray-50/60 hover:bg-gray-100/50">
+            <td class="px-4 py-3 pl-10 text-gray-700">↳ {{ child.title }}</td>
+            <td class="px-4 py-3 text-gray-500">{{ child.url || '—' }}</td>
+            <td class="px-4 py-3">{{ child.order }}</td>
+            <td class="px-4 py-3">
+              <span :class="child.is_active ? 'text-green-600 font-medium' : 'text-gray-400'">
+                {{ child.is_active ? 'Yes' : 'No' }}
+              </span>
+            </td>
+            <td class="px-4 py-3">{{ child.open_new_tab ? 'Yes' : 'No' }}</td>
+            <td class="px-4 py-3 text-right space-x-2">
+              <button class="text-blue-600 hover:underline" @click="openEdit(child)">Edit</button>
+              <button class="text-red-600 hover:underline" @click="remove(child)">Delete</button>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Slide-over form -->
+    <!-- Slide-over Form -->
     <div v-if="formOpen" class="fixed inset-0 z-50 flex justify-end bg-black/30" @click.self="formOpen = false">
       <div class="h-full w-full max-w-md overflow-y-auto bg-white p-6 shadow-xl">
         <h2 class="mb-4 text-lg font-semibold text-gray-800">
@@ -74,22 +78,37 @@
         <form class="space-y-4" @submit.prevent="save">
           <div>
             <label class="block text-sm font-medium text-gray-700">Title</label>
-            <input v-model="form.title" type="text" required
-              class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" />
+            <input
+              v-model="form.title"
+              type="text"
+              required
+              class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+            />
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700">URL</label>
-            <input v-model="form.url" type="text" placeholder="/flights or #"
-              class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" />
+            <input
+              v-model="form.url"
+              type="text"
+              placeholder="/flights or #"
+              class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+            />
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Parent</label>
-            <select v-model="form.parent_id"
-              class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+            <select
+              v-model="form.parent_id"
+              class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+            >
               <option :value="null">None (top-level)</option>
-              <option v-for="p in topLevelItems" :key="p.id" :value="p.id" :disabled="p.id === form.id">
+              <option
+                v-for="p in topLevelItems"
+                :key="p.id"
+                :value="p.id"
+                :disabled="p.id === form.id"
+              >
                 {{ p.title }}
               </option>
             </select>
@@ -97,27 +116,38 @@
 
           <div>
             <label class="block text-sm font-medium text-gray-700">Order</label>
-            <input v-model.number="form.order" type="number" min="0"
-              class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" />
+            <input
+              v-model.number="form.order"
+              type="number"
+              min="0"
+              class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+            />
           </div>
 
           <div class="flex items-center gap-2">
-            <input v-model="form.is_active" type="checkbox" id="is_active" />
+            <input v-model="form.is_active" type="checkbox" id="is_active" class="rounded border-gray-300 text-blue-600" />
             <label for="is_active" class="text-sm text-gray-700">Active</label>
           </div>
 
           <div class="flex items-center gap-2">
-            <input v-model="form.open_new_tab" type="checkbox" id="open_new_tab" />
+            <input v-model="form.open_new_tab" type="checkbox" id="open_new_tab" class="rounded border-gray-300 text-blue-600" />
             <label for="open_new_tab" class="text-sm text-gray-700">Open in new tab</label>
           </div>
 
           <p v-if="errorMsg" class="text-sm text-red-600">{{ errorMsg }}</p>
 
           <div class="flex justify-end gap-2 pt-2">
-            <button type="button" class="rounded-lg px-4 py-2 text-sm text-gray-600 hover:bg-gray-100" @click="formOpen = false">
+            <button
+              type="button"
+              class="rounded-lg px-4 py-2 text-sm text-gray-600 hover:bg-gray-100"
+              @click="formOpen = false"
+            >
               Cancel
             </button>
-            <button type="submit" class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
+            <button
+              type="submit"
+              class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+            >
               Save
             </button>
           </div>
@@ -140,13 +170,7 @@ interface NavItem {
   order: number
   is_active: boolean
   open_new_tab: boolean
-  children: NavItem[]
-}
-
-interface NavItemListResponse {
-  status: boolean
-  message?: string
-  data: NavItem[]
+  children?: NavItem[]
 }
 
 const navItems = ref<NavItem[]>([])
@@ -201,8 +225,8 @@ const openEdit = (item: NavItem) => {
   form.url = item.url ?? ''
   form.icon = item.icon ?? ''
   form.order = item.order
-  form.is_active = item.is_active
-  form.open_new_tab = item.open_new_tab
+  form.is_active = Boolean(item.is_active)
+  form.open_new_tab = Boolean(item.open_new_tab)
   errorMsg.value = ''
   formOpen.value = true
 }
@@ -210,17 +234,17 @@ const openEdit = (item: NavItem) => {
 const fetchNavItems = async () => {
   loading.value = true
   try {
-    const response = await api.get('/admin/nav-items')
+    const res = await api.get('/admin/nav-items')
+    console.log('Nav Items API Response:', res)
 
-    // 1. Check if the backend returned Laravel's wrapped resource ({ data: [...] })
-    if (response.data && Array.isArray(response.data.data)) {
-      navItems.value = response.data.data
-    } 
-    // 2. Fallback check if backend returns a direct array ([...])
-    else if (Array.isArray(response.data)) {
-      navItems.value = response.data
-    } 
-    else {
+    // Robust extraction for all response structures
+    if (res?.data?.data && Array.isArray(res.data.data)) {
+      navItems.value = res.data.data
+    } else if (res?.data && Array.isArray(res.data)) {
+      navItems.value = res.data
+    } else if (Array.isArray(res)) {
+      navItems.value = res
+    } else {
       navItems.value = []
     }
   } catch (error) {

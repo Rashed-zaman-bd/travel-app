@@ -14,45 +14,19 @@ class NavItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'parent_id' => [
-                'nullable',
-                'integer',
-                'exists:nav_items,id',
-            ],
+            'parent_id' => [ 'nullable', 'integer', 'exists:nav_items,id' ],
 
-            'title' => [
-                'required',
-                'string',
-                'max:255',
-            ],
+            'title' => [ 'required', 'string', 'max:255' ],
 
-            'url' => [
-                'nullable',
-                'string',
-                'max:500',
-            ],
+            'url' => [ 'nullable', 'string', 'max:500' ],
 
-            'icon' => [
-                'nullable',
-                'string',
-                'max:255',
-            ],
+            'icon' => [ 'nullable', 'string', 'max:255' ],
 
-            'order' => [
-                'nullable',
-                'integer',
-                'min:0',
-            ],
+            'order' => [ 'nullable', 'integer', 'min:0' ],
 
-            'is_active' => [
-                'nullable',
-                'boolean',
-            ],
+            'is_active' => [ 'nullable', 'boolean' ],
 
-            'open_new_tab' => [
-                'nullable',
-                'boolean',
-            ],
+            'open_new_tab' => [ 'nullable', 'boolean' ],
         ];
     }
 

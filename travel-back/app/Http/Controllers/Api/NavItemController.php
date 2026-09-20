@@ -7,25 +7,28 @@ use App\Http\Requests\NavItemRequest;
 use App\Http\Resources\NavItemResource;
 use App\Models\NavItem;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection; // Fixed import
 
 class NavItemController extends Controller
 {
     // Public: Site header menu
-    public function index()
+    public function index(): AnonymousResourceCollection
     {
-        $navItems = NavItem::query()
-            ->whereNull('parent_id')
+        $items = NavItem::query()
+            ->whereNull('parent_id') 
             ->where('is_active', true)
-            ->with(['childrenRecursive' => fn ($q) => $q->where('is_active', true)->orderBy('order')])
+            ->with(['childrenRecursive' => function ($query) {
+                // Cascades active filter down through all nested levels
+                $query->where('is_active', true)->orderBy('order');
+            }])
             ->orderBy('order')
             ->get();
 
-        return NavItemResource::collection($navItems);
+        return NavItemResource::collection($items);
     }
 
     // Admin: Full tree including inactive items
-   // Admin: Full tree including inactive items
-    public function adminIndex()
+    public function adminIndex(): AnonymousResourceCollection
     {
         $navItems = NavItem::query()
             ->whereNull('parent_id')

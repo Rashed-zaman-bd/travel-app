@@ -22,18 +22,21 @@ class NavItem extends Model
     ];
 
     protected $casts = [
+        'order' => 'integer',
         'is_active' => 'boolean',
         'open_new_tab' => 'boolean',
-        'order' => 'integer',
     ];
 
+    /**
+     * Parent navigation item.
+     */
     public function parent(): BelongsTo
     {
         return $this->belongsTo(NavItem::class, 'parent_id');
     }
 
     /**
-     * Direct children relationship.
+     * Immediate child navigation items.
      */
     public function children(): HasMany
     {
@@ -41,10 +44,11 @@ class NavItem extends Model
     }
 
     /**
-     * Infinite recursive children relationship.
+     * Unlimited deeply nested child items.
      */
     public function childrenRecursive(): HasMany
     {
         return $this->children()->with('childrenRecursive');
     }
 }
+
