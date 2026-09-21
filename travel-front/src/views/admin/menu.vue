@@ -82,7 +82,7 @@ const fetchNavItems = async () => {
   errorMessage.value = "";
 
   try {
-    const response = await api.get("/nav-items");
+    const response = await api.get("/admin/nav-items");
 
     navItems.value = response.data.data || [];
   } catch (error: any) {
@@ -330,7 +330,7 @@ onMounted(() => {
         <button
           type="button"
           @click="openCreateModal"
-          class="inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700"
+          class="inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 cursor-pointer"
         >
           <span class="mr-2 text-lg">+</span>
           Add Navigation
@@ -502,7 +502,7 @@ onMounted(() => {
                       <button
                         type="button"
                         @click="openEditModal(item)"
-                        class="rounded-lg bg-blue-50 px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-100"
+                        class="rounded-lg bg-blue-50 px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-100 cursor-pointer"
                       >
                         Edit
                       </button>
@@ -511,7 +511,7 @@ onMounted(() => {
                         type="button"
                         @click="deleteNavItem(item)"
                         :disabled="deleting"
-                        class="rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-100 disabled:opacity-50"
+                        class="rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-100 disabled:opacity-50 cursor-pointer"
                       >
                         Delete
                       </button>
@@ -589,7 +589,7 @@ onMounted(() => {
                       <button
                         type="button"
                         @click="openEditModal(child)"
-                        class="rounded-lg bg-blue-50 px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-100"
+                        class="rounded-lg bg-blue-50 px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-100 cursor-pointer"
                       >
                         Edit
                       </button>
@@ -598,7 +598,7 @@ onMounted(() => {
                         type="button"
                         @click="deleteNavItem(child)"
                         :disabled="deleting"
-                        class="rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-100"
+                        class="rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-100 cursor-pointer"
                       >
                         Delete
                       </button>
@@ -644,7 +644,7 @@ onMounted(() => {
           <button
             type="button"
             @click="closeModal"
-            class="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
+            class="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-700 cursor-pointer"
           >
             ✕
           </button>
@@ -810,7 +810,7 @@ onMounted(() => {
               type="button"
               @click="closeModal"
               :disabled="saving"
-              class="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+              class="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 cursor-pointer"
             >
               Cancel
             </button>
@@ -818,7 +818,7 @@ onMounted(() => {
             <button
               type="submit"
               :disabled="saving"
-              class="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+              class="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
             >
               {{
                 saving

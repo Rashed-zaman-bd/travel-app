@@ -7,96 +7,157 @@ use App\Http\Requests\NavItemRequest;
 use App\Http\Resources\NavItemResource;
 use App\Models\NavItem;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection; // Fixed import
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class NavItemController extends Controller
 {
-    // Public: Site header menu
+    /**
+     * Public navigation menu
+     */
     public function index(): AnonymousResourceCollection
     {
         $items = NavItem::query()
-            ->whereNull('parent_id') 
+            ->whereNull('parent_id')
             ->where('is_active', true)
-            ->with(['childrenRecursive' => function ($query) {
-                // Cascades active filter down through all nested levels
-                $query->where('is_active', true)->orderBy('order');
-            }])
+            ->with([
+                'childrenRecursive' => function ($query) {
+                    $query->where('is_active', true)
+                        ->orderBy('order');
+                }
+            ])
             ->orderBy('order')
             ->get();
 
         return NavItemResource::collection($items);
     }
 
-    // Admin: Full tree including inactive items
+    /**
+     * Admin navigation menu
+     *
+     * Includes active + inactive items.
+     */
     public function adminIndex(): AnonymousResourceCollection
     {
         $items = NavItem::query()
-            ->whereNull('parent_id') 
-            ->where('is_active', true)
-            ->with(['childrenRecursive' => function ($query) {
-                // Cascades active filter down through all nested levels
-                $query->where('is_active', true)->orderBy('order');
-            }])
+            ->whereNull('parent_id')
+            ->with('childrenRecursive')
             ->orderBy('order')
             ->get();
 
         return NavItemResource::collection($items);
     }
 
+    /**
+     * Create navigation item
+     */
     public function store(NavItemRequest $request)
     {
-        $navItem = NavItem::create($request->validated());
+        $navItem = NavItem::create(
+            $request->validated()
+        );
 
         return (new NavItemResource($navItem))
-            ->additional(['status' => true, 'message' => 'Navigation item created successfully.'])
+            ->additional([
+                'status' => true,
+                'message' => 'Navigation item created successfully.',
+            ])
             ->response()
             ->setStatusCode(201);
     }
 
+    /**
+     * Show navigation item
+     */
     public function show(NavItem $navItem)
     {
-        return new NavItemResource($navItem->load('childrenRecursive'));
+        $navItem->load('childrenRecursive');
+
+        return new NavItemResource($navItem);
     }
 
-    public function update(NavItemRequest $request, NavItem $navItem)
-    {
+    /**
+     * Update navigation item
+     */
+    public function update(
+        NavItemRequest $request,
+        NavItem $navItem
+    ) {
         $data = $request->validated();
 
-        if (isset($data['parent_id']) && (int) $data['parent_id'] === $navItem->id) {
+        // Prevent itself as parent
+        if (
+            isset($data['parent_id']) &&
+            (int) $data['parent_id'] === $navItem->id
+        ) {
             return response()->json([
-                'status'  => false,
+                'status' => false,
                 'message' => 'An item cannot be its own parent.',
             ], 422);
         }
 
         $navItem->update($data);
 
-        return (new NavItemResource($navItem->fresh()))
-            ->additional(['status' => true, 'message' => 'Navigation item updated successfully.']);
+        $navItem->load('childrenRecursive');
+
+        return (new NavItemResource($navItem))
+            ->additional([
+                'status' => true,
+                'message' => 'Navigation item updated successfully.',
+            ]);
     }
 
+    /**
+     * Delete navigation item
+     */
     public function destroy(NavItem $navItem)
     {
+        // Optional: prevent deleting item with children
+        if ($navItem->children()->exists()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Cannot delete this item because it has child items.',
+            ], 422);
+        }
+
         $navItem->delete();
 
         return response()->json([
-            'status'  => true,
+            'status' => true,
             'message' => 'Navigation item deleted successfully.',
         ]);
     }
 
+    /**
+     * Reorder navigation items
+     */
     public function reorder(Request $request)
     {
-        $request->validate([
-            'items'         => ['required', 'array'],
-            'items.*.id'    => ['required', 'exists:nav_items,id'],
-            'items.*.order' => ['required', 'integer', 'min:0'],
+        $validated = $request->validate([
+            'items' => ['required', 'array'],
+
+            'items.*.id' => [
+                'required',
+                'integer',
+                'exists:nav_items,id',
+            ],
+
+            'items.*.order' => [
+                'required',
+                'integer',
+                'min:0',
+            ],
         ]);
 
-        foreach ($request->items as $item) {
-            NavItem::whereKey($item['id'])->update(['order' => $item['order']]);
+        foreach ($validated['items'] as $item) {
+            NavItem::whereKey($item['id'])
+                ->update([
+                    'order' => $item['order'],
+                ]);
         }
 
-        return response()->json(['status' => true, 'message' => 'Order updated.']);
+        return response()->json([
+            'status' => true,
+            'message' => 'Order updated successfully.',
+        ]);
     }
 }

@@ -22,33 +22,26 @@ class NavItem extends Model
     ];
 
     protected $casts = [
+        'parent_id' => 'integer',
         'order' => 'integer',
         'is_active' => 'boolean',
         'open_new_tab' => 'boolean',
     ];
 
-    /**
-     * Parent navigation item.
-     */
     public function parent(): BelongsTo
     {
         return $this->belongsTo(NavItem::class, 'parent_id');
     }
 
-    /**
-     * Immediate child navigation items.
-     */
     public function children(): HasMany
     {
-        return $this->hasMany(NavItem::class, 'parent_id')->orderBy('order');
+        return $this->hasMany(NavItem::class, 'parent_id')
+            ->orderBy('order');
     }
 
-    /**
-     * Unlimited deeply nested child items.
-     */
     public function childrenRecursive(): HasMany
     {
-        return $this->children()->with('childrenRecursive');
+        return $this->children()
+            ->with('childrenRecursive');
     }
 }
-

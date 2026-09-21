@@ -224,8 +224,9 @@ const fetchLogo = async () => {
 
 const fetchNavItems = async () => {
   try {
-    const response = await api.get<NavItemResponse>('/nav-items')
-    navItems.value = response.data.status ? response.data.data : []
+    const response = await api.get<NavItemResponse>("/nav-items");
+
+    navItems.value = response.data.data ?? [];
   } catch (error) {
     console.error('Failed to load nav items:', error)
     navItems.value = []
