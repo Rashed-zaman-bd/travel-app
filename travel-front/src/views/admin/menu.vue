@@ -1,154 +1,832 @@
+```vue
+<script setup lang="ts">
+import { computed, onMounted, reactive, ref } from "vue";
+import api from "@/services/api";
+
+interface NavItem {
+  id: number;
+  parent_id: number | null;
+  title: string;
+  url: string | null;
+  icon: string | null;
+  order: number;
+  is_active: boolean;
+  open_new_tab: boolean;
+  children?: NavItem[];
+  created_at?: string | null;
+  updated_at?: string | null;
+}
+
+interface NavItemForm {
+  parent_id: number | null;
+  title: string;
+  url: string;
+  icon: string;
+  order: number;
+  is_active: boolean;
+  open_new_tab: boolean;
+}
+
+const navItems = ref<NavItem[]>([]);
+const loading = ref(false);
+const saving = ref(false);
+const deleting = ref(false);
+
+const showModal = ref(false);
+const editingItem = ref<NavItem | null>(null);
+
+const errorMessage = ref("");
+const successMessage = ref("");
+
+const form = reactive<NavItemForm>({
+  parent_id: null,
+  title: "",
+  url: "",
+  icon: "",
+  order: 0,
+  is_active: true,
+  open_new_tab: false,
+});
+
+// --------------------------------------------------
+// Flatten items for parent dropdown
+// --------------------------------------------------
+
+const parentOptions = computed(() => {
+  const options: NavItem[] = [];
+
+  const addItems = (items: NavItem[]) => {
+    for (const item of items) {
+      options.push(item);
+
+      if (item.children?.length) {
+        addItems(item.children);
+      }
+    }
+  };
+
+  addItems(navItems.value);
+
+  return options.filter((item) => {
+    // Do not allow current item to become its own parent
+    return !editingItem.value || item.id !== editingItem.value.id;
+  });
+});
+
+// --------------------------------------------------
+// Load nav items
+// --------------------------------------------------
+
+const fetchNavItems = async () => {
+  loading.value = true;
+  errorMessage.value = "";
+
+  try {
+    const response = await api.get("/nav-items");
+
+    navItems.value = response.data.data || [];
+  } catch (error: any) {
+    console.error(error);
+
+    errorMessage.value =
+      error?.response?.data?.message ||
+      "Failed to load navigation items.";
+  } finally {
+    loading.value = false;
+  }
+};
+
+// --------------------------------------------------
+// Open create modal
+// --------------------------------------------------
+
+const openCreateModal = () => {
+  editingItem.value = null;
+
+  Object.assign(form, {
+    parent_id: null,
+    title: "",
+    url: "",
+    icon: "",
+    order: 0,
+    is_active: true,
+    open_new_tab: false,
+  });
+
+  errorMessage.value = "";
+  showModal.value = true;
+};
+
+// --------------------------------------------------
+// Open edit modal
+// --------------------------------------------------
+
+const openEditModal = (item: NavItem) => {
+  editingItem.value = item;
+
+  Object.assign(form, {
+    parent_id: item.parent_id,
+    title: item.title || "",
+    url: item.url || "",
+    icon: item.icon || "",
+    order: item.order ?? 0,
+    is_active: item.is_active,
+    open_new_tab: item.open_new_tab,
+  });
+
+  errorMessage.value = "";
+  showModal.value = true;
+};
+
+// --------------------------------------------------
+// Close modal
+// --------------------------------------------------
+
+const closeModal = () => {
+  if (saving.value) return;
+
+  showModal.value = false;
+  editingItem.value = null;
+};
+
+// --------------------------------------------------
+// Save
+// --------------------------------------------------
+
+const saveNavItem = async () => {
+  errorMessage.value = "";
+  successMessage.value = "";
+
+  if (!form.title.trim()) {
+    errorMessage.value = "Title is required.";
+    return;
+  }
+
+  saving.value = true;
+
+  try {
+    const payload = {
+      parent_id: form.parent_id || null,
+      title: form.title.trim(),
+      url: form.url.trim() || null,
+      icon: form.icon.trim() || null,
+      order: Number(form.order),
+      is_active: form.is_active,
+      open_new_tab: form.open_new_tab,
+    };
+
+    if (editingItem.value) {
+      const response = await api.put(
+        `/admin/nav-items/${editingItem.value.id}`,
+        payload
+      );
+
+      successMessage.value =
+        response?.data?.message ||
+        "Navigation item updated successfully.";
+    } else {
+      const response = await api.post("/admin/nav-items", payload);
+
+      successMessage.value =
+        response?.data?.message ||
+        "Navigation item created successfully.";
+    }
+
+    showModal.value = false;
+
+    await fetchNavItems();
+
+    setTimeout(() => {
+      successMessage.value = "";
+    }, 3000);
+  } catch (error: any) {
+    console.error(error);
+
+    if (error?.response?.status === 422) {
+      const errors = error.response.data?.errors;
+
+      if (errors) {
+        errorMessage.value = Object.values(errors)
+          .flat()
+          .join(" ");
+      } else {
+        errorMessage.value =
+          error.response.data?.message || "Validation failed.";
+      }
+    } else {
+      errorMessage.value =
+        error?.response?.data?.message ||
+        "Something went wrong.";
+    }
+  } finally {
+    saving.value = false;
+  }
+};
+
+// --------------------------------------------------
+// Delete
+// --------------------------------------------------
+
+const deleteNavItem = async (item: NavItem) => {
+  if (item.children?.length) {
+    alert(
+      "This navigation item has child items. Please delete or move the child items first."
+    );
+
+    return;
+  }
+
+  const confirmed = window.confirm(
+    `Are you sure you want to delete "${item.title}"?`
+  );
+
+  if (!confirmed) return;
+
+  deleting.value = true;
+  errorMessage.value = "";
+
+  try {
+    const response = await api.delete(
+      `/admin/nav-items/${item.id}`
+    );
+
+    successMessage.value =
+      response?.data?.message ||
+      "Navigation item deleted successfully.";
+
+    await fetchNavItems();
+
+    setTimeout(() => {
+      successMessage.value = "";
+    }, 3000);
+  } catch (error: any) {
+    console.error(error);
+
+    errorMessage.value =
+      error?.response?.data?.message ||
+      "Failed to delete navigation item.";
+  } finally {
+    deleting.value = false;
+  }
+};
+
+// --------------------------------------------------
+// Toggle active status
+// --------------------------------------------------
+
+const toggleActive = async (item: NavItem) => {
+  try {
+    await api.put(`/admin/nav-items/${item.id}`, {
+      parent_id: item.parent_id,
+      title: item.title,
+      url: item.url,
+      icon: item.icon,
+      order: item.order,
+      is_active: !item.is_active,
+      open_new_tab: item.open_new_tab,
+    });
+
+    item.is_active = !item.is_active;
+  } catch (error: any) {
+    console.error(error);
+
+    errorMessage.value =
+      error?.response?.data?.message ||
+      "Failed to update status.";
+  }
+};
+
+// --------------------------------------------------
+// Tree row component helper
+// --------------------------------------------------
+
+const getChildren = (item: NavItem) => {
+  return item.children || [];
+};
+
+onMounted(() => {
+  fetchNavItems();
+});
+</script>
+
 <template>
-  <div class="p-6">
-    <div class="flex items-center justify-between mb-6">
-      <h1 class="text-xl font-semibold text-gray-800">Navigation Menu</h1>
-      <button
-        class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
-        @click="openCreate()"
+  <div class="min-h-screen bg-gray-50 p-4 md:p-6">
+    <div class="mx-auto max-w-7xl">
+
+      <!-- Header -->
+      <div
+        class="mb-6 flex flex-col gap-4 rounded-xl bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between"
       >
-        + Add Nav Item
-      </button>
-    </div>
+        <div>
+          <h1 class="text-2xl font-bold text-gray-800">
+            Navigation Items
+          </h1>
 
-    <div v-if="loading" class="text-sm text-gray-500">Loading...</div>
+          <p class="mt-1 text-sm text-gray-500">
+            Manage your website header navigation menu.
+          </p>
+        </div>
 
-    <div v-else-if="!navItems || navItems.length === 0" class="rounded-lg border border-gray-200 p-6 text-center text-gray-500">
-      No navigation items found.
-    </div>
+        <button
+          type="button"
+          @click="openCreateModal"
+          class="inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700"
+        >
+          <span class="mr-2 text-lg">+</span>
+          Add Navigation
+        </button>
+      </div>
 
-    <div v-else class="overflow-hidden rounded-lg border border-gray-200">
-      <table class="w-full text-sm">
-        <thead class="bg-gray-50 text-left text-gray-500">
-          <tr>
-            <th class="px-4 py-3">Title</th>
-            <th class="px-4 py-3">URL</th>
-            <th class="px-4 py-3">Order</th>
-            <th class="px-4 py-3">Active</th>
-            <th class="px-4 py-3">New Tab</th>
-            <th class="px-4 py-3 text-right">Actions</th>
-          </tr>
-        </thead>
-        
-        <tbody v-for="item in navItems" :key="item.id" class="divide-y divide-gray-100 border-t border-gray-200">
-          <!-- Top Level Parent Item -->
-          <tr class="bg-white hover:bg-gray-50/50">
-            <td class="px-4 py-3 font-semibold text-gray-800">{{ item.title }}</td>
-            <td class="px-4 py-3 text-gray-500">{{ item.url || '—' }}</td>
-            <td class="px-4 py-3">{{ item.order }}</td>
-            <td class="px-4 py-3">
-              <span :class="item.is_active ? 'text-green-600 font-medium' : 'text-gray-400'">
-                {{ item.is_active ? 'Yes' : 'No' }}
-              </span>
-            </td>
-            <td class="px-4 py-3">{{ item.open_new_tab ? 'Yes' : 'No' }}</td>
-            <td class="px-4 py-3 text-right space-x-2">
-              <button class="text-blue-600 hover:underline" @click="openCreate(item.id)">+ Child</button>
-              <button class="text-blue-600 hover:underline" @click="openEdit(item)">Edit</button>
-              <button class="text-red-600 hover:underline" @click="remove(item)">Delete</button>
-            </td>
-          </tr>
+      <!-- Success -->
+      <div
+        v-if="successMessage"
+        class="mb-5 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700"
+      >
+        {{ successMessage }}
+      </div>
 
-          <!-- Nested Child Items -->
-          <tr v-for="child in (item.children || [])" :key="child.id" class="bg-gray-50/60 hover:bg-gray-100/50">
-            <td class="px-4 py-3 pl-10 text-gray-700">↳ {{ child.title }}</td>
-            <td class="px-4 py-3 text-gray-500">{{ child.url || '—' }}</td>
-            <td class="px-4 py-3">{{ child.order }}</td>
-            <td class="px-4 py-3">
-              <span :class="child.is_active ? 'text-green-600 font-medium' : 'text-gray-400'">
-                {{ child.is_active ? 'Yes' : 'No' }}
-              </span>
-            </td>
-            <td class="px-4 py-3">{{ child.open_new_tab ? 'Yes' : 'No' }}</td>
-            <td class="px-4 py-3 text-right space-x-2">
-              <button class="text-blue-600 hover:underline" @click="openEdit(child)">Edit</button>
-              <button class="text-red-600 hover:underline" @click="remove(child)">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      <!-- Error -->
+      <div
+        v-if="errorMessage"
+        class="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+      >
+        {{ errorMessage }}
+      </div>
 
-    <!-- Slide-over Form -->
-    <div v-if="formOpen" class="fixed inset-0 z-50 flex justify-end bg-black/30" @click.self="formOpen = false">
-      <div class="h-full w-full max-w-md overflow-y-auto bg-white p-6 shadow-xl">
-        <h2 class="mb-4 text-lg font-semibold text-gray-800">
-          {{ form.id ? 'Edit Nav Item' : 'New Nav Item' }}
+      <!-- Loading -->
+      <div
+        v-if="loading"
+        class="rounded-xl bg-white p-10 text-center shadow-sm"
+      >
+        <div class="text-gray-500">
+          Loading navigation items...
+        </div>
+      </div>
+
+      <!-- Empty -->
+      <div
+        v-else-if="navItems.length === 0"
+        class="rounded-xl bg-white p-10 text-center shadow-sm"
+      >
+        <div class="mb-3 text-4xl">
+          ☰
+        </div>
+
+        <h2 class="text-lg font-semibold text-gray-800">
+          No navigation items
         </h2>
 
-        <form class="space-y-4" @submit.prevent="save">
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Title</label>
-            <input
-              v-model="form.title"
-              type="text"
-              required
-              class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-            />
-          </div>
+        <p class="mt-1 text-sm text-gray-500">
+          Create your first navigation item.
+        </p>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700">URL</label>
-            <input
-              v-model="form.url"
-              type="text"
-              placeholder="/flights or #"
-              class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-            />
-          </div>
+        <button
+          type="button"
+          @click="openCreateModal"
+          class="mt-5 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700"
+        >
+          Add Navigation
+        </button>
+      </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Parent</label>
-            <select
-              v-model="form.parent_id"
-              class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-            >
-              <option :value="null">None (top-level)</option>
-              <option
-                v-for="p in topLevelItems"
-                :key="p.id"
-                :value="p.id"
-                :disabled="p.id === form.id"
+      <!-- Table -->
+      <div
+        v-else
+        class="overflow-hidden rounded-xl bg-white shadow-sm"
+      >
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[850px] text-left">
+            <thead class="border-b bg-gray-50">
+              <tr>
+                <th class="px-5 py-4 text-xs font-semibold uppercase text-gray-500">
+                  Order
+                </th>
+
+                <th class="px-5 py-4 text-xs font-semibold uppercase text-gray-500">
+                  Navigation
+                </th>
+
+                <th class="px-5 py-4 text-xs font-semibold uppercase text-gray-500">
+                  URL
+                </th>
+
+                <th class="px-5 py-4 text-xs font-semibold uppercase text-gray-500">
+                  Status
+                </th>
+
+                <th class="px-5 py-4 text-xs font-semibold uppercase text-gray-500">
+                  New Tab
+                </th>
+
+                <th class="px-5 py-4 text-right text-xs font-semibold uppercase text-gray-500">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+
+            <tbody class="divide-y divide-gray-100">
+
+              <!-- Parent -->
+              <template
+                v-for="item in navItems"
+                :key="item.id"
               >
-                {{ p.title }}
-              </option>
-            </select>
-          </div>
+                <tr class="hover:bg-gray-50">
 
+                  <td class="px-5 py-4">
+                    <span
+                      class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-gray-100 text-sm font-semibold text-gray-700"
+                    >
+                      {{ item.order }}
+                    </span>
+                  </td>
+
+                  <td class="px-5 py-4">
+                    <div class="flex items-center gap-3">
+                      <span
+                        v-if="item.icon"
+                        class="text-lg"
+                      >
+                        {{ item.icon }}
+                      </span>
+
+                      <div>
+                        <div class="font-semibold text-gray-800">
+                          {{ item.title }}
+                        </div>
+
+                        <div class="text-xs text-gray-400">
+                          ID: {{ item.id }}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+
+                  <td class="px-5 py-4">
+                    <span
+                      v-if="item.url"
+                      class="text-sm text-gray-600"
+                    >
+                      {{ item.url }}
+                    </span>
+
+                    <span
+                      v-else
+                      class="text-sm italic text-gray-400"
+                    >
+                      Dropdown
+                    </span>
+                  </td>
+
+                  <td class="px-5 py-4">
+                    <button
+                      type="button"
+                      @click="toggleActive(item)"
+                      class="rounded-full px-3 py-1 text-xs font-medium"
+                      :class="
+                        item.is_active
+                          ? 'bg-green-100 text-green-700'
+                          : 'bg-gray-100 text-gray-500'
+                      "
+                    >
+                      {{ item.is_active ? "Active" : "Inactive" }}
+                    </button>
+                  </td>
+
+                  <td class="px-5 py-4 text-sm text-gray-600">
+                    {{ item.open_new_tab ? "Yes" : "No" }}
+                  </td>
+
+                  <td class="px-5 py-4">
+                    <div class="flex justify-end gap-2">
+                      <button
+                        type="button"
+                        @click="openEditModal(item)"
+                        class="rounded-lg bg-blue-50 px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-100"
+                      >
+                        Edit
+                      </button>
+
+                      <button
+                        type="button"
+                        @click="deleteNavItem(item)"
+                        :disabled="deleting"
+                        class="rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-100 disabled:opacity-50"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Children -->
+                <tr
+                  v-for="child in getChildren(item)"
+                  :key="child.id"
+                  class="bg-gray-50/70 hover:bg-gray-100"
+                >
+                  <td class="px-5 py-3">
+                    <span class="ml-5 text-sm text-gray-500">
+                      └ {{ child.order }}
+                    </span>
+                  </td>
+
+                  <td class="px-5 py-3">
+                    <div class="ml-6 flex items-center gap-3">
+                      <span class="text-gray-400">
+                        ↳
+                      </span>
+
+                      <div>
+                        <div class="font-medium text-gray-700">
+                          {{ child.title }}
+                        </div>
+
+                        <div class="text-xs text-gray-400">
+                          ID: {{ child.id }}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+
+                  <td class="px-5 py-3">
+                    <span
+                      v-if="child.url"
+                      class="text-sm text-gray-600"
+                    >
+                      {{ child.url }}
+                    </span>
+
+                    <span
+                      v-else
+                      class="text-sm italic text-gray-400"
+                    >
+                      Dropdown
+                    </span>
+                  </td>
+
+                  <td class="px-5 py-3">
+                    <button
+                      type="button"
+                      @click="toggleActive(child)"
+                      class="rounded-full px-3 py-1 text-xs font-medium"
+                      :class="
+                        child.is_active
+                          ? 'bg-green-100 text-green-700'
+                          : 'bg-gray-100 text-gray-500'
+                      "
+                    >
+                      {{ child.is_active ? "Active" : "Inactive" }}
+                    </button>
+                  </td>
+
+                  <td class="px-5 py-3 text-sm text-gray-600">
+                    {{ child.open_new_tab ? "Yes" : "No" }}
+                  </td>
+
+                  <td class="px-5 py-3">
+                    <div class="flex justify-end gap-2">
+                      <button
+                        type="button"
+                        @click="openEditModal(child)"
+                        class="rounded-lg bg-blue-50 px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-100"
+                      >
+                        Edit
+                      </button>
+
+                      <button
+                        type="button"
+                        @click="deleteNavItem(child)"
+                        :disabled="deleting"
+                        class="rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-100"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================
+         CREATE / EDIT MODAL
+    ========================== -->
+    <div
+      v-if="showModal"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      @click.self="closeModal"
+    >
+      <div
+        class="w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-xl"
+      >
+        <!-- Modal Header -->
+        <div
+          class="flex items-center justify-between border-b px-6 py-4"
+        >
           <div>
-            <label class="block text-sm font-medium text-gray-700">Order</label>
-            <input
-              v-model.number="form.order"
-              type="number"
-              min="0"
-              class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-            />
+            <h2 class="text-xl font-bold text-gray-800">
+              {{ editingItem ? "Edit Navigation" : "Add Navigation" }}
+            </h2>
+
+            <p class="mt-1 text-sm text-gray-500">
+              {{
+                editingItem
+                  ? "Update navigation item information."
+                  : "Create a new navigation item."
+              }}
+            </p>
           </div>
 
-          <div class="flex items-center gap-2">
-            <input v-model="form.is_active" type="checkbox" id="is_active" class="rounded border-gray-300 text-blue-600" />
-            <label for="is_active" class="text-sm text-gray-700">Active</label>
+          <button
+            type="button"
+            @click="closeModal"
+            class="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
+          >
+            ✕
+          </button>
+        </div>
+
+        <!-- Form -->
+        <form
+          @submit.prevent="saveNavItem"
+          class="max-h-[75vh] overflow-y-auto p-6"
+        >
+          <div class="grid gap-5 md:grid-cols-2">
+
+            <!-- Title -->
+            <div class="md:col-span-2">
+              <label class="mb-2 block text-sm font-medium text-gray-700">
+                Title
+                <span class="text-red-500">*</span>
+              </label>
+
+              <input
+                v-model="form.title"
+                type="text"
+                placeholder="Example: Home"
+                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                required
+              />
+            </div>
+
+            <!-- Parent -->
+            <div>
+              <label class="mb-2 block text-sm font-medium text-gray-700">
+                Parent
+              </label>
+
+              <select
+                v-model="form.parent_id"
+                class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              >
+                <option :value="null">
+                  No Parent
+                </option>
+
+                <option
+                  v-for="parent in parentOptions"
+                  :key="parent.id"
+                  :value="parent.id"
+                >
+                  {{ parent.title }}
+                </option>
+              </select>
+            </div>
+
+            <!-- Order -->
+            <div>
+              <label class="mb-2 block text-sm font-medium text-gray-700">
+                Order
+              </label>
+
+              <input
+                v-model.number="form.order"
+                type="number"
+                min="0"
+                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+            </div>
+
+            <!-- URL -->
+            <div>
+              <label class="mb-2 block text-sm font-medium text-gray-700">
+                URL
+              </label>
+
+              <input
+                v-model="form.url"
+                type="text"
+                placeholder="/about"
+                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+
+              <p class="mt-1 text-xs text-gray-400">
+                Leave empty if this item is only a dropdown parent.
+              </p>
+            </div>
+
+            <!-- Icon -->
+            <div>
+              <label class="mb-2 block text-sm font-medium text-gray-700">
+                Icon
+              </label>
+
+              <input
+                v-model="form.icon"
+                type="text"
+                placeholder="home"
+                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+
+              <p class="mt-1 text-xs text-gray-400">
+                Example: home, user, settings
+              </p>
+            </div>
+
+            <!-- Active -->
+            <div
+              class="rounded-lg border border-gray-200 p-4"
+            >
+              <label class="flex cursor-pointer items-center gap-3">
+                <input
+                  v-model="form.is_active"
+                  type="checkbox"
+                  class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+
+                <div>
+                  <div class="text-sm font-medium text-gray-700">
+                    Active
+                  </div>
+
+                  <div class="text-xs text-gray-400">
+                    Show this item on the website.
+                  </div>
+                </div>
+              </label>
+            </div>
+
+            <!-- New Tab -->
+            <div
+              class="rounded-lg border border-gray-200 p-4"
+            >
+              <label class="flex cursor-pointer items-center gap-3">
+                <input
+                  v-model="form.open_new_tab"
+                  type="checkbox"
+                  class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+
+                <div>
+                  <div class="text-sm font-medium text-gray-700">
+                    Open New Tab
+                  </div>
+
+                  <div class="text-xs text-gray-400">
+                    Open this URL in a new browser tab.
+                  </div>
+                </div>
+              </label>
+            </div>
           </div>
 
-          <div class="flex items-center gap-2">
-            <input v-model="form.open_new_tab" type="checkbox" id="open_new_tab" class="rounded border-gray-300 text-blue-600" />
-            <label for="open_new_tab" class="text-sm text-gray-700">Open in new tab</label>
+          <!-- Validation error -->
+          <div
+            v-if="errorMessage"
+            class="mt-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+          >
+            {{ errorMessage }}
           </div>
 
-          <p v-if="errorMsg" class="text-sm text-red-600">{{ errorMsg }}</p>
-
-          <div class="flex justify-end gap-2 pt-2">
+          <!-- Buttons -->
+          <div
+            class="mt-6 flex justify-end gap-3 border-t pt-5"
+          >
             <button
               type="button"
-              class="rounded-lg px-4 py-2 text-sm text-gray-600 hover:bg-gray-100"
-              @click="formOpen = false"
+              @click="closeModal"
+              :disabled="saving"
+              class="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
             >
               Cancel
             </button>
+
             <button
               type="submit"
-              class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+              :disabled="saving"
+              class="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              Save
+              {{
+                saving
+                  ? "Saving..."
+                  : editingItem
+                    ? "Update"
+                    : "Create"
+              }}
             </button>
           </div>
         </form>
@@ -156,140 +834,4 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref, computed, onMounted, reactive } from 'vue'
-import api from '@/services/api'
-
-interface NavItem {
-  id: number
-  parent_id: number | null
-  title: string
-  url: string | null
-  icon: string | null
-  order: number
-  is_active: boolean
-  open_new_tab: boolean
-  children?: NavItem[]
-}
-
-const navItems = ref<NavItem[]>([])
-const loading = ref(true)
-const formOpen = ref(false)
-const errorMsg = ref('')
-
-const topLevelItems = computed(() => navItems.value)
-
-const form = reactive<{
-  id: number | null
-  parent_id: number | null
-  title: string
-  url: string
-  icon: string
-  order: number
-  is_active: boolean
-  open_new_tab: boolean
-}>({
-  id: null,
-  parent_id: null,
-  title: '',
-  url: '',
-  icon: '',
-  order: 0,
-  is_active: true,
-  open_new_tab: false,
-})
-
-const resetForm = () => {
-  form.id = null
-  form.parent_id = null
-  form.title = ''
-  form.url = ''
-  form.icon = ''
-  form.order = 0
-  form.is_active = true
-  form.open_new_tab = false
-  errorMsg.value = ''
-}
-
-const openCreate = (parentId: number | null = null) => {
-  resetForm()
-  form.parent_id = parentId
-  formOpen.value = true
-}
-
-const openEdit = (item: NavItem) => {
-  form.id = item.id
-  form.parent_id = item.parent_id
-  form.title = item.title
-  form.url = item.url ?? ''
-  form.icon = item.icon ?? ''
-  form.order = item.order
-  form.is_active = Boolean(item.is_active)
-  form.open_new_tab = Boolean(item.open_new_tab)
-  errorMsg.value = ''
-  formOpen.value = true
-}
-
-const fetchNavItems = async () => {
-  loading.value = true
-  try {
-    const res = await api.get('/admin/nav-items')
-    console.log('Nav Items API Response:', res)
-
-    // Robust extraction for all response structures
-    if (res?.data?.data && Array.isArray(res.data.data)) {
-      navItems.value = res.data.data
-    } else if (res?.data && Array.isArray(res.data)) {
-      navItems.value = res.data
-    } else if (Array.isArray(res)) {
-      navItems.value = res
-    } else {
-      navItems.value = []
-    }
-  } catch (error) {
-    console.error('Failed to load nav items:', error)
-    navItems.value = []
-  } finally {
-    loading.value = false
-  }
-}
-
-const save = async () => {
-  errorMsg.value = ''
-  try {
-    const payload = {
-      parent_id: form.parent_id,
-      title: form.title,
-      url: form.url || null,
-      icon: form.icon || null,
-      order: form.order,
-      is_active: form.is_active,
-      open_new_tab: form.open_new_tab,
-    }
-
-    if (form.id) {
-      await api.put(`/admin/nav-items/${form.id}`, payload)
-    } else {
-      await api.post('/admin/nav-items', payload)
-    }
-
-    formOpen.value = false
-    await fetchNavItems()
-  } catch (error: any) {
-    errorMsg.value = error?.response?.data?.message || 'Something went wrong.'
-  }
-}
-
-const remove = async (item: NavItem) => {
-  if (!confirm(`Delete "${item.title}"? ${item.children?.length ? 'Its children will become top-level items.' : ''}`)) return
-  try {
-    await api.delete(`/admin/nav-items/${item.id}`)
-    await fetchNavItems()
-  } catch (error) {
-    console.error('Failed to delete nav item:', error)
-  }
-}
-
-onMounted(fetchNavItems)
-</script>
+```

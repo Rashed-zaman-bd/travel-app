@@ -30,13 +30,17 @@ class NavItemController extends Controller
     // Admin: Full tree including inactive items
     public function adminIndex(): AnonymousResourceCollection
     {
-        $navItems = NavItem::query()
-            ->whereNull('parent_id')
-            ->with(['childrenRecursive' => fn ($q) => $q->orderBy('order')])
+        $items = NavItem::query()
+            ->whereNull('parent_id') 
+            ->where('is_active', true)
+            ->with(['childrenRecursive' => function ($query) {
+                // Cascades active filter down through all nested levels
+                $query->where('is_active', true)->orderBy('order');
+            }])
             ->orderBy('order')
             ->get();
 
-        return NavItemResource::collection($navItems);
+        return NavItemResource::collection($items);
     }
 
     public function store(NavItemRequest $request)
