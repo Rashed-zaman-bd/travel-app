@@ -1,314 +1,4 @@
 ```vue
-<script setup lang="ts">
-import { computed, onMounted, reactive, ref } from "vue";
-import api from "@/services/api";
-
-interface NavItem {
-  id: number;
-  parent_id: number | null;
-  title: string;
-  url: string | null;
-  icon: string | null;
-  order: number;
-  is_active: boolean;
-  open_new_tab: boolean;
-  children?: NavItem[];
-  created_at?: string | null;
-  updated_at?: string | null;
-}
-
-interface NavItemForm {
-  parent_id: number | null;
-  title: string;
-  url: string;
-  icon: string;
-  order: number;
-  is_active: boolean;
-  open_new_tab: boolean;
-}
-
-const navItems = ref<NavItem[]>([]);
-const loading = ref(false);
-const saving = ref(false);
-const deleting = ref(false);
-
-const showModal = ref(false);
-const editingItem = ref<NavItem | null>(null);
-
-const errorMessage = ref("");
-const successMessage = ref("");
-
-const form = reactive<NavItemForm>({
-  parent_id: null,
-  title: "",
-  url: "",
-  icon: "",
-  order: 0,
-  is_active: true,
-  open_new_tab: false,
-});
-
-// --------------------------------------------------
-// Flatten items for parent dropdown
-// --------------------------------------------------
-
-const parentOptions = computed(() => {
-  const options: NavItem[] = [];
-
-  const addItems = (items: NavItem[]) => {
-    for (const item of items) {
-      options.push(item);
-
-      if (item.children?.length) {
-        addItems(item.children);
-      }
-    }
-  };
-
-  addItems(navItems.value);
-
-  return options.filter((item) => {
-    // Do not allow current item to become its own parent
-    return !editingItem.value || item.id !== editingItem.value.id;
-  });
-});
-
-// --------------------------------------------------
-// Load nav items
-// --------------------------------------------------
-
-const fetchNavItems = async () => {
-  loading.value = true;
-  errorMessage.value = "";
-
-  try {
-    const response = await api.get("/admin/nav-items");
-
-    navItems.value = response.data.data || [];
-  } catch (error: any) {
-    console.error(error);
-
-    errorMessage.value =
-      error?.response?.data?.message ||
-      "Failed to load navigation items.";
-  } finally {
-    loading.value = false;
-  }
-};
-
-// --------------------------------------------------
-// Open create modal
-// --------------------------------------------------
-
-const openCreateModal = () => {
-  editingItem.value = null;
-
-  Object.assign(form, {
-    parent_id: null,
-    title: "",
-    url: "",
-    icon: "",
-    order: 0,
-    is_active: true,
-    open_new_tab: false,
-  });
-
-  errorMessage.value = "";
-  showModal.value = true;
-};
-
-// --------------------------------------------------
-// Open edit modal
-// --------------------------------------------------
-
-const openEditModal = (item: NavItem) => {
-  editingItem.value = item;
-
-  Object.assign(form, {
-    parent_id: item.parent_id,
-    title: item.title || "",
-    url: item.url || "",
-    icon: item.icon || "",
-    order: item.order ?? 0,
-    is_active: item.is_active,
-    open_new_tab: item.open_new_tab,
-  });
-
-  errorMessage.value = "";
-  showModal.value = true;
-};
-
-// --------------------------------------------------
-// Close modal
-// --------------------------------------------------
-
-const closeModal = () => {
-  if (saving.value) return;
-
-  showModal.value = false;
-  editingItem.value = null;
-};
-
-// --------------------------------------------------
-// Save
-// --------------------------------------------------
-
-const saveNavItem = async () => {
-  errorMessage.value = "";
-  successMessage.value = "";
-
-  if (!form.title.trim()) {
-    errorMessage.value = "Title is required.";
-    return;
-  }
-
-  saving.value = true;
-
-  try {
-    const payload = {
-      parent_id: form.parent_id || null,
-      title: form.title.trim(),
-      url: form.url.trim() || null,
-      icon: form.icon.trim() || null,
-      order: Number(form.order),
-      is_active: form.is_active,
-      open_new_tab: form.open_new_tab,
-    };
-
-    if (editingItem.value) {
-      const response = await api.put(
-        `/admin/nav-items/${editingItem.value.id}`,
-        payload
-      );
-
-      successMessage.value =
-        response?.data?.message ||
-        "Navigation item updated successfully.";
-    } else {
-      const response = await api.post("/admin/nav-items", payload);
-
-      successMessage.value =
-        response?.data?.message ||
-        "Navigation item created successfully.";
-    }
-
-    showModal.value = false;
-
-    await fetchNavItems();
-
-    setTimeout(() => {
-      successMessage.value = "";
-    }, 3000);
-  } catch (error: any) {
-    console.error(error);
-
-    if (error?.response?.status === 422) {
-      const errors = error.response.data?.errors;
-
-      if (errors) {
-        errorMessage.value = Object.values(errors)
-          .flat()
-          .join(" ");
-      } else {
-        errorMessage.value =
-          error.response.data?.message || "Validation failed.";
-      }
-    } else {
-      errorMessage.value =
-        error?.response?.data?.message ||
-        "Something went wrong.";
-    }
-  } finally {
-    saving.value = false;
-  }
-};
-
-// --------------------------------------------------
-// Delete
-// --------------------------------------------------
-
-const deleteNavItem = async (item: NavItem) => {
-  if (item.children?.length) {
-    alert(
-      "This navigation item has child items. Please delete or move the child items first."
-    );
-
-    return;
-  }
-
-  const confirmed = window.confirm(
-    `Are you sure you want to delete "${item.title}"?`
-  );
-
-  if (!confirmed) return;
-
-  deleting.value = true;
-  errorMessage.value = "";
-
-  try {
-    const response = await api.delete(
-      `/admin/nav-items/${item.id}`
-    );
-
-    successMessage.value =
-      response?.data?.message ||
-      "Navigation item deleted successfully.";
-
-    await fetchNavItems();
-
-    setTimeout(() => {
-      successMessage.value = "";
-    }, 3000);
-  } catch (error: any) {
-    console.error(error);
-
-    errorMessage.value =
-      error?.response?.data?.message ||
-      "Failed to delete navigation item.";
-  } finally {
-    deleting.value = false;
-  }
-};
-
-// --------------------------------------------------
-// Toggle active status
-// --------------------------------------------------
-
-const toggleActive = async (item: NavItem) => {
-  try {
-    await api.put(`/admin/nav-items/${item.id}`, {
-      parent_id: item.parent_id,
-      title: item.title,
-      url: item.url,
-      icon: item.icon,
-      order: item.order,
-      is_active: !item.is_active,
-      open_new_tab: item.open_new_tab,
-    });
-
-    item.is_active = !item.is_active;
-  } catch (error: any) {
-    console.error(error);
-
-    errorMessage.value =
-      error?.response?.data?.message ||
-      "Failed to update status.";
-  }
-};
-
-// --------------------------------------------------
-// Tree row component helper
-// --------------------------------------------------
-
-const getChildren = (item: NavItem) => {
-  return item.children || [];
-};
-
-onMounted(() => {
-  fetchNavItems();
-});
-</script>
-
 <template>
   <div class="min-h-screen bg-gray-50 p-4 md:p-6">
     <div class="mx-auto max-w-7xl">
@@ -834,4 +524,313 @@ onMounted(() => {
     </div>
   </div>
 </template>
+<script setup lang="ts">
+import { computed, onMounted, reactive, ref } from "vue";
+import api from "@/services/api";
+
+interface NavItem {
+  id: number;
+  parent_id: number | null;
+  title: string;
+  url: string | null;
+  icon: string | null;
+  order: number;
+  is_active: boolean;
+  open_new_tab: boolean;
+  children?: NavItem[];
+  created_at?: string | null;
+  updated_at?: string | null;
+}
+
+interface NavItemForm {
+  parent_id: number | null;
+  title: string;
+  url: string;
+  icon: string;
+  order: number;
+  is_active: boolean;
+  open_new_tab: boolean;
+}
+
+const navItems = ref<NavItem[]>([]);
+const loading = ref(false);
+const saving = ref(false);
+const deleting = ref(false);
+
+const showModal = ref(false);
+const editingItem = ref<NavItem | null>(null);
+
+const errorMessage = ref("");
+const successMessage = ref("");
+
+const form = reactive<NavItemForm>({
+  parent_id: null,
+  title: "",
+  url: "",
+  icon: "",
+  order: 0,
+  is_active: true,
+  open_new_tab: false,
+});
+
+// --------------------------------------------------
+// Flatten items for parent dropdown
+// --------------------------------------------------
+
+const parentOptions = computed(() => {
+  const options: NavItem[] = [];
+
+  const addItems = (items: NavItem[]) => {
+    for (const item of items) {
+      options.push(item);
+
+      if (item.children?.length) {
+        addItems(item.children);
+      }
+    }
+  };
+
+  addItems(navItems.value);
+
+  return options.filter((item) => {
+    // Do not allow current item to become its own parent
+    return !editingItem.value || item.id !== editingItem.value.id;
+  });
+});
+
+// --------------------------------------------------
+// Load nav items
+// --------------------------------------------------
+
+const fetchNavItems = async () => {
+  loading.value = true;
+  errorMessage.value = "";
+
+  try {
+    const response = await api.get("/admin/nav-items");
+
+    navItems.value = response.data.data || [];
+  } catch (error: any) {
+    console.error(error);
+
+    errorMessage.value =
+      error?.response?.data?.message ||
+      "Failed to load navigation items.";
+  } finally {
+    loading.value = false;
+  }
+};
+
+// --------------------------------------------------
+// Open create modal
+// --------------------------------------------------
+
+const openCreateModal = () => {
+  editingItem.value = null;
+
+  Object.assign(form, {
+    parent_id: null,
+    title: "",
+    url: "",
+    icon: "",
+    order: 0,
+    is_active: true,
+    open_new_tab: false,
+  });
+
+  errorMessage.value = "";
+  showModal.value = true;
+};
+
+// --------------------------------------------------
+// Open edit modal
+// --------------------------------------------------
+
+const openEditModal = (item: NavItem) => {
+  editingItem.value = item;
+
+  Object.assign(form, {
+    parent_id: item.parent_id,
+    title: item.title || "",
+    url: item.url || "",
+    icon: item.icon || "",
+    order: item.order ?? 0,
+    is_active: item.is_active,
+    open_new_tab: item.open_new_tab,
+  });
+
+  errorMessage.value = "";
+  showModal.value = true;
+};
+
+// --------------------------------------------------
+// Close modal
+// --------------------------------------------------
+
+const closeModal = () => {
+  if (saving.value) return;
+
+  showModal.value = false;
+  editingItem.value = null;
+};
+
+// --------------------------------------------------
+// Save
+// --------------------------------------------------
+
+const saveNavItem = async () => {
+  errorMessage.value = "";
+  successMessage.value = "";
+
+  if (!form.title.trim()) {
+    errorMessage.value = "Title is required.";
+    return;
+  }
+
+  saving.value = true;
+
+  try {
+    const payload = {
+      parent_id: form.parent_id || null,
+      title: form.title.trim(),
+      url: form.url.trim() || null,
+      icon: form.icon.trim() || null,
+      order: Number(form.order),
+      is_active: form.is_active,
+      open_new_tab: form.open_new_tab,
+    };
+
+    if (editingItem.value) {
+      const response = await api.put(
+        `/admin/nav-items/${editingItem.value.id}`,
+        payload
+      );
+
+      successMessage.value =
+        response?.data?.message ||
+        "Navigation item updated successfully.";
+    } else {
+      const response = await api.post("/admin/nav-items", payload);
+
+      successMessage.value =
+        response?.data?.message ||
+        "Navigation item created successfully.";
+    }
+
+    showModal.value = false;
+
+    await fetchNavItems();
+
+    setTimeout(() => {
+      successMessage.value = "";
+    }, 3000);
+  } catch (error: any) {
+    console.error(error);
+
+    if (error?.response?.status === 422) {
+      const errors = error.response.data?.errors;
+
+      if (errors) {
+        errorMessage.value = Object.values(errors)
+          .flat()
+          .join(" ");
+      } else {
+        errorMessage.value =
+          error.response.data?.message || "Validation failed.";
+      }
+    } else {
+      errorMessage.value =
+        error?.response?.data?.message ||
+        "Something went wrong.";
+    }
+  } finally {
+    saving.value = false;
+  }
+};
+
+// --------------------------------------------------
+// Delete
+// --------------------------------------------------
+
+const deleteNavItem = async (item: NavItem) => {
+  if (item.children?.length) {
+    alert(
+      "This navigation item has child items. Please delete or move the child items first."
+    );
+
+    return;
+  }
+
+  const confirmed = window.confirm(
+    `Are you sure you want to delete "${item.title}"?`
+  );
+
+  if (!confirmed) return;
+
+  deleting.value = true;
+  errorMessage.value = "";
+
+  try {
+    const response = await api.delete(
+      `/admin/nav-items/${item.id}`
+    );
+
+    successMessage.value =
+      response?.data?.message ||
+      "Navigation item deleted successfully.";
+
+    await fetchNavItems();
+
+    setTimeout(() => {
+      successMessage.value = "";
+    }, 3000);
+  } catch (error: any) {
+    console.error(error);
+
+    errorMessage.value =
+      error?.response?.data?.message ||
+      "Failed to delete navigation item.";
+  } finally {
+    deleting.value = false;
+  }
+};
+
+// --------------------------------------------------
+// Toggle active status
+// --------------------------------------------------
+
+const toggleActive = async (item: NavItem) => {
+  try {
+    await api.put(`/admin/nav-items/${item.id}`, {
+      parent_id: item.parent_id,
+      title: item.title,
+      url: item.url,
+      icon: item.icon,
+      order: item.order,
+      is_active: !item.is_active,
+      open_new_tab: item.open_new_tab,
+    });
+
+    item.is_active = !item.is_active;
+  } catch (error: any) {
+    console.error(error);
+
+    errorMessage.value =
+      error?.response?.data?.message ||
+      "Failed to update status.";
+  }
+};
+
+// --------------------------------------------------
+// Tree row component helper
+// --------------------------------------------------
+
+const getChildren = (item: NavItem) => {
+  return item.children || [];
+};
+
+onMounted(() => {
+  fetchNavItems();
+});
+</script>
 ```

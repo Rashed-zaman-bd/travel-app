@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import './assets/css/main.css'
 import { createPinia } from 'pinia'
+import i18n from './i18n'
 
 // Bootstrap Icons
 import 'bootstrap-icons/font/bootstrap-icons.css'
@@ -11,7 +12,6 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-// Solid Icons
 import {
   faUserSecret,
   faThumbsUp,
@@ -19,14 +19,9 @@ import {
   faPhone,
   faSearch,
 } from '@fortawesome/free-solid-svg-icons'
-
-// Regular Icons
 import { faCircleUser } from '@fortawesome/free-regular-svg-icons'
-
-// Brands Icons
 import { faFacebook } from '@fortawesome/free-brands-svg-icons'
 
-// Add icons to library
 library.add(
   faUserSecret,
   faThumbsUp,
@@ -38,12 +33,12 @@ library.add(
 )
 
 const pinia = createPinia()
-
 const app = createApp(App)
 
 app.component('font-awesome-icon', FontAwesomeIcon)
 
 app.use(router)
 app.use(pinia)
+app.use(i18n)
 
 app.mount('#app')
