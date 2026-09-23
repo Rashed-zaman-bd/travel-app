@@ -14,8 +14,12 @@ class NavItemController extends Controller
     /**
      * Public navigation menu
      */
-    public function index(): AnonymousResourceCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
+        app()->setLocale(
+            $request->header('X-Locale', $request->query('lang', 'en'))
+        );
+
         $items = NavItem::query()
             ->whereNull('parent_id')
             ->where('is_active', true)
@@ -111,7 +115,6 @@ class NavItemController extends Controller
      */
     public function destroy(NavItem $navItem)
     {
-        // Optional: prevent deleting item with children
         if ($navItem->children()->exists()) {
             return response()->json([
                 'status' => false,
@@ -134,18 +137,8 @@ class NavItemController extends Controller
     {
         $validated = $request->validate([
             'items' => ['required', 'array'],
-
-            'items.*.id' => [
-                'required',
-                'integer',
-                'exists:nav_items,id',
-            ],
-
-            'items.*.order' => [
-                'required',
-                'integer',
-                'min:0',
-            ],
+            'items.*.id' => ['required', 'integer', 'exists:nav_items,id'],
+            'items.*.order' => ['required', 'integer', 'min:0'],
         ]);
 
         foreach ($validated['items'] as $item) {

@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('nav_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('parent_id')->nullable()->constrained('nav_items')->nullOnDelete();
-            $table->string('title');
-            $table->string('url')->nullable();       
-            $table->string('icon')->nullable();       
+            $table->json('title');              
+            $table->string('url')->nullable();
+            $table->string('icon')->nullable();
             $table->unsignedInteger('order')->default(0);
             $table->boolean('is_active')->default(true);
             $table->boolean('open_new_tab')->default(false);

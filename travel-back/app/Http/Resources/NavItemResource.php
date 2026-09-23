@@ -12,7 +12,13 @@ class NavItemResource extends JsonResource
         return [
             'id' => $this->id,
             'parent_id' => $this->parent_id,
-            'title' => $this->title,
+            'title' => $this->when(
+                $request->routeIs('admin.*') || $request->is('api/admin/*'),
+                $this->title,                          // full {en, bn} for admin
+                $this->title[app()->getLocale()]
+                    ?? $this->title['en']
+                    ?? ''
+            ),
             'url' => $this->url,
             'icon' => $this->icon,
             'order' => $this->order,

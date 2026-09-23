@@ -23,6 +23,7 @@ class NavItem extends Model
 
     protected $casts = [
         'parent_id' => 'integer',
+        'title' => 'array',
         'order' => 'integer',
         'is_active' => 'boolean',
         'open_new_tab' => 'boolean',
@@ -43,5 +44,15 @@ class NavItem extends Model
     {
         return $this->children()
             ->with('childrenRecursive');
+    }
+
+    /**
+     * Get the title for a given locale, falling back to English.
+     */
+    public function getTitle(?string $locale = null): string
+    {
+        $locale = $locale ?? app()->getLocale();
+
+        return $this->title[$locale] ?? $this->title['en'] ?? '';
     }
 }

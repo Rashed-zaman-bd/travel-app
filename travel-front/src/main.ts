@@ -4,6 +4,9 @@ import router from './router'
 import './assets/css/main.css'
 import { createPinia } from 'pinia'
 import i18n from './i18n'
+import 'swiper/css'
+import 'swiper/css/effect-coverflow'
+import 'swiper/css/pagination'
 
 // Bootstrap Icons
 import 'bootstrap-icons/font/bootstrap-icons.css'

@@ -1,9 +1,10 @@
 <template>
     <HeroVideo/>
-   <DomesticGallery/>
+    <Pupoler/>
+    
 
 </template>
 <script setup lang="ts">
-import DomesticGallery from '@/components/DomesticGallery.vue';
+import Pupoler from '@/components/pupoler.vue';
 import HeroVideo from '@/components/hero.vue'
 </script>

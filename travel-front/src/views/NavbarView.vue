@@ -90,7 +90,54 @@
         </ul>
       </div>
 
+      <!-- Desktop Right Controls -->
       <div class="hidden sm:flex items-center gap-4">
+        <!-- Desktop Language Switcher -->
+<div class="relative">
+  <button
+    type="button"
+    class="flex items-center gap-1 rounded-md border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 transition hover:border-gray-300"
+    @click="langMenuOpen = !langMenuOpen"
+    @keydown.esc="langMenuOpen = false"
+  >
+    {{ locale === 'en' ? 'EN' : 'BN' }}
+    <svg class="h-3.5 w-3.5 transition-transform duration-200" :class="{ 'rotate-180': langMenuOpen }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7" />
+    </svg>
+  </button>
+
+  <Transition name="expand">
+    <div
+      v-if="langMenuOpen"
+      v-click-outside="() => (langMenuOpen = false)"
+      class="absolute right-0 top-full z-[9999] mt-2 w-28 overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black/5"
+    >
+      <button
+        type="button"
+        class="flex w-full items-center justify-between px-4 py-2 text-sm font-medium transition"
+        :class="locale === 'en' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50'"
+        @click="selectLocale('en')"
+      >
+        English
+        <svg v-if="locale === 'en'" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+      </button>
+      <button
+        type="button"
+        class="flex w-full items-center justify-between px-4 py-2 text-sm font-medium transition"
+        :class="locale === 'bn' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50'"
+        @click="selectLocale('bn')"
+      >
+        বাংলা
+        <svg v-if="locale === 'bn'" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+      </button>
+    </div>
+  </Transition>
+</div>
+
         <UserAccount />
       </div>
     </nav>
@@ -134,8 +181,29 @@
             </template>
           </li>
 
-          <li class="pt-2 border-t border-gray-100">
+          <!-- Mobile Controls -->
+          <li class="pt-3 border-t border-gray-100 flex items-center justify-between">
             <UserAccount />
+
+            <!-- Mobile Language Switcher -->
+            <div class="flex items-center overflow-hidden rounded-md border border-gray-200 p-0.5 text-xs font-semibold">
+              <button
+                type="button"
+                class="rounded px-2.5 py-1 transition-colors"
+                :class="locale === 'en' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:text-blue-600'"
+                @click="setLocale('en')"
+              >
+                EN
+              </button>
+              <button
+                type="button"
+                class="rounded px-2.5 py-1 transition-colors"
+                :class="locale === 'bn' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:text-blue-600'"
+                @click="setLocale('bn')"
+              >
+                BN
+              </button>
+            </div>
           </li>
         </ul>
       </div>
@@ -145,8 +213,9 @@
 
 <script setup lang="ts">
 import UserAccount from '@/components/UserAccount.vue'
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import api from '@/services/api'
+import { useI18n } from 'vue-i18n'
 
 interface Banner {
   id: number
@@ -194,6 +263,14 @@ const firstBanner = computed(() => banners.value[0] ?? null)
 const logo = ref<Logo | null>(null)
 const menuLogo = computed(() => logo.value)
 
+const { locale } = useI18n()
+
+function setLocale(lang: string) {
+  locale.value = lang
+  localStorage.setItem('locale', lang)
+  document.documentElement.setAttribute('lang', lang)
+}
+
 const navItems = ref<NavItem[]>([])
 const openDropdownId = ref<number | null>(null)
 const openMobileDropdownId = ref<number | null>(null)
@@ -224,14 +301,28 @@ const fetchLogo = async () => {
 
 const fetchNavItems = async () => {
   try {
-    const response = await api.get<NavItemResponse>("/nav-items");
-
-    navItems.value = response.data.data ?? [];
+    const response = await api.get<NavItemResponse>('/nav-items')
+    navItems.value = response.data.data ?? []
   } catch (error) {
     console.error('Failed to load nav items:', error)
     navItems.value = []
   }
 }
+
+const langMenuOpen = ref(false)
+
+function selectLocale(lang: string) {
+  setLocale(lang)
+  langMenuOpen.value = false
+}
+
+// Re-fetch anything with translated content whenever the locale changes
+watch(locale, () => {
+  fetchNavItems()
+  // uncomment if banners/logo titles are also translated server-side
+  // fetchTopBanners()
+  // fetchLogo()
+})
 
 onMounted(() => {
   fetchTopBanners()

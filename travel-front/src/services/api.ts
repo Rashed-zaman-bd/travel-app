@@ -19,6 +19,9 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
+    const locale = localStorage.getItem("locale") || "en";
+    config.headers["X-Locale"] = locale;
+
     return config;
   },
   (error) => Promise.reject(error)

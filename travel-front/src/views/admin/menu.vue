@@ -1,4 +1,3 @@
-```vue
 <template>
   <div class="min-h-screen bg-gray-50 p-4 md:p-6">
     <div class="mx-auto max-w-7xl">
@@ -142,11 +141,11 @@
 
                       <div>
                         <div class="font-semibold text-gray-800">
-                          {{ item.title }}
+                          {{ item.title.en }}
                         </div>
 
                         <div class="text-xs text-gray-400">
-                          ID: {{ item.id }}
+                          {{ item.title.bn }} · ID: {{ item.id }}
                         </div>
                       </div>
                     </div>
@@ -229,11 +228,11 @@
 
                       <div>
                         <div class="font-medium text-gray-700">
-                          {{ child.title }}
+                          {{ child.title.en }}
                         </div>
 
                         <div class="text-xs text-gray-400">
-                          ID: {{ child.id }}
+                          {{ child.title.bn }} · ID: {{ child.id }}
                         </div>
                       </div>
                     </div>
@@ -347,17 +346,33 @@
         >
           <div class="grid gap-5 md:grid-cols-2">
 
-            <!-- Title -->
-            <div class="md:col-span-2">
+            <!-- Title (English) -->
+            <div>
               <label class="mb-2 block text-sm font-medium text-gray-700">
-                Title
+                Title (English)
                 <span class="text-red-500">*</span>
               </label>
 
               <input
-                v-model="form.title"
+                v-model="form.title_en"
                 type="text"
                 placeholder="Example: Home"
+                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                required
+              />
+            </div>
+
+            <!-- Title (Bangla) -->
+            <div>
+              <label class="mb-2 block text-sm font-medium text-gray-700">
+                Title (বাংলা)
+                <span class="text-red-500">*</span>
+              </label>
+
+              <input
+                v-model="form.title_bn"
+                type="text"
+                placeholder="উদাহরণ: হোম"
                 class="w-full rounded-lg border border-gray-300 px-4 py-2.5 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 required
               />
@@ -382,7 +397,7 @@
                   :key="parent.id"
                   :value="parent.id"
                 >
-                  {{ parent.title }}
+                  {{ parent.title.en }}
                 </option>
               </select>
             </div>
@@ -528,10 +543,15 @@
 import { computed, onMounted, reactive, ref } from "vue";
 import api from "@/services/api";
 
+interface NavTitle {
+  en: string;
+  bn: string;
+}
+
 interface NavItem {
   id: number;
   parent_id: number | null;
-  title: string;
+  title: NavTitle;
   url: string | null;
   icon: string | null;
   order: number;
@@ -544,7 +564,8 @@ interface NavItem {
 
 interface NavItemForm {
   parent_id: number | null;
-  title: string;
+  title_en: string;
+  title_bn: string;
   url: string;
   icon: string;
   order: number;
@@ -565,7 +586,8 @@ const successMessage = ref("");
 
 const form = reactive<NavItemForm>({
   parent_id: null,
-  title: "",
+  title_en: "",
+  title_bn: "",
   url: "",
   icon: "",
   order: 0,
@@ -630,7 +652,8 @@ const openCreateModal = () => {
 
   Object.assign(form, {
     parent_id: null,
-    title: "",
+    title_en: "",
+    title_bn: "",
     url: "",
     icon: "",
     order: 0,
@@ -651,7 +674,8 @@ const openEditModal = (item: NavItem) => {
 
   Object.assign(form, {
     parent_id: item.parent_id,
-    title: item.title || "",
+    title_en: item.title?.en || "",
+    title_bn: item.title?.bn || "",
     url: item.url || "",
     icon: item.icon || "",
     order: item.order ?? 0,
@@ -682,8 +706,8 @@ const saveNavItem = async () => {
   errorMessage.value = "";
   successMessage.value = "";
 
-  if (!form.title.trim()) {
-    errorMessage.value = "Title is required.";
+  if (!form.title_en.trim() || !form.title_bn.trim()) {
+    errorMessage.value = "Both English and Bangla titles are required.";
     return;
   }
 
@@ -692,7 +716,10 @@ const saveNavItem = async () => {
   try {
     const payload = {
       parent_id: form.parent_id || null,
-      title: form.title.trim(),
+      title: {
+        en: form.title_en.trim(),
+        bn: form.title_bn.trim(),
+      },
       url: form.url.trim() || null,
       icon: form.icon.trim() || null,
       order: Number(form.order),
@@ -762,7 +789,7 @@ const deleteNavItem = async (item: NavItem) => {
   }
 
   const confirmed = window.confirm(
-    `Are you sure you want to delete "${item.title}"?`
+    `Are you sure you want to delete "${item.title.en}"?`
   );
 
   if (!confirmed) return;
@@ -833,4 +860,3 @@ onMounted(() => {
   fetchNavItems();
 });
 </script>
-```
