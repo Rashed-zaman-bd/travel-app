@@ -25,15 +25,15 @@
       }"
       :pagination="{ clickable: true, dynamicBullets: true }"
       :navigation="true"
-      class="hero-swiper w-full h-full"
+      class="hero-swiper w-full h-full !overflow-hidden"
     >
       <swiper-slide v-for="slide in slides" :key="slide.id">
-        <div class="relative w-full h-full flex items-center">
+        <div class="relative w-full h-full flex items-center overflow-hidde">
           <!-- Background Image -->
           <img
             :src="slide.image"
             :alt="slide.title"
-            class="slide-image absolute inset-0 w-full h-full object-cover scale-100 transition-transform duration-[7000ms] ease-out"
+            class="slide-image absolute inset-0 h-full w-full max-w-full object-cove scale-100 transition-transform duration-[7000ms] ease-out"
           />
 
           <!-- Hero Content Center -->
@@ -193,7 +193,7 @@ onUnmounted(() => {
 <style scoped>
 /* Image Zoom on active slide */
 :deep(.swiper-slide-active .slide-image) {
-  transform: scale(1);
+  transform: scale(1.02);
 }
 
 /* Entry Animations for Active Slide Text */

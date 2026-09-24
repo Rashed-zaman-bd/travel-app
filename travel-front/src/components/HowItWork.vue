@@ -1,25 +1,31 @@
 ```vue
 <template>
-  <section class="w-full border-y border-gray-100 bg-white">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  <section class="w-full border-y border-gray-200 bg-white">
+    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
       <div
         class="flex flex-col gap-8 py-8 lg:flex-row lg:items-center lg:gap-0"
       >
 
-        <!-- Left label -->
+        <!-- =========================
+             Left Label
+        ========================== -->
         <div
+          v-for="how in hows"
+          :key="how.text"
           class="flex items-center justify-center lg:w-40 lg:shrink-0 lg:justify-start lg:border-r lg:border-gray-200 lg:pr-6"
         >
           <span
             class="text-sm font-bold tracking-wide text-slate-600"
           >
-            HOW IT WORKS
+            {{ how.text }}
           </span>
         </div>
 
-        <!-- Steps -->
+        <!-- =========================
+             Steps
+        ========================== -->
         <div
-          class="grid w-full flex-1 grid-cols-1 gap-10 sm:grid-cols-3 lg:pl-10"
+          class="grid w-full flex-1 grid-cols-1 gap-8 sm:grid-cols-3 lg:pl-10"
         >
           <div
             v-for="step in steps"
@@ -39,7 +45,7 @@
               <span
                 class="text-base font-bold tracking-wide text-amber-400"
               >
-                STEP {{ step.number }}
+                {{ step.topline }} {{ step.number }}
               </span>
             </div>
 
@@ -66,32 +72,48 @@
 </template>
 
 <script setup lang="ts">
+
+interface How {
+  text: string
+}
+
 interface Step {
+  topline: string
   number: number
   title: string
   description: string
   icon: [string, string]
 }
 
+const hows: How[] = [
+  {
+    text: 'HOW IT WORKS',
+  },
+]
+
 const steps: Step[] = [
   {
+    topline: 'STEP',
     number: 1,
     title: 'Tell us what kind of trip you want',
     description: 'Complete our quick travel quiz',
     icon: ['far', 'circle-user'],
   },
   {
+    topline: 'STEP',
     number: 2,
     title: 'Chat with a local travel specialist',
     description: 'Work out the details together',
     icon: ['fas', 'comments'],
   },
   {
+    topline: 'STEP',
     number: 3,
     title: 'Securely book your trip',
     description: '100% satisfaction guaranteed',
     icon: ['fas', 'credit-card'],
   },
 ]
+
 </script>
 ```
