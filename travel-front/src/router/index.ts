@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import Heroslider from '@/views/admin/heroslider.vue'
 
 const routes = [
   {
@@ -62,6 +63,11 @@ const routes = [
         path: 'menu',
         name: 'admin.menu',
         component: () => import('@/views/admin/menu.vue')
+      },
+      {
+        path: 'heroslider',
+        name: 'admin.heroslider',
+        component: () => import('@/views/admin/heroslider.vue')
       },
     ],
   },

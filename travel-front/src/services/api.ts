@@ -1,7 +1,7 @@
 import axios from "axios";
+import i18n from "@/i18n"; // Import your vue-i18n instance
 
-const rawBaseUrl = import.meta.env.VITE_API_BASE_URL;
-
+const rawBaseUrl = import.meta.env.VITE_API_BASE_URL || "";
 const baseURL = `${rawBaseUrl.replace(/\/+$/, "")}/api`;
 
 const api = axios.create({
@@ -19,8 +19,22 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
-    const locale = localStorage.getItem("locale") || "en";
-    config.headers["X-Locale"] = locale;
+    // 1. Read locale directly from vue-i18n reactive instance (with localStorage fallback)
+    const currentLocale =
+      (i18n.global.locale as any)?.value ||
+      i18n.global.locale ||
+      localStorage.getItem("locale") ||
+      "en";
+
+    // 2. Set headers for backend frameworks (Laravel reads Accept-Language by default)
+    config.headers["X-Locale"] = currentLocale;
+    config.headers["Accept-Language"] = currentLocale;
+
+    // 3. Attach query parameter as a fallback (?lang=en)
+    config.params = {
+      lang: currentLocale,
+      ...config.params,
+    };
 
     return config;
   },

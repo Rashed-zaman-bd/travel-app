@@ -21,6 +21,8 @@ import {
   faHouse,
   faPhone,
   faSearch,
+  faComments,      // added — chat step icon
+  faCreditCard,    // added — booking step icon
 } from '@fortawesome/free-solid-svg-icons'
 import { faCircleUser } from '@fortawesome/free-regular-svg-icons'
 import { faFacebook } from '@fortawesome/free-brands-svg-icons'
@@ -33,6 +35,8 @@ library.add(
   faSearch,
   faCircleUser,
   faFacebook,
+  faComments,
+  faCreditCard,
 )
 
 const pinia = createPinia()

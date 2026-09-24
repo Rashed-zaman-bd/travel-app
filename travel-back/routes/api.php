@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Admin\TopBannerController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\HeroSlideController;
 use App\Http\Controllers\Api\LogoController;
 use App\Http\Controllers\Api\NavItemController;
 use App\Http\Controllers\Auth\SocialAuthController;
@@ -65,10 +66,25 @@ Route::get('nav-items', [NavItemController::class, 'index']);
 // Admin — THIS GROUP WAS MISSING, which is why /admin/nav-items 404'd
 Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->group(function () {
     Route::get('/nav-items', [NavItemController::class, 'adminIndex']);
-        Route::post('nav-items', [NavItemController::class, 'store']);
-        Route::get('nav-items/{nav_item}', [NavItemController::class, 'show']);
-        Route::put('nav-items/{nav_item}', [NavItemController::class, 'update']);
-        Route::delete('nav-items/{nav_item}', [NavItemController::class, 'destroy']);
-        Route::post('nav-items/reorder', [NavItemController::class, 'reorder']);
+    Route::post('nav-items', [NavItemController::class, 'store']);
+    Route::get('nav-items/{nav_item}', [NavItemController::class, 'show']);
+    Route::put('nav-items/{nav_item}', [NavItemController::class, 'update']);
+    Route::delete('nav-items/{nav_item}', [NavItemController::class, 'destroy']);
+    Route::post('nav-items/reorder', [NavItemController::class, 'reorder']);
+});
+
+
+Route::get('/hero-slides', [HeroSlideController::class, 'index']);
+
+// Admin (auth:sanctum + role middleware)
+Route::middleware(['auth:sanctum', 'role:admin,super_admin'])
+    ->prefix('admin')
+    ->name('admin.') // <-- required
+    ->group(function () {
+        Route::get('/hero-slides', [HeroSlideController::class, 'adminIndex'])->name('hero-slides.index');
+        Route::get('/hero-slides/{heroSlide:id}', [HeroSlideController::class, 'show'])->name('hero-slides.show');
+        Route::post('/hero-slides', [HeroSlideController::class, 'store'])->name('hero-slides.store');
+        Route::match(['put', 'patch'], '/hero-slides/{heroSlide:id}', [HeroSlideController::class, 'update'])->name('hero-slides.update');
+        Route::delete('/hero-slides/{heroSlide:id}', [HeroSlideController::class, 'destroy'])->name('hero-slides.destroy');
     });
 

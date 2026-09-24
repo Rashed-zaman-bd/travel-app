@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Support\Facades\Storage;
 
 class HeroSlide extends Model
 {
@@ -49,4 +49,17 @@ class HeroSlide extends Model
         'is_active'   => 'boolean',
         'order'       => 'integer',
     ];
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        // Delete the stored image file whenever a HeroSlide record is deleted,
+        // no matter where the delete happens from.
+        static::deleting(function (HeroSlide $heroSlide) {
+            if ($heroSlide->image) {
+                Storage::disk('public')->delete($heroSlide->image);
+            }
+        });
+    }
 }
