@@ -51,7 +51,7 @@
             <a
               v-if="!item.children.length"
               :href="item.url || '#'"
-              class="whitespace-nowrap text-base font-medium text-gray-700 transition hover:text-blue-500"
+              class="whitespace-nowrap text-base font-medium text-gray-700 transition hover:text-amber-500"
             >
               {{ item.title }}
             </a>
@@ -59,7 +59,7 @@
             <button
               v-else
               type="button"
-              class="flex items-center gap-1 whitespace-nowrap text-base font-medium text-gray-700 transition hover:text-blue-500"
+              class="flex items-center gap-1 whitespace-nowrap text-base font-medium text-gray-700 transition hover:text-amber-500"
               aria-haspopup="true"
               :aria-expanded="openDropdownId === item.id"
             >
@@ -75,12 +75,12 @@
               class="absolute left-1/2 top-full z-[9999] pt-6 -translate-x-1/2 transition-all duration-300 ease-out"
               :class="openDropdownId === item.id ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-2 pointer-events-none'"
             >
-              <div class="w-48 overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black/5">
+              <div class="w-54 overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black/5">
                 <a
                   v-for="child in item.children"
                   :key="child.id"
                   :href="child.url || '#'"
-                  class="block px-5 py-3 text-base font-medium text-gray-500 transition hover:bg-blue-50 hover:text-blue-500"
+                  class="block px-5 py-3 text-base font-medium text-gray-500 transition hover:bg-amber-50 hover:text-amber-500"
                 >
                   {{ child.title }}
                 </a>
@@ -115,7 +115,7 @@
       <button
         type="button"
         class="flex w-full items-center justify-between px-4 py-2 text-sm font-medium transition"
-        :class="locale === 'en' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50'"
+        :class="locale === 'en' ? 'bg-amber-50 text-amber-600' : 'text-gray-600 hover:bg-gray-50'"
         @click="selectLocale('en')"
       >
         English
@@ -126,7 +126,7 @@
       <button
         type="button"
         class="flex w-full items-center justify-between px-4 py-2 text-sm font-medium transition"
-        :class="locale === 'bn' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50'"
+        :class="locale === 'bn' ? 'bg-amber-50 text-amber-600' : 'text-gray-600 hover:bg-gray-50'"
         @click="selectLocale('bn')"
       >
         বাংলা
@@ -149,7 +149,7 @@
             <a
               v-if="!item.children.length"
               :href="item.url || '#'"
-              class="block rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600"
+              class="block rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-amber-600"
             >
               {{ item.title }}
             </a>
@@ -157,7 +157,7 @@
             <template v-else>
               <button
                 type="button"
-                class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600"
+                class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-amber-600"
                 @click="openMobileDropdownId = openMobileDropdownId === item.id ? null : item.id"
               >
                 <span>{{ item.title }}</span>
@@ -172,7 +172,7 @@
                     v-for="child in item.children"
                     :key="child.id"
                     :href="child.url || '#'"
-                    class="block rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-blue-600"
+                    class="block rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-amber-600"
                   >
                     {{ child.title }}
                   </a>
@@ -190,7 +190,7 @@
               <button
                 type="button"
                 class="rounded px-2.5 py-1 transition-colors"
-                :class="locale === 'en' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:text-blue-600'"
+                :class="locale === 'en' ? 'bg-amber-600 text-white' : 'text-gray-600 hover:text-amber-600'"
                 @click="setLocale('en')"
               >
                 EN
@@ -198,7 +198,7 @@
               <button
                 type="button"
                 class="rounded px-2.5 py-1 transition-colors"
-                :class="locale === 'bn' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:text-blue-600'"
+                :class="locale === 'bn' ? 'bg-amber-600 text-white' : 'text-gray-600 hover:text-amber-600'"
                 @click="setLocale('bn')"
               >
                 BN

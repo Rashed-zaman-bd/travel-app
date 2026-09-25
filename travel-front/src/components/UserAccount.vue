@@ -4,7 +4,7 @@
     <button
       v-if="!user"
       type="button"
-      class="flex items-center gap-2 text-base font-medium text-gray-700 transition hover:text-blue-600 cursor-pointer"
+      class="flex items-center gap-2 text-base font-medium text-gray-700 transition hover:text-amber-600 cursor-pointer"
       @click="openModal('login')"
     >
       <font-awesome-icon :icon="['far', 'circle-user']" class="text-lg" />
@@ -208,7 +208,7 @@
                   type="text"
                   required
                   placeholder="example@email.com or 01712345678"
-                  class="mt-1.5 w-full rounded-lg bg-gray-50 px-4 py-3 text-sm text-gray-800 placeholder-gray-400 transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class="mt-1.5 w-full rounded-lg bg-gray-50 px-4 py-3 text-sm text-gray-800 placeholder-gray-400 transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                 />
                 <p v-if="errors.login" class="text-red-500 text-sm mt-1">{{ errors.login }}</p>
               </div>
@@ -220,13 +220,13 @@
                   type="password"
                   required
                   placeholder="Your password"
-                  class="mt-1.5 w-full rounded-lg bg-gray-50 px-4 py-3 text-sm text-gray-800 placeholder-gray-400 transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class="mt-1.5 w-full rounded-lg bg-gray-50 px-4 py-3 text-sm text-gray-800 placeholder-gray-400 transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                 />
                 <p v-if="errors.password" class="text-red-500 text-sm mt-1">{{ errors.password }}</p>
               </div>
 
               <div class="flex justify-end pt-1">
-                <a href="#" class="text-xs font-medium text-blue-500 transition hover:underline">
+                <a href="#" class="text-xs font-medium text-amber-500 transition hover:underline">
                   Forgot Password?
                 </a>
               </div>
@@ -234,7 +234,7 @@
               <button
                 type="submit"
                 :disabled="isLoading"
-                class="w-full rounded-lg bg-blue-500 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 cursor-pointer"
+                class="w-full rounded-lg bg-amber-500 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 cursor-pointer"
               >
                 <span v-if="!isLoading">Sign In</span>
                 <span v-else>Signing in...</span>
@@ -245,7 +245,7 @@
               Don't have an account?
               <button
                 type="button"
-                class="font-semibold text-blue-500 transition hover:underline cursor-pointer"
+                class="font-semibold text-amber-500 transition hover:underline cursor-pointer"
                 @click="authMode = 'register'"
               >
                 Sign Up
@@ -301,7 +301,7 @@
                   type="text"
                   required
                   placeholder="Name"
-                  class="mt-1.5 w-full rounded-lg bg-gray-50 px-4 py-3 text-sm text-gray-800 placeholder-gray-400 transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class="mt-1.5 w-full rounded-lg bg-gray-50 px-4 py-3 text-sm text-gray-800 placeholder-gray-400 transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                 />
               </div>
               <div>
@@ -311,14 +311,14 @@
                   type="email"
                   required
                   placeholder="example@email.com"
-                  class="mt-1.5 w-full rounded-lg bg-gray-50 px-4 py-3 text-sm text-gray-800 placeholder-gray-400 transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class="mt-1.5 w-full rounded-lg bg-gray-50 px-4 py-3 text-sm text-gray-800 placeholder-gray-400 transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                 />
                 <p v-if="errors.email" class="text-red-500 text-sm mt-1">{{ errors.email }}</p>
               </div>
 
               <div>
                 <label class="block text-xs font-semibold text-gray-700">Mobile Number</label>
-                <div class="mt-1.5 flex items-center rounded-lg bg-gray-50 focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-500">
+                <div class="mt-1.5 flex items-center rounded-lg bg-gray-50 focus-within:bg-white focus-within:ring-2 focus-within:ring-amber-500">
                   <div class="flex items-center gap-1.5 border-r border-gray-200 px-3 text-sm text-gray-700">
                     <span class="inline-block h-3.5 w-5 shrink-0 rounded-sm bg-green-600 relative overflow-hidden">
                       <span class="absolute inset-y-0 left-1 my-auto h-2 w-2 rounded-full bg-red-600"></span>
@@ -342,7 +342,7 @@
                   type="password"
                   required
                   placeholder="Your password"
-                  class="mt-1.5 w-full rounded-lg bg-gray-50 px-4 py-3 text-sm text-gray-800 placeholder-gray-400 transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class="mt-1.5 w-full rounded-lg bg-gray-50 px-4 py-3 text-sm text-gray-800 placeholder-gray-400 transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                 />
                 <p v-if="errors.password" class="text-red-500 text-sm mt-1">{{ errors.password }}</p>
               </div>
@@ -353,7 +353,7 @@
                   type="file"
                   accept="image/jpeg,image/jpg,image/png"
                   @change="handleFileChange"
-                  class="mt-1.5 w-full rounded-lg bg-gray-50 px-4 py-3 text-sm text-gray-800 placeholder-gray-400 transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class="mt-1.5 w-full rounded-lg bg-gray-50 px-4 py-3 text-sm text-gray-800 placeholder-gray-400 transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                 />
                 <p v-if="errors.avatar" class="text-red-500 text-sm mt-1">{{ errors.avatar }}</p>
 
@@ -369,7 +369,7 @@
               <button
                 type="submit"
                 :disabled="isLoading"
-                class="w-full rounded-lg bg-blue-500 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 cursor-pointer"
+                class="w-full rounded-lg bg-amber-500 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 disabled:opacity-50 cursor-pointer"
               >
                 <span v-if="!isLoading">Sign Up</span>
                 <span v-else>Creating account...</span>
@@ -380,7 +380,7 @@
               Already have an account?
               <button
                 type="button"
-                class="font-semibold text-blue-500 transition hover:underline cursor-pointer"
+                class="font-semibold text-amber-500 transition hover:underline cursor-pointer"
                 @click="authMode = 'login'"
               >
                 Sign In
@@ -389,7 +389,7 @@
 
             <p class="mt-4 text-center text-[11px] text-gray-400">
               By Signing up you agree to the
-              <a href="/terms" class="text-blue-500 hover:underline">Terms and Conditions</a>
+              <a href="/terms" class="text-amber-500 hover:underline">Terms and Conditions</a>
             </p>
           </template>
 

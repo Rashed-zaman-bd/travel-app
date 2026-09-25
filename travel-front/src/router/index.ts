@@ -69,6 +69,11 @@ const routes = [
         name: 'admin.heroslider',
         component: () => import('@/views/admin/heroslider.vue')
       },
+      {
+        path: 'howitwork',
+        name: 'admin.howitwork',
+        component: () => import('@/views/admin/HowItWork.vue')
+      },
     ],
   },
 ]

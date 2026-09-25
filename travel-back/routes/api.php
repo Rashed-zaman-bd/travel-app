@@ -4,7 +4,7 @@ use App\Http\Controllers\Api\Admin\TopBannerController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\HeroSlideController;
-use App\Http\Controllers\Api\HowItWorksStepController;
+use App\Http\Controllers\Api\HowItWorksController;
 use App\Http\Controllers\Api\LogoController;
 use App\Http\Controllers\Api\NavItemController;
 use App\Http\Controllers\Auth\SocialAuthController;
@@ -91,16 +91,16 @@ Route::middleware(['auth:sanctum', 'role:admin,super_admin'])
 
 
 // Public route for frontend/mobile app display
-Route::get('/how-it-works-steps', [HowItWorksStepController::class, 'index']);
-Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->group(function () {
+Route::get('/how-it-works', [HowItWorksController::class, 'index']);
+Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->name('admin.')->group(function () {
     
-    Route::get('/how-it-works-steps', [HowItWorksStepController::class, 'adminIndex']);
+    Route::get('/how-it-works', [HowItWorksController::class, 'adminIndex']);
     // Standard CRUD routes for admin
-    Route::post('/how-it-works-steps', [HowItWorksStepController::class, 'store']);
-    Route::get('/how-it-works-steps/{howItWorksStep}', [HowItWorksStepController::class, 'show']);
-    Route::put('/how-it-works-steps/{howItWorksStep}', [HowItWorksStepController::class, 'update']);
-    Route::patch('/how-it-works-steps/{howItWorksStep}', [HowItWorksStepController::class, 'update']);
-    Route::delete('/how-it-works-steps/{howItWorksStep}', [HowItWorksStepController::class, 'destroy']);
+    Route::post('/how-it-works', [HowItWorksController::class, 'store']);
+    Route::get('/how-it-works/{howItWorksStep}', [HowItWorksController::class, 'show']);
+    Route::put('/how-it-works/{howItWorksStep}', [HowItWorksController::class, 'update']);
+    Route::patch('/how-it-works/{howItWorksStep}', [HowItWorksController::class, 'update']);
+    Route::delete('/how-it-works/{howItWorksStep}', [HowItWorksController::class, 'destroy']);
     
 });    
 
