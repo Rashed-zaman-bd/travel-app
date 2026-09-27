@@ -7,7 +7,7 @@
              Left Label
         ========================== -->
         <div
-          class="flex items-center justify-center lg:w-40 lg:shrink-0 lg:justify-start lg:border-r lg:border-gray-200 lg:pr-6"
+          class="flex items-center justify-center lg:w-50 lg:shrink-0 lg:justify-start lg:border-r lg:border-gray-200 lg:pr-6"
         >
           <span class="text-sm font-bold tracking-wide text-slate-600">
             {{ sectionLabel }}
@@ -44,7 +44,7 @@
                 class="text-4xl text-amber-400"
               />
 
-              <span class="text-base font-bold tracking-wide text-amber-400">
+              <span class="text-base font-bold tracking-wide text-amber-500">
                 {{ step.topline }} {{ index + 1 }}
               </span>
             </div>

@@ -1,3 +1,7 @@
 {
-    "search": "আপনার পণ্য এখানে খুঁজুন..."
+  "worldwide_destinations": {
+    "title": "Worldwide Destinations",
+    "description": "Book a custom trip to one of our trending destinations! Explore the world by choosing your ideal travel destinations in Asia, Europe, Africa, America, Australia and more with Travaisa.",
+    "more": "More Show"
+  }
 }
