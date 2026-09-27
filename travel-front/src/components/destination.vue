@@ -16,9 +16,15 @@
     <div
       class="grid grid-cols-1 gap-5 px-4 sm:grid-cols-2 lg:grid-cols-3"
     >
-      <div
+      <router-link
         v-for="destination in visibleDestinations"
-        :key="destination.name"
+        :key="destination.slug"
+        :to="{
+          name: 'destination',
+          params: {
+            slug: destination.slug
+          }
+        }"
         class="group relative h-40 cursor-pointer overflow-hidden rounded-sm"
       >
         <!-- Image -->
@@ -34,14 +40,16 @@
         ></div>
 
         <!-- Destination Name -->
-        <div class="absolute inset-0 flex items-center justify-center">
+        <div
+          class="absolute inset-0 flex items-center justify-center"
+        >
           <h3
             class="text-2xl font-medium text-white drop-shadow-lg transition duration-500 group-hover:scale-110"
           >
             {{ destination.name }}
           </h3>
         </div>
-      </div>
+      </router-link>
     </div>
 
     <!-- More Button -->
@@ -52,7 +60,7 @@
       <button
         type="button"
         @click="showMore"
-        class="rounded-md bg-amber-500 px-8 py-3 font-medium text-white transition duration-300 hover:bg-amber-600"
+        class="rounded-md bg-amber-500 px-8 py-3 font-medium text-white transition duration-300 hover:bg-amber-600 cursor-pointer"
       >
         {{ t('worldwide_destinations.more') }}
       </button>
@@ -75,89 +83,100 @@ const showMore = () => {
   visibleCount.value += 3
 }
 
-// Get only visible destinations
+// Only show visible destinations
 const visibleDestinations = computed(() => {
   return destinations.slice(0, visibleCount.value)
 })
 
 const destinations = [
-  // 1 - 9: Initially visible
   {
     name: 'Japan',
+    slug: 'japan',
     image: '/images/japan.jpg',
   },
   {
     name: 'Italy',
+    slug: 'italy',
     image: '/images/italy.jpg',
   },
   {
     name: 'Morocco',
+    slug: 'morocco',
     image: '/images/morocco.jpg',
   },
   {
     name: 'Costa Rica',
+    slug: 'costa-rica',
     image: '/images/costa-rica.jpg',
   },
   {
     name: 'Iceland',
+    slug: 'iceland',
     image: '/images/iceland.jpg',
   },
   {
     name: 'Greece',
+    slug: 'greece',
     image: '/images/greece.jpg',
   },
   {
     name: 'Thailand',
+    slug: 'thailand',
     image: '/images/thailand.jpg',
   },
   {
     name: 'Portugal',
+    slug: 'portugal',
     image: '/images/portugal.jpg',
   },
   {
     name: 'Spain',
+    slug: 'spain',
     image: '/images/spain.jpg',
   },
-
-  // 10 - 12: First More click
   {
     name: 'France',
+    slug: 'france',
     image: '/images/france.jpg',
   },
   {
     name: 'Switzerland',
+    slug: 'switzerland',
     image: '/images/switzerland.jpg',
   },
   {
     name: 'Turkey',
+    slug: 'turkey',
     image: '/images/turkey.jpg',
   },
-
-  // 13 - 15: Second More click
   {
     name: 'Dubai',
+    slug: 'dubai',
     image: '/images/dubai.jpg',
   },
   {
     name: 'Australia',
+    slug: 'australia',
     image: '/images/australia.jpg',
   },
   {
     name: 'Canada',
+    slug: 'canada',
     image: '/images/canada.jpg',
   },
-
-  // 16 - 18: Third More click
   {
     name: 'Egypt',
+    slug: 'egypt',
     image: '/images/egypt.jpg',
   },
   {
     name: 'Malaysia',
+    slug: 'malaysia',
     image: '/images/malaysia.jpg',
   },
   {
     name: 'Indonesia',
+    slug: 'indonesia',
     image: '/images/indonesia.jpg',
   },
 ]

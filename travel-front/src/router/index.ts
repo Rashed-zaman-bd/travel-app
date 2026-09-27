@@ -19,10 +19,10 @@ const routes = [
         component: () => import ('@/components/hero.vue')
       },
       {
-        path: 'domesticgallery',
-        name: 'domesticgallery',
-        component: () => import('@/components/DomesticGallery.vue')
-      },
+        path: '/destination/:slug',
+        name: 'destination',
+        component: () => import('@/views/Destination/[slug].vue'),
+      }
     ],
   },
 
