@@ -21,7 +21,12 @@ const routes = [
       {
         path: '/destination/:slug',
         name: 'destination',
-        component: () => import('@/views/Destination/[slug].vue'),
+        component: () => import('@/views/destination/[slug].vue'),
+      },
+      {
+        path: '/tour/:slug',
+        name: 'tour',
+        component: () => import('@/views/tour/[slug].vue'),
       }
     ],
   },
