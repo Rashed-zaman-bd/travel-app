@@ -23,7 +23,7 @@
     <!-- Destination Hero -->
     <div
       v-else-if="destination"
-      class="relative h-full w-full"
+      class="relative h-full w-full "
     >
       <!-- Background Image -->
       <img
@@ -96,20 +96,33 @@
         <div
           v-for="(tour, index) in visibleTours"
           :key="index"
-          class="flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md"
+          class="flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-lg"
         >
-          <!-- Tour Image -->
-          <div class="relative h-48 w-full overflow-hidden bg-gray-100">
+          <!-- Tour Image & Map Overlay -->
+          <div class="relative h-52 w-full bg-gray-100">
+            <!-- Main Scenic Image -->
             <img
               :src="tour.image"
               :alt="tour.title"
-              class="h-full w-full object-cover"
+              class="h-full w-full object-cover transition duration-500 ease-in-out hover:scale-110 cursor-pointer"
             />
+
+            <!-- Map Thumbnail Badge -->
+            <div
+              v-if="tour.map_image"
+              class="absolute bottom-1 right-1 overflow-hidden rounded border-2 border-white shadow-md transition-transform hover:scale-105"
+            >
+              <img
+                :src="tour.map_image"
+                :alt="`${tour.title} Map`"
+                class="h-12 w-18 object-cover sm:h-14 sm:w-18"
+              />
+            </div>
           </div>
 
           <!-- Tour Details -->
           <div class="flex flex-1 flex-col p-5">
-            <h3 class="mb-3 text-lg font-semibold leading-snug text-gray-900">
+            <h3 class="mb-3 text-lg font-semibold leading-snug text-gray-900 cursor-pointer">
               {{ tour.title }}
             </h3>
             <p class="text-xs leading-relaxed text-gray-600 sm:text-sm">
@@ -127,7 +140,7 @@
         <button
           type="button"
           @click="showMore"
-          class="rounded-md bg-amber-500 px-8 py-3 font-medium text-white transition duration-300 hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 cursor-pointer"
+          class="cursor-pointer rounded-md bg-amber-500 px-8 py-3 font-medium text-white transition duration-300 hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
         >
           {{ t('worldwide_destinations.more') }}
         </button>
@@ -147,7 +160,7 @@ const { t } = useI18n()
 const loading = ref(true)
 const error = ref<string | null>(null)
 
-// Initially show 3 tours
+// Initially show 6 tours
 const visibleCount = ref(6)
 
 // Show 3 more tours each time button is clicked
@@ -167,6 +180,7 @@ interface Tour {
   title: string
   description: string
   image: string
+  map_image?: string
 }
 
 interface Destination {
@@ -195,42 +209,49 @@ const destinations: Destination[] = [
         description:
           'If you\'ve ever dreamed of Thailand, this 8-day adventure covers the highlights with a perfect mix of guided tours and free time. Start off in vibrant Bangkok for iconic Buddhist sites and a gourmet dinner cruise on the Chao Phraya River.',
         image: '/images/costa-rica.jpg',
+        map_image: '/images/map.jpg',
       },
       {
         title: 'A Taste of Southern Thailand - 5 Days',
         description:
           'Go beyond the stunning islands and emerald waters of Phang Nga Bay, and get a taste of the local lifestyle on this five-day trip to southern Thailand. You\'ll kayak through the lush jungle, unwind on pristine beaches, and eat authentic Thai food.',
         image: '/images/greece.jpg',
+        map_image: '/images/map.jpg',
       },
       {
         title: 'Ultimate Highlights of Thailand: Bangkok, Chiang Mai & Ko Samui - 10 Days',
         description:
           'Experience Thailand\'s amazing highlights from north to south on this exciting 10-day itinerary. Kick off the trip in Bangkok, equipped with a local guide, where you\'ll hit the city\'s best monuments and foodie options.',
         image: '/images/iceland.jpg',
+        map_image: '/images/map.jpg',
       },
       {
         title: 'Thailand Authentic Grand Tour - 12 Days',
         description:
           'Get to the heart of Thailand on this 12-day tour, from urban neighborhoods to age-old traditions tucked away in the jungles and mountains. The adventure starts in the exotic capital, where your private guide will show you the best sites.',
         image: '/images/italy.jpg',
+        map_image: '/images/map.jpg',
       },
       {
         title: 'Highlights of Thailand, Cambodia & Vietnam - 14 Days',
         description:
           'Hit the ultimate trifecta of beautiful Southeast Asian countries on this two-week journey to Thailand, Cambodia, and Vietnam. In Thailand, you\'ll browse the floating markets, visit elephant sanctuaries, and go island hopping.',
         image: '/images/japan.jpg',
+        map_image: '/images/map.jpg',
       },
       {
         title: 'Culture & Nature Family Adventure in Thailand: Chiang Mai - 7 Days',
         description:
           'This week-long family tour of Chiang Mai offers active families seeking an authentic Thailand experience the perfect blend of culture, nature, and kid-friendly activities. Hike to stunning temples in the mountains before cooling off.',
         image: '/images/morocco.jpg',
+        map_image: '/images/map.jpg',
       },
-       {
+      {
         title: 'Best of Thailand - 8 Days',
         description:
           'If you\'ve ever dreamed of Thailand, this 8-day adventure covers the highlights with a perfect mix of guided tours and free time. Start off in vibrant Bangkok for iconic Buddhist sites and a gourmet dinner cruise on the Chao Phraya River.',
         image: '/images/costa-rica.jpg',
+        map_image: '/images/map.jpg',
       },
     ],
   },
