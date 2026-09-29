@@ -20,14 +20,14 @@
         <div>
           <button
             type="button"
-            @click="toggleMenu('category')"
+            @click="toggleMenu('menu')"
             class="w-full flex items-center justify-between px-4 py-2 rounded hover:bg-gray-700 transition-colors"
           >
             <span class="flex items-center gap-2">
               <i class="bi bi-folder2-open"></i>
               Menu Name
             </span>
-            <i class="bi bi-chevron-down transition-transform" :class="{ 'rotate-180': openMenus.category }"></i>
+            <i class="bi bi-chevron-down transition-transform" :class="{ 'rotate-180': openMenus.menu }"></i>
           </button>
 
           <Transition
@@ -38,7 +38,7 @@
             leave-from-class="opacity-100 max-h-40"
             leave-to-class="opacity-0 max-h-0"
           >
-            <div v-if="openMenus.category" class="ml-6 mt-1 space-y-1 overflow-hidden">
+            <div v-if="openMenus.menu" class="ml-6 mt-1 space-y-1 overflow-hidden">
               <router-link
                 to="/admin/menu"
                 class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
@@ -54,14 +54,14 @@
         <div>
           <button
             type="button"
-            @click="toggleMenu('articles')"
+            @click="toggleMenu('destinations')"
             class="w-full flex items-center justify-between px-4 py-2 rounded hover:bg-gray-700 transition-colors"
           >
             <span class="flex items-center gap-2">
               <i class="bi bi-newspaper"></i>
-              Articles
+              Destinations
             </span>
-            <i class="bi bi-chevron-down transition-transform" :class="{ 'rotate-180': openMenus.articles }"></i>
+            <i class="bi bi-chevron-down transition-transform" :class="{ 'rotate-180': openMenus.destinations }"></i>
           </button>
 
           <Transition
@@ -72,34 +72,34 @@
             leave-from-class="opacity-100 max-h-96"
             leave-to-class="opacity-0 max-h-0"
           >
-            <div v-if="openMenus.articles" class="ml-6 mt-1 space-y-1 overflow-hidden">
+            <div v-if="openMenus.destinations" class="ml-6 mt-1 space-y-1 overflow-hidden">
               <router-link
-                to="/admin/article"
+                to="/admin/destination"
                 class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
                 active-class="bg-gray-800 text-emerald-400 font-semibold"
               >
-                All Articles
+                Destination
               </router-link>
               <router-link
                 to="/admin/article/create"
                 class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
                 active-class="bg-gray-800 text-emerald-400 font-semibold"
               >
-                Write New
+                Destination Details
               </router-link>
               <router-link
                 to="/admin/article/pending"
                 class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
                 active-class="bg-gray-800 text-emerald-400 font-semibold"
               >
-                Pending Review
+                Destination Advice
               </router-link>
               <router-link
                 to="/admin/tags"
                 class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
                 active-class="bg-gray-800 text-emerald-400 font-semibold"
               >
-                Tags
+                Travel Specialists
               </router-link>
             </div>
           </Transition>
@@ -296,8 +296,8 @@ onMounted(loadUser)
 
 // Sidebar accordions
 const openMenus = reactive({
-  category: false,
-  articles: false,
+  menu: false,
+  destinations: false,
   ads: false,
 })
 

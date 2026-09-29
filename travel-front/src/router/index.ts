@@ -62,22 +62,32 @@ const routes = [
       {
         path: 'logo',
         name: 'admin.logo',
-        component: () => import('@/views/admin/logo.vue')
+        component: () => import('@/views/admin/logo.vue'),
+        meta: { requiresAdmin: true },
       },
       {
         path: 'menu',
         name: 'admin.menu',
-        component: () => import('@/views/admin/menu.vue')
+        component: () => import('@/views/admin/menu.vue'),
+        meta: { requiresAdmin: true },
       },
       {
         path: 'heroslider',
         name: 'admin.heroslider',
-        component: () => import('@/views/admin/heroslider.vue')
+        component: () => import('@/views/admin/heroslider.vue'),
+        meta: { requiresAdmin: true },
       },
       {
         path: 'howitwork',
         name: 'admin.howitwork',
-        component: () => import('@/views/admin/HowItWork.vue')
+        component: () => import('@/views/admin/HowItWork.vue'),
+        meta: { requiresAdmin: true },
+      },
+      {
+        path: 'destination',
+        name: 'admin.destination',
+        component: () => import('@/views/admin/destination.vue'),
+        meta: { requiresAdmin: true },
       },
     ],
   },

@@ -8,6 +8,7 @@ use App\Http\Resources\DestinationResource;
 use App\Models\Destination;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -16,9 +17,12 @@ class DestinationController extends Controller
     /**
      * Display all destinations.
      */
-    public function index(Request $request)
+    public function index(): AnonymousResourceCollection
     {
-        $destinations = Destination::latest()->get();
+        $destinations = Destination::query()
+            ->orderBy('order', 'asc')
+            ->orderBy('order')
+            ->get();
 
         return DestinationResource::collection($destinations);
     }
@@ -30,32 +34,34 @@ class DestinationController extends Controller
     {
         $data = $request->validated();
 
-        // Generate slug if it is empty
         if (empty($data['slug'])) {
             $data['slug'] = Str::slug(
                 $data['title']['en'] ?? $data['destination_name']['en']
             );
         }
 
-        // Upload main image
+        // Main image
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')
                 ->store('destinations', 'public');
         }
 
-        // Upload hero image
+        // Hero image
         if ($request->hasFile('destination_hero_image')) {
             $data['destination_hero_image'] = $request
                 ->file('destination_hero_image')
                 ->store('destinations/hero', 'public');
         }
 
-        // Upload map image
+        // Map image
         if ($request->hasFile('map_image')) {
             $data['map_image'] = $request
                 ->file('map_image')
                 ->store('destinations/maps', 'public');
         }
+
+        $data['order'] = $data['order'] ?? 0;
+        $data['is_active'] = $data['is_active'] ?? true;
 
         $destination = Destination::create($data);
 
@@ -81,7 +87,6 @@ class DestinationController extends Controller
 
         // Main image
         if ($request->hasFile('image')) {
-
             if ($destination->image) {
                 Storage::disk('public')->delete($destination->image);
             }
@@ -92,7 +97,6 @@ class DestinationController extends Controller
 
         // Hero image
         if ($request->hasFile('destination_hero_image')) {
-
             if ($destination->destination_hero_image) {
                 Storage::disk('public')->delete(
                     $destination->destination_hero_image
@@ -106,7 +110,6 @@ class DestinationController extends Controller
 
         // Map image
         if ($request->hasFile('map_image')) {
-
             if ($destination->map_image) {
                 Storage::disk('public')->delete($destination->map_image);
             }
@@ -126,19 +129,16 @@ class DestinationController extends Controller
      */
     public function destroy(Destination $destination): JsonResponse
     {
-        // Delete main image
         if ($destination->image) {
             Storage::disk('public')->delete($destination->image);
         }
 
-        // Delete hero image
         if ($destination->destination_hero_image) {
             Storage::disk('public')->delete(
                 $destination->destination_hero_image
             );
         }
 
-        // Delete map image
         if ($destination->map_image) {
             Storage::disk('public')->delete($destination->map_image);
         }

@@ -25,6 +25,8 @@ return new class extends Migration
             $table->json('tour_title')->nullable();
             $table->json('map_image')->nullable();
             $table->json('tour_description')->nullable();
+            $table->unsignedInteger('order')->default(0);
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
