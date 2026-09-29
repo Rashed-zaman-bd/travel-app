@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Admin\TopBannerController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DestinationController;
 use App\Http\Controllers\Api\HeroSlideController;
 use App\Http\Controllers\Api\HowItWorksController;
 use App\Http\Controllers\Api\LogoController;
@@ -103,4 +104,16 @@ Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->
     Route::delete('/how-it-works/{howItWorksStep}', [HowItWorksController::class, 'destroy']);
     
 });    
+
+
+// Public
+Route::get('destinations', [DestinationController::class, 'index']);
+Route::get('destinations/{destination}', [DestinationController::class, 'show']);
+
+// Admin
+Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::post('destinations', [DestinationController::class, 'store']);
+    Route::match(['put', 'patch', 'post'], 'destinations/{destination}', [DestinationController::class, 'update']);
+    Route::delete('destinations/{destination}', [DestinationController::class, 'destroy']);
+});
 
