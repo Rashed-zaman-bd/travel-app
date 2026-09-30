@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\HeroSlideController;
 use App\Http\Controllers\Api\HowItWorksController;
 use App\Http\Controllers\Api\LogoController;
 use App\Http\Controllers\Api\NavItemController;
+use App\Http\Controllers\Api\TourPackageController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -118,6 +119,19 @@ Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->
     Route::post('category', [CategoryController::class, 'store']);
     Route::match(['put', 'patch', 'post'], 'category/{category:id}', [CategoryController::class, 'update']);
     Route::delete('category/{category:id}', [CategoryController::class, 'destroy']);
+});
+
+// Tour Package Routes
+Route::get('tour-package', [TourPackageController::class, 'index']);
+Route::get('tour-package/{tourPackage}', [TourPackageController::class, 'show']);
+
+// Admin Routes
+Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Add this GET route for admin index:
+    Route::get('tour-package', [TourPackageController::class, 'index']); 
+    Route::post('tour-package', [TourPackageController::class, 'store']);
+    Route::match(['put', 'patch', 'post'], 'tour-package/{tourPackage}', [TourPackageController::class, 'update']);
+    Route::delete('tour-package/{tourPackage}', [TourPackageController::class, 'destroy']);
 });
 
 

@@ -119,6 +119,13 @@ const routes = [
       },
 
       {
+        path: 'tourpackage',
+        name: 'admin.tourpackage',
+        component: () => import('@/views/admin/tourpackage.vue'),
+        meta: { requiresAdmin: true },
+      },
+
+      {
         path: 'destination',
         name: 'admin.destination',
         component: () => import('@/views/admin/destination.vue'),

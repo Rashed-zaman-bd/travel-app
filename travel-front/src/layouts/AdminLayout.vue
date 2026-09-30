@@ -82,6 +82,13 @@
           >
             <div v-if="openMenus.destinations" class="ml-6 mt-1 space-y-1 overflow-hidden">
               <router-link
+                to="/admin/tourpackage"
+                class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                active-class="bg-gray-800 text-emerald-400 font-semibold"
+              >
+                Tour Package
+              </router-link>
+              <router-link
                 to="/admin/destination"
                 class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
                 active-class="bg-gray-800 text-emerald-400 font-semibold"
