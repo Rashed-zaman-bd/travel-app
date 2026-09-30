@@ -3,7 +3,6 @@
     <!-- Header Section -->
     <div class="mb-8">
       <h1 class="text-3xl font-bold text-gray-900 sm:text-4xl">{{ tour.title }}</h1>
-      <p class="mt-2 text-sm text-gray-500">By {{ tour.author }} • {{ tour.date }}</p>
     </div>
 
     <!-- Main Grid Layout (2/3 Main Content, 1/3 Sidebar) -->
@@ -172,10 +171,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 const route = useRoute()
+const { t } = useI18n()
 
 interface ItineraryDay {
   day: number

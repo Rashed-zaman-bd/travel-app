@@ -247,11 +247,7 @@
         </div>
 
         <!-- Form -->
-        <form
-          @submit.prevent="submitForm"
-          enctype="multipart/form-data"
-          class="p-6"
-        >
+        <form @submit.prevent="submitForm" enctype="multipart/form-data" class="p-6" >
           <!-- Error -->
           <div
             v-if="formError"

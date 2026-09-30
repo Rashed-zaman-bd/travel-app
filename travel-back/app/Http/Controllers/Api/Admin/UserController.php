@@ -49,7 +49,7 @@ class UserController extends Controller
         $data['password'] = Hash::make($data['password']);
 
         if ($request->hasFile('avatar')) {
-            $data['avatar'] = $request->file('avatar')->store('avatar', 'public');
+            $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
         }
 
         $user = User::create($data);
@@ -71,7 +71,7 @@ class UserController extends Controller
             if ($user->avatar) {
                 Storage::disk('public')->delete($user->avatar);
             }
-            $data['avatar'] = $request->file('avatar')->store('avatar', 'public');
+            $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
         }
 
         $user->update($data);

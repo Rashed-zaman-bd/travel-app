@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Admin\TopBannerController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DestinationController;
 use App\Http\Controllers\Api\HeroSlideController;
 use App\Http\Controllers\Api\HowItWorksController;
@@ -104,6 +105,20 @@ Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->
     Route::delete('/how-it-works/{howItWorksStep}', [HowItWorksController::class, 'destroy']);
     
 });    
+
+
+// Category Routes
+Route::get('category', [CategoryController::class, 'index']);
+Route::get('category/{category:id}', [CategoryController::class, 'show']);
+
+// Admin Routes
+Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Add this GET route for admin index:
+    Route::get('category', [CategoryController::class, 'index']); 
+    Route::post('category', [CategoryController::class, 'store']);
+    Route::match(['put', 'patch', 'post'], 'category/{category:id}', [CategoryController::class, 'update']);
+    Route::delete('category/{category:id}', [CategoryController::class, 'destroy']);
+});
 
 
 // Public
