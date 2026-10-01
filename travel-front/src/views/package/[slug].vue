@@ -49,11 +49,11 @@
           No packages available for this country yet.
         </p>
 
-        <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+        <div v-else class="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-2 lg:grid-cols-3">
           <div
             v-for="pkg in packages"
             :key="pkg.id"
-            class="group flex h-full flex-col overflow-hidden rounded-xl bg-white shadow transition hover:shadow-lg"
+            class="group flex h-full flex-col overflow-hidden bg-white shadow transition hover:shadow-lg"
           >
             <!-- Image -> details page -->
             <router-link
@@ -78,7 +78,7 @@
 
                 <p
                   v-if="tr(pkg.package_destination)"
-                  class="mb-1 break-words text-base text-gray-600"
+                  class="mb-1 line-clamp-10 break-words text-lg text-gray-500"
                 >
                   {{ tr(pkg.package_destination) }}
                 </p>
@@ -86,7 +86,7 @@
 
               <p
                 v-if="tr(pkg.package_duration)"
-                class="mt-2 text-sm font-semibold text-gray-700 sm:text-base"
+                class="mt-2 pb-2 text-sm font-semibold text-gray-700 sm:text-base"
               >
                 🕒 {{ tr(pkg.package_duration) }}
               </p>
@@ -95,7 +95,7 @@
               <div class="mt-auto mt-2 flex flex-wrap items-center justify-between gap-x-3  border-gray-100">
                 <span class="text-sm font-semibold text-red-600 sm:text-base">
                   <span class="text-gray-700">{{ t('worldwide_category.cost') }}-</span>
-                  {{ tr(pkg.package_price) }}<template v-if="tr(pkg.package_price)">Tk.</template>
+                  {{ tr(pkg.package_price) }}<template v-if="tr(pkg.package_price)"> Tk.</template>
                 </span>
                 <span class="text-sm font-semibold text-amber-600 md:group-hover:underline">
                   {{ t('worldwide_category.show_details') }} →
@@ -103,12 +103,14 @@
               </div>
               </router-link>
                 <!-- Book now -> booking form page -->
-                <router-link
-                  :to="`/tour-package/${pkg.slug}/book`"
-                  class="mt-5 flex w-full items-center justify-center rounded-lg bg-gray-500 px-4 py-2 text-lg font-semibold text-white hover:bg-gray-700"
-                >
-                  {{ t('worldwide_category.book_now') }} →
-                </router-link>
+                <div class="flex items-center justify-center">
+                  <router-link
+                    :to="`/tour-package/${pkg.slug}/book`"
+                    class="mt-5 flex w-1/2 items-center justify-center rounded-lg bg-amber-500 px-4 py-2 text-lg font-semibold text-white hover:bg-amber-600"
+                  >
+                    {{ t('worldwide_category.book_now') }} →
+                  </router-link>
+                </div>
             </div>
             
           </div>

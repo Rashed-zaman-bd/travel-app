@@ -6,6 +6,11 @@
     "tours_itineraries": "ভ্রমণ ও ভ্রমণসূচী",
     "cost": "খরচ",
     "book_now": "এখনই বুক করুন",
-    "show_details": "বিস্তারিত দেখুন"
+    "show_details": "বিস্তারিত দেখুন",
+    "back": "পিছনে"
+  },
+
+  "package_details": {
+    "more_packages": "এর প্যাকেজ সমূহ"
   }
 }

@@ -37,7 +37,7 @@ const routes = [
       },
 
       {
-        path: '/tour-package/:slug',
+        path: 'tour-package/:slug',
         name: 'tour-package-details',
         component: () => import('@/views/TourPackageDetails.vue'),
       },
@@ -134,28 +134,34 @@ const routes = [
         path: 'tourpackage',
         name: 'admin.tourpackage',
         component: () => import('@/views/admin/tourpackage.vue'),
-        meta: { requiresAdmin: true },
+        meta: {
+          requiresAdmin: true,
+        },
       },
 
       {
         path: 'destination',
         name: 'admin.destination',
         component: () => import('@/views/admin/destination.vue'),
-        meta: { requiresAdmin: true },
+        meta: {
+          requiresAdmin: true,
+        },
       },
 
       {
         path: 'category',
         name: 'admin.category',
         component: () => import('@/views/admin/category.vue'),
-        meta: { requiresAdmin: true },
+        meta: {
+          requiresAdmin: true,
+        },
       },
     ],
   },
 ]
 
 // =========================================================
-// Router
+// Create Router
 // =========================================================
 
 const router = createRouter({
@@ -163,25 +169,21 @@ const router = createRouter({
 
   routes,
 
-  /*
-  |--------------------------------------------------------------------------
-  | Scroll behavior
-  |--------------------------------------------------------------------------
-  |
-  | New page:
-  |     Scroll to top
-  |
-  | Browser Back / Forward:
-  |     Restore previous scroll position
-  |
-  */
+  // =========================================================
+  // Scroll Behavior
+  // =========================================================
   scrollBehavior(to, from, savedPosition) {
-    // Back / Forward button
+    // Browser Back / Forward
+    // Restore previous scroll position
     if (savedPosition) {
-      return savedPosition
+      return {
+        ...savedPosition,
+        behavior: 'auto',
+      }
     }
 
     // New route
+    // Scroll to top
     return {
       top: 0,
       left: 0,
@@ -198,7 +200,7 @@ router.beforeEach((to, from, next) => {
   if (to.meta.requiresAdmin) {
     const userRaw = localStorage.getItem('user')
 
-    let user = null
+    let user: any = null
 
     try {
       user = userRaw ? JSON.parse(userRaw) : null
@@ -218,4 +220,3 @@ router.beforeEach((to, from, next) => {
 })
 
 export default router
-

@@ -27,7 +27,14 @@ class TourPackageResource extends JsonResource
 
         return [
             'id' => $this->id,
+            
             'category_id'       => $this->category_id,
+            'category' => $this->whenLoaded('category', fn () => [
+                'id'           => $this->category->id,
+                'slug'         => $this->category->slug,
+                'country_name' => $this->category->country_name,
+            ]),
+
             'hero_image'        => $this->fileUrl($this->hero_image),
             'hero_image_title'  =>$this->hero_image_title,
             'hero_image_btn'    =>$this->hero_image_btn,
