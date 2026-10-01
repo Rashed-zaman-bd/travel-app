@@ -1,209 +1,239 @@
-
+```vue
 <template>
-  <div class="min-h-screen bg-slate-50 p-4 md:p-6">
+  <div class="min-h-screen bg-stone-100 p-4 md:p-8">
     <div class="mx-auto max-w-7xl">
 
-      <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-
+      <!-- ================= HEADER ================= -->
+      <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 class="text-2xl font-bold text-slate-800">
+          <h1 class="text-3xl font-bold text-slate-900">
             Tour Packages
           </h1>
 
           <p class="mt-1 text-sm text-slate-500">
-            Manage your tour packages and countries.
+            Create, edit and manage your tour packages.
           </p>
         </div>
 
         <button
           type="button"
           @click="openCreateModal"
-          class="inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
+          class="rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-700"
         >
-          + Add Tour Package
+          + Add Package
         </button>
-
       </div>
 
 
+      <!-- ================= MESSAGES ================= -->
       <div
         v-if="successMessage"
-        class="mb-5 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700"
+        class="mb-4 rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700"
       >
         {{ successMessage }}
       </div>
 
-
-      <!-- =========================================================
-           Error Message
-      ========================================================== -->
       <div
         v-if="errorMessage"
-        class="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+        class="mb-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700"
       >
         {{ errorMessage }}
       </div>
 
 
-      <!-- =========================================================
-           Search
-      ========================================================== -->
-      <div class="mb-5 rounded-xl bg-white p-4 shadow-sm">
+      <!-- ================= STATS ================= -->
+      <div class="mb-6 grid grid-cols-3 gap-4">
 
-        <div class="grid gap-4 md:grid-cols-3">
+        <div class="rounded-2xl bg-white p-5 shadow-sm">
+          <p class="text-3xl font-bold text-slate-900">
+            {{ tourPackages.length }}
+          </p>
 
-          <div class="md:col-span-2">
-            <label class="mb-1 block text-sm font-medium text-slate-700">
-              Search
-            </label>
+          <p class="mt-1 text-sm text-slate-500">
+            Total Packages
+          </p>
+        </div>
 
-            <input
-              v-model="search"
-              type="text"
-              placeholder="Search package name..."
-              class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-            />
-          </div>
+        <div class="rounded-2xl bg-white p-5 shadow-sm">
+          <p class="text-3xl font-bold text-emerald-600">
+            {{ activePackages }}
+          </p>
 
-          <div>
-            <label class="mb-1 block text-sm font-medium text-slate-700">
-              Country
-            </label>
+          <p class="mt-1 text-sm text-slate-500">
+            Active
+          </p>
+        </div>
 
-            <select
-              v-model="filterCategory"
-              class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500"
-            >
-              <option value="">
-                All Countries
-              </option>
+        <div class="rounded-2xl bg-white p-5 shadow-sm">
+          <p class="text-3xl font-bold text-red-600">
+            {{ inactivePackages }}
+          </p>
 
-              <option
-                v-for="category in categories"
-                :key="category.id"
-                :value="String(category.id)"
-              >
-                {{ getLocalized(category.country_name) }}
-              </option>
-            </select>
-          </div>
-
+          <p class="mt-1 text-sm text-slate-500">
+            Inactive
+          </p>
         </div>
 
       </div>
 
 
-      <!-- =========================================================
-           Loading
-      ========================================================== -->
+      <!-- ================= FILTERS ================= -->
+      <div class="mb-5 grid gap-3 rounded-2xl bg-white p-4 shadow-sm md:grid-cols-3">
+
+        <input
+          v-model="search"
+          type="text"
+          placeholder="Search package..."
+          :class="inputClass"
+        />
+
+        <select
+          v-model="filterCategory"
+          :class="inputClass"
+        >
+          <option value="">
+            All Countries
+          </option>
+
+          <option
+            v-for="category in categories"
+            :key="category.id"
+            :value="String(category.id)"
+          >
+            {{ localized(category.country_name) }}
+          </option>
+        </select>
+
+        <select
+          v-model="filterStatus"
+          :class="inputClass"
+        >
+          <option value="">
+            All Status
+          </option>
+
+          <option value="active">
+            Active
+          </option>
+
+          <option value="inactive">
+            Inactive
+          </option>
+        </select>
+
+      </div>
+
+
+      <!-- ================= LOADING ================= -->
       <div
         v-if="loading"
-        class="rounded-xl bg-white p-10 text-center shadow-sm"
+        class="rounded-2xl bg-white p-10 text-center shadow-sm"
       >
-        <div class="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-blue-600"></div>
+        <div
+          class="mx-auto h-8 w-8 animate-spin rounded-full
+                 border-4 border-slate-200 border-t-slate-800"
+        ></div>
 
         <p class="mt-3 text-sm text-slate-500">
-          Loading tour packages...
+          Loading packages...
         </p>
       </div>
 
 
-      <!-- =========================================================
-           Empty
-      ========================================================== -->
+      <!-- ================= EMPTY ================= -->
       <div
         v-else-if="filteredPackages.length === 0"
-        class="rounded-xl bg-white p-10 text-center shadow-sm"
+        class="rounded-2xl bg-white p-10 text-center shadow-sm"
       >
-        <p class="text-slate-500">
-          No tour packages found.
+        <h3 class="font-semibold text-slate-800">
+          No packages found
+        </h3>
+
+        <p class="mt-1 text-sm text-slate-500">
+          Try another search or add a package.
         </p>
       </div>
 
 
-      <!-- =========================================================
-           Desktop Table
-      ========================================================== -->
+      <!-- ================= DESKTOP TABLE ================= -->
       <div
         v-else
-        class="hidden overflow-hidden rounded-xl bg-white shadow-sm md:block"
+        class="hidden overflow-hidden rounded-2xl bg-white shadow-sm md:block"
       >
         <div class="overflow-x-auto">
 
-          <table class="min-w-full">
+          <table class="w-full">
 
             <thead class="border-b bg-slate-50">
-              <tr>
+              <tr class="text-left text-xs text-slate-500">
 
-                <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-slate-500">
-                  #
-                </th>
-
-                <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-slate-500">
+                <th class="px-5 py-4">
                   Package
                 </th>
 
-                <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-slate-500">
+                <th class="px-5 py-4">
                   Country
                 </th>
 
-                <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-slate-500">
+                <th class="px-5 py-4">
                   Price
                 </th>
 
-                <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-slate-500">
+                <th class="px-5 py-4">
                   Duration
                 </th>
 
-                <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-slate-500">
+                <th class="px-5 py-4">
+                  Order
+                </th>
+
+                <th class="px-5 py-4">
                   Status
                 </th>
 
-                <th class="px-4 py-3 text-right text-xs font-semibold uppercase text-slate-500">
+                <th class="px-5 py-4 text-right">
                   Actions
                 </th>
 
               </tr>
             </thead>
 
-            <tbody class="divide-y divide-slate-100">
+
+            <tbody class="divide-y">
 
               <tr
-                v-for="(tourPackage, index) in filteredPackages"
-                :key="tourPackage.id"
-                class="transition hover:bg-slate-50"
+                v-for="pkg in filteredPackages"
+                :key="pkg.id"
+                class="hover:bg-slate-50"
               >
 
-                <td class="px-4 py-4 text-sm text-slate-500">
-                  {{ index + 1 }}
-                </td>
-
                 <!-- Package -->
-                <td class="px-4 py-4">
+                <td class="px-5 py-4">
 
                   <div class="flex items-center gap-3">
 
                     <img
-                      v-if="tourPackage.package_image"
-                      :src="tourPackage.package_image"
-                      :alt="getLocalized(tourPackage.package_name)"
+                      v-if="pkg.package_image"
+                      :src="pkg.package_image"
+                      :alt="localized(pkg.package_name)"
                       class="h-14 w-20 rounded-lg object-cover"
                     />
 
                     <div
                       v-else
-                      class="flex h-14 w-20 items-center justify-center rounded-lg bg-slate-100 text-xs text-slate-400"
+                      class="flex h-14 w-20 items-center justify-center
+                             rounded-lg bg-slate-100 text-xs text-slate-400"
                     >
                       No Image
                     </div>
 
                     <div>
-                      <p class="font-semibold text-slate-800">
-                        {{ getLocalized(tourPackage.package_name) }}
+                      <p class="font-semibold text-slate-900">
+                        {{ localized(pkg.package_name) }}
                       </p>
 
-                      <p class="mt-1 text-xs text-slate-400">
-                        {{ tourPackage.slug }}
+                      <p class="text-xs text-slate-400">
+                        /{{ pkg.slug }}
                       </p>
                     </div>
 
@@ -213,57 +243,98 @@
 
 
                 <!-- Country -->
-                <td class="px-4 py-4 text-sm text-slate-600">
-                  {{ getCategoryName(tourPackage.category_id) }}
+                <td class="px-5 py-4 text-sm text-slate-600">
+                  {{ categoryName(pkg.category_id) }}
                 </td>
 
 
                 <!-- Price -->
-                <td class="px-4 py-4 text-sm font-medium text-slate-700">
-                  {{ getLocalized(tourPackage.package_price) || '-' }}
+                <td class="px-5 py-4 text-sm font-semibold">
+                  {{ localized(pkg.package_price) || '-' }}
                 </td>
 
 
                 <!-- Duration -->
-                <td class="px-4 py-4 text-sm text-slate-600">
-                  {{ getLocalized(tourPackage.package_duration) || '-' }}
+                <td class="px-5 py-4 text-sm text-slate-600">
+                  {{ localized(pkg.package_duration) || '-' }}
+                </td>
+
+
+                <!-- Order -->
+                <td class="px-5 py-4">
+                  <span
+                    class="rounded-lg bg-slate-100 px-3 py-2 text-sm font-semibold"
+                  >
+                    {{ pkg.order ?? 0 }}
+                  </span>
                 </td>
 
 
                 <!-- Status -->
-                <td class="px-4 py-4">
+                <td class="px-5 py-4">
 
-                  <span
-                    :class="
-                      tourPackage.is_active
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-red-100 text-red-700'
-                    "
-                    class="inline-flex rounded-full px-3 py-1 text-xs font-semibold"
+                  <button
+                    type="button"
+                    :disabled="statusUpdating === pkg.id"
+                    @click="toggleStatus(pkg)"
+                    class="flex items-center gap-2 disabled:opacity-50"
                   >
-                    {{ tourPackage.is_active ? 'Active' : 'Inactive' }}
-                  </span>
+
+                    <span
+                      class="relative h-6 w-11 rounded-full"
+                      :class="
+                        pkg.is_active
+                          ? 'bg-emerald-500'
+                          : 'bg-slate-300'
+                      "
+                    >
+                      <span
+                        class="absolute top-1 h-4 w-4 rounded-full
+                               bg-white shadow transition-all"
+                        :class="
+                          pkg.is_active
+                            ? 'left-6'
+                            : 'left-1'
+                        "
+                      ></span>
+                    </span>
+
+                    <span
+                      class="text-xs font-semibold"
+                      :class="
+                        pkg.is_active
+                          ? 'text-emerald-600'
+                          : 'text-slate-500'
+                      "
+                    >
+                      {{ pkg.is_active ? 'Active' : 'Inactive' }}
+                    </span>
+
+                  </button>
 
                 </td>
 
 
                 <!-- Actions -->
-                <td class="px-4 py-4">
+                <td class="px-5 py-4">
 
                   <div class="flex justify-end gap-2">
 
                     <button
                       type="button"
-                      @click="editPackage(tourPackage)"
-                      class="rounded-lg bg-blue-50 px-3 py-2 text-xs font-semibold text-blue-600 hover:bg-blue-100"
+                      @click="editPackage(pkg)"
+                      class="rounded-lg border px-3 py-2 text-xs font-semibold
+                             hover:bg-slate-900 hover:text-white"
                     >
                       Edit
                     </button>
 
                     <button
                       type="button"
-                      @click="deletePackage(tourPackage)"
-                      class="rounded-lg bg-red-50 px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-100"
+                      @click="deletePackage(pkg)"
+                      class="rounded-lg border border-red-200 px-3 py-2
+                             text-xs font-semibold text-red-600
+                             hover:bg-red-600 hover:text-white"
                     >
                       Delete
                     </button>
@@ -282,64 +353,80 @@
       </div>
 
 
-      <!-- =========================================================
-           Mobile Cards
-      ========================================================== -->
+      <!-- ================= MOBILE ================= -->
       <div
         v-if="!loading && filteredPackages.length"
         class="space-y-4 md:hidden"
       >
 
         <div
-          v-for="tourPackage in filteredPackages"
-          :key="tourPackage.id"
-          class="rounded-xl bg-white p-4 shadow-sm"
+          v-for="pkg in filteredPackages"
+          :key="pkg.id"
+          class="overflow-hidden rounded-2xl bg-white shadow-sm"
         >
 
-          <div class="flex gap-3">
+          <img
+            v-if="pkg.package_image"
+            :src="pkg.package_image"
+            :alt="localized(pkg.package_name)"
+            class="h-40 w-full object-cover"
+          />
 
-            <img
-              v-if="tourPackage.package_image"
-              :src="tourPackage.package_image"
-              :alt="getLocalized(tourPackage.package_name)"
-              class="h-20 w-24 rounded-lg object-cover"
-            />
+          <div class="p-4">
 
-            <div class="min-w-0 flex-1">
+            <div class="flex justify-between gap-3">
 
-              <h3 class="font-semibold text-slate-800">
-                {{ getLocalized(tourPackage.package_name) }}
-              </h3>
+              <div>
+                <h3 class="font-semibold text-slate-900">
+                  {{ localized(pkg.package_name) }}
+                </h3>
 
-              <p class="mt-1 text-sm text-slate-500">
-                {{ getCategoryName(tourPackage.category_id) }}
-              </p>
+                <p class="text-sm text-slate-500">
+                  {{ categoryName(pkg.category_id) }}
+                </p>
+              </div>
 
-              <p class="mt-1 text-sm font-medium text-blue-600">
-                {{ getLocalized(tourPackage.package_price) || '-' }}
-              </p>
+              <span
+                class="rounded-full px-3 py-1 text-xs font-medium"
+                :class="
+                  pkg.is_active
+                    ? 'bg-emerald-50 text-emerald-600'
+                    : 'bg-slate-100 text-slate-500'
+                "
+              >
+                {{ pkg.is_active ? 'Active' : 'Inactive' }}
+              </span>
 
             </div>
 
-          </div>
+            <p class="mt-3 text-sm font-semibold">
+              {{ localized(pkg.package_price) || '-' }}
 
-          <div class="mt-4 flex gap-2 border-t pt-3">
+              <span class="font-normal text-slate-400">
+                · {{ localized(pkg.package_duration) || '-' }}
+              </span>
+            </p>
 
-            <button
-              type="button"
-              @click="editPackage(tourPackage)"
-              class="flex-1 rounded-lg bg-blue-50 py-2 text-sm font-semibold text-blue-600"
-            >
-              Edit
-            </button>
+            <div class="mt-4 flex gap-2">
 
-            <button
-              type="button"
-              @click="deletePackage(tourPackage)"
-              class="flex-1 rounded-lg bg-red-50 py-2 text-sm font-semibold text-red-600"
-            >
-              Delete
-            </button>
+              <button
+                type="button"
+                @click="editPackage(pkg)"
+                class="flex-1 rounded-lg border py-2 text-sm font-semibold"
+              >
+                Edit
+              </button>
+
+              <button
+                type="button"
+                @click="deletePackage(pkg)"
+                class="flex-1 rounded-lg border border-red-200
+                       py-2 text-sm font-semibold text-red-600"
+              >
+                Delete
+              </button>
+
+            </div>
 
           </div>
 
@@ -350,29 +437,31 @@
     </div>
 
 
-    <!-- ===========================================================
-         Modal
-    ============================================================ -->
+    <!-- ================= MODAL ================= -->
     <div
       v-if="showModal"
-      class="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4"
+      class="fixed inset-0 z-50 flex items-center justify-center
+             bg-black/50 p-4"
     >
 
       <div
-        class="my-6 w-full max-w-5xl rounded-2xl bg-white shadow-2xl"
+        class="max-h-[95vh] w-full max-w-4xl overflow-y-auto
+               rounded-2xl bg-white shadow-2xl"
       >
 
         <!-- Modal Header -->
-        <div class="flex items-center justify-between border-b px-6 py-4">
-
+        <div
+          class="flex items-center justify-between border-b
+                 px-6 py-4"
+        >
           <div>
-            <h2 class="text-xl font-bold text-slate-800">
-              {{ editingId ? 'Edit Tour Package' : 'Add Tour Package' }}
+            <h2 class="text-xl font-bold">
+              {{ editingId ? 'Edit Package' : 'Add Package' }}
             </h2>
 
-            <p class="mt-1 text-sm text-slate-500">
+            <p class="text-sm text-slate-500">
               {{ editingId
-                ? 'Update the tour package information.'
+                ? 'Update package information.'
                 : 'Create a new tour package.'
               }}
             </p>
@@ -381,191 +470,131 @@
           <button
             type="button"
             @click="closeModal"
-            class="text-2xl leading-none text-slate-400 hover:text-slate-700"
+            class="text-2xl text-slate-400 hover:text-slate-700"
           >
             ×
           </button>
-
         </div>
 
 
         <!-- Form -->
         <form
           @submit.prevent="submitForm"
-          class="p-6"
+          class="space-y-6 p-6"
         >
 
-          <div class="grid gap-6 lg:grid-cols-2">
+          <!-- Country -->
+          <div>
+            <label :class="labelClass">
+              Country
+            </label>
 
-            <!-- =====================================================
-                 Country
-            ====================================================== -->
-            <div class="lg:col-span-2">
+            <select
+              v-model="form.category_id"
+              :class="inputClass"
+            >
+              <option value="">
+                Select Country
+              </option>
 
-              <label class="mb-2 block text-sm font-semibold text-slate-700">
-                Country
-              </label>
-
-              <select
-                v-model="form.category_id"
-                class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              <option
+                v-for="category in categories"
+                :key="category.id"
+                :value="String(category.id)"
               >
-                <option value="">
-                  Select Country
-                </option>
+                {{ localized(category.country_name) }}
+              </option>
+            </select>
 
-                <option
-                  v-for="category in categories"
-                  :key="category.id"
-                  :value="category.id"
-                >
-                  {{ getLocalized(category.country_name) }}
-                </option>
-
-              </select>
-
-              <p
-                v-if="errors.category_id"
-                class="mt-1 text-xs text-red-500"
-              >
-                {{ errors.category_id }}
-              </p>
-
-            </div>
+            <p
+              v-if="errors.category_id"
+              :class="errorClass"
+            >
+              {{ errors.category_id }}
+            </p>
+          </div>
 
 
-            <!-- =====================================================
-                 Package Name EN
-            ====================================================== -->
+          <!-- Name -->
+          <div class="grid gap-4 md:grid-cols-2">
+
             <div>
-
-              <label class="mb-2 block text-sm font-semibold text-slate-700">
-                Package Name (English) *
+              <label :class="labelClass">
+                Package Name (English)
               </label>
 
               <input
                 v-model="form.package_name.en"
                 type="text"
-                placeholder="Example: Bangkok 7 Days Tour"
-                class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                :class="inputClass"
               />
-
-              <p
-                v-if="errors['package_name.en']"
-                class="mt-1 text-xs text-red-500"
-              >
-                {{ errors['package_name.en'] }}
-              </p>
-
             </div>
 
-
-            <!-- =====================================================
-                 Package Name BN
-            ====================================================== -->
             <div>
-
-              <label class="mb-2 block text-sm font-semibold text-slate-700">
+              <label :class="labelClass">
                 Package Name (Bangla)
               </label>
 
               <input
                 v-model="form.package_name.bn"
                 type="text"
-                placeholder="বাংলা প্যাকেজের নাম"
-                class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                :class="inputClass"
               />
-
             </div>
 
+          </div>
 
-            <!-- =====================================================
-                 Slug
-            ====================================================== -->
+
+          <!-- Price -->
+          <div class="grid gap-4 md:grid-cols-2">
+
             <div>
-
-              <label class="mb-2 block text-sm font-semibold text-slate-700">
-                Slug
-              </label>
-
-              <input
-                v-model="form.slug"
-                type="text"
-                placeholder="Auto generated from package name"
-                class="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-blue-500"
-              />
-
-              <p class="mt-1 text-xs text-slate-400">
-                Leave empty to generate automatically.
-              </p>
-
-              <p
-                v-if="errors.slug"
-                class="mt-1 text-xs text-red-500"
-              >
-                {{ errors.slug }}
-              </p>
-
-            </div>
-
-
-            <!-- =====================================================
-                 Price
-            ====================================================== -->
-            <div>
-
-              <label class="mb-2 block text-sm font-semibold text-slate-700">
+              <label :class="labelClass">
                 Price (English)
               </label>
 
               <input
                 v-model="form.package_price.en"
                 type="text"
-                placeholder="Example: $500"
-                class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-500"
+                placeholder="$500"
+                :class="inputClass"
               />
-
             </div>
 
-
             <div>
-
-              <label class="mb-2 block text-sm font-semibold text-slate-700">
+              <label :class="labelClass">
                 Price (Bangla)
               </label>
 
               <input
                 v-model="form.package_price.bn"
                 type="text"
-                placeholder="উদাহরণ: ৫০,০০০ টাকা"
-                class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-500"
+                placeholder="৫০,০০০ টাকা"
+                :class="inputClass"
               />
-
             </div>
 
+          </div>
 
-            <!-- =====================================================
-                 Duration
-            ====================================================== -->
+
+          <!-- Duration -->
+          <div class="grid gap-4 md:grid-cols-2">
+
             <div>
-
-              <label class="mb-2 block text-sm font-semibold text-slate-700">
+              <label :class="labelClass">
                 Duration (English)
               </label>
 
               <input
                 v-model="form.package_duration.en"
                 type="text"
-                placeholder="Example: 7 Days / 6 Nights"
-                class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-500"
+                placeholder="7 Days / 6 Nights"
+                :class="inputClass"
               />
-
             </div>
 
-
             <div>
-
-              <label class="mb-2 block text-sm font-semibold text-slate-700">
+              <label :class="labelClass">
                 Duration (Bangla)
               </label>
 
@@ -573,202 +602,139 @@
                 v-model="form.package_duration.bn"
                 type="text"
                 placeholder="৭ দিন / ৬ রাত"
-                class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-500"
+                :class="inputClass"
               />
-
             </div>
 
+          </div>
 
-            <!-- =====================================================
-                 Header
-            ====================================================== -->
+          <!-- Description -->
+          <div class="grid gap-4 md:grid-cols-2">
+
             <div>
+              <label :class="labelClass">
+                Description (English)
+              </label>
 
-              <label class="mb-2 block text-sm font-semibold text-slate-700">
+              <textarea
+                v-model="form.package_destination.en"
+                type="text"
+                placeholder="english"
+                :class="inputClass"
+              ></textarea>
+            </div>
+
+            <div>
+              <label :class="labelClass">
+                Description (Bangla)
+              </label>
+
+              <textarea
+                v-model="form.package_destination.bn"
+                type="text"
+                placeholder="bangla"
+                :class="inputClass"
+              ></textarea>
+            </div>
+
+          </div>
+
+
+          <!-- Header -->
+          <div class="grid gap-4 md:grid-cols-2">
+
+            <div>
+              <label :class="labelClass">
                 Header (English)
               </label>
 
               <input
                 v-model="form.header.en"
                 type="text"
-                placeholder="Package header"
-                class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-500"
+                :class="inputClass"
               />
-
             </div>
 
-
             <div>
-
-              <label class="mb-2 block text-sm font-semibold text-slate-700">
+              <label :class="labelClass">
                 Header (Bangla)
               </label>
 
               <input
                 v-model="form.header.bn"
                 type="text"
-                placeholder="প্যাকেজ হেডার"
-                class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-500"
+                :class="inputClass"
               />
-
             </div>
 
+          </div>
 
-            <!-- =====================================================
-                 Sub Header
-            ====================================================== -->
+
+          <!-- Sub Header -->
+          <div class="grid gap-4 md:grid-cols-2">
+
             <div>
-
-              <label class="mb-2 block text-sm font-semibold text-slate-700">
+              <label :class="labelClass">
                 Sub Header (English)
               </label>
 
               <textarea
                 v-model="form.sub_header.en"
                 rows="3"
-                placeholder="Sub header"
-                class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-500"
+                :class="inputClass"
               ></textarea>
-
             </div>
 
-
             <div>
-
-              <label class="mb-2 block text-sm font-semibold text-slate-700">
+              <label :class="labelClass">
                 Sub Header (Bangla)
               </label>
 
               <textarea
                 v-model="form.sub_header.bn"
                 rows="3"
-                placeholder="সাব হেডার"
-                class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-500"
+                :class="inputClass"
               ></textarea>
-
             </div>
 
-            <!-- =====================================================
-                 Hero Image
-            ====================================================== -->
+          </div>
+
+
+          <!-- Hero title -->
+          <div class="grid gap-4 md:grid-cols-2">
+
             <div>
-
-              <label class="mb-2 block text-sm font-semibold text-slate-700">
-                Hero Image
-              </label>
-
-              <input
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                @change="handleImage($event, 'hero_image')"
-                class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
-              />
-
-              <img
-                v-if="heroPreview"
-                :src="heroPreview"
-                class="mt-3 h-32 w-full rounded-lg object-cover"
-              />
-
-            </div>
-
-
-            <!-- =====================================================
-                 Package Image
-            ====================================================== -->
-            <div>
-
-              <label class="mb-2 block text-sm font-semibold text-slate-700">
-                Package Image {{ editingId ? '' : '*' }}
-              </label>
-
-              <input
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                @change="handleImage($event, 'package_image')"
-                class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
-              />
-
-              <img
-                v-if="packagePreview"
-                :src="packagePreview"
-                class="mt-3 h-32 w-full rounded-lg object-cover"
-              />
-
-              <p
-                v-if="errors.package_image"
-                class="mt-1 text-xs text-red-500"
-              >
-                {{ errors.package_image }}
-              </p>
-
-            </div>
-
-
-            <!-- =====================================================
-                 Map Image
-            ====================================================== -->
-            <div>
-
-              <label class="mb-2 block text-sm font-semibold text-slate-700">
-                Package Map Image
-              </label>
-
-              <input
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                @change="handleImage($event, 'package_map_image')"
-                class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
-              />
-
-              <img
-                v-if="mapPreview"
-                :src="mapPreview"
-                class="mt-3 h-32 w-full rounded-lg object-contain bg-slate-50"
-              />
-
-            </div>
-
-
-            <!-- =====================================================
-                 Hero Title
-            ====================================================== -->
-            <div>
-
-              <label class="mb-2 block text-sm font-semibold text-slate-700">
+              <label :class="labelClass">
                 Hero Title (English)
               </label>
 
               <input
                 v-model="form.hero_image_title.en"
                 type="text"
-                class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-500"
+                :class="inputClass"
               />
-
             </div>
 
-
             <div>
-
-              <label class="mb-2 block text-sm font-semibold text-slate-700">
+              <label :class="labelClass">
                 Hero Title (Bangla)
               </label>
 
               <input
                 v-model="form.hero_image_title.bn"
                 type="text"
-                class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-500"
+                :class="inputClass"
               />
-
             </div>
 
+          </div>
 
-            <!-- =====================================================
-                 Hero Button
-            ====================================================== -->
+
+          <!-- Hero Button -->
+          <div class="grid gap-4 md:grid-cols-2">
+
             <div>
-
-              <label class="mb-2 block text-sm font-semibold text-slate-700">
+              <label :class="labelClass">
                 Hero Button (English)
               </label>
 
@@ -776,15 +742,12 @@
                 v-model="form.hero_image_btn.en"
                 type="text"
                 placeholder="Book Now"
-                class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-500"
+                :class="inputClass"
               />
-
             </div>
 
-
             <div>
-
-              <label class="mb-2 block text-sm font-semibold text-slate-700">
+              <label :class="labelClass">
                 Hero Button (Bangla)
               </label>
 
@@ -792,97 +755,153 @@
                 v-model="form.hero_image_btn.bn"
                 type="text"
                 placeholder="বুক করুন"
-                class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-500"
+                :class="inputClass"
               />
-
             </div>
 
+          </div>
 
-            <!-- =====================================================
-                 Package Image Title
-            ====================================================== -->
+
+          <!-- Package Image Title -->
+          <div class="grid gap-4 md:grid-cols-2">
+
             <div>
-
-              <label class="mb-2 block text-sm font-semibold text-slate-700">
-                Package Image Title (English)
+              <label :class="labelClass">
+                Image Title (English)
               </label>
 
               <input
                 v-model="form.package_image_title.en"
                 type="text"
-                class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-500"
+                :class="inputClass"
               />
-
             </div>
 
-
             <div>
-
-              <label class="mb-2 block text-sm font-semibold text-slate-700">
-                Package Image Title (Bangla)
+              <label :class="labelClass">
+                Image Title (Bangla)
               </label>
 
               <input
                 v-model="form.package_image_title.bn"
                 type="text"
-                class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-500"
+                :class="inputClass"
               />
-
             </div>
 
+          </div>
 
-            <!-- =====================================================
-                 Order
-            ====================================================== -->
-            <div>
 
-              <label class="mb-2 block text-sm font-semibold text-slate-700">
-                Order
+          <!-- Images -->
+          <div class="grid gap-4 md:grid-cols-3">
+
+            <div
+              v-for="image in imageFields"
+              :key="image.type"
+            >
+
+              <label :class="labelClass">
+                {{ image.label }}
               </label>
 
-              <input
-                v-model.number="form.order"
-                type="number"
-                min="0"
-                class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-500"
-              />
+              <label
+                class="flex h-36 cursor-pointer items-center
+                       justify-center overflow-hidden rounded-xl
+                       border-2 border-dashed border-slate-300
+                       bg-slate-50 hover:border-amber-400"
+              >
 
-            </div>
-
-
-            <!-- =====================================================
-                 Status
-            ====================================================== -->
-            <div class="flex items-center pt-8">
-
-              <label class="flex cursor-pointer items-center gap-3">
-
-                <input
-                  v-model="form.is_active"
-                  type="checkbox"
-                  class="h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                <img
+                  v-if="previews[image.type]"
+                  :src="previews[image.type]!"
+                  class="h-full w-full object-cover"
+                  alt=""
                 />
 
-                <span class="text-sm font-semibold text-slate-700">
-                  Active Package
+                <span v-else class="text-center text-xs text-slate-400" >
+                  Click to upload
+                  <br />
+                  JPG, PNG or WebP
                 </span>
 
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  class="hidden"
+                  @change="handleImage($event, image.type)"
+                />
+
               </label>
+
+              <p
+                v-if="errors[image.type]"
+                :class="errorClass"
+              >
+                {{ errors[image.type] }}
+              </p>
 
             </div>
 
           </div>
 
 
-          <!-- =====================================================
-               Submit
-          ====================================================== -->
-          <div class="mt-8 flex justify-end gap-3 border-t pt-5">
+          <!-- Slug / Order / Status -->
+          <div class="grid gap-4 md:grid-cols-3">
+
+            <div>
+              <label :class="labelClass">
+                Slug
+              </label>
+
+              <input v-model="form.slug" type="text" placeholder="Auto generate"
+                :class="inputClass"
+              />
+            </div>
+
+            <div>
+              <label :class="labelClass">
+                Display Order
+              </label>
+
+              <input
+                v-model.number="form.order"
+                type="number"
+                min="0"
+                :class="inputClass"
+              />
+            </div>
+
+            <div>
+              <label :class="labelClass">
+                Status
+              </label>
+
+              <select
+                v-model="form.is_active"
+                :class="inputClass"
+              >
+                <option :value="true">
+                  Active
+                </option>
+
+                <option :value="false">
+                  Inactive
+                </option>
+              </select>
+            </div>
+
+          </div>
+
+
+          <!-- Buttons -->
+          <div
+            class="flex justify-end gap-3 border-t pt-5"
+          >
 
             <button
               type="button"
               @click="closeModal"
-              class="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50"
+              class="rounded-xl border px-5 py-2.5 text-sm font-semibold"
             >
               Cancel
             </button>
@@ -890,7 +909,9 @@
             <button
               type="submit"
               :disabled="saving"
-              class="rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+              class="rounded-xl bg-slate-900 px-6 py-2.5
+                     text-sm font-semibold text-white
+                     disabled:opacity-50"
             >
               {{ saving
                 ? 'Saving...'
@@ -914,809 +935,830 @@
 
 <script setup lang="ts">
 
-import { computed, onMounted, reactive, ref } from "vue";
-import api from "@/services/api";
+import { computed, onMounted, reactive, ref } from 'vue'
+import api from '@/services/api'
 
 
-/*
-|--------------------------------------------------------------------------
-| Types
-|--------------------------------------------------------------------------
-*/
+// ======================================================
+// TYPES
+// ======================================================
 
-interface LocalizedValue {
-  en: string;
-  bn: string;
+interface Localized {
+  en: string
+  bn: string
 }
 
 interface Category {
-  id: number;
-  country_name: LocalizedValue;
-  slug?: string;
-  image?: string | null;
+  id: number
+  country_name: Localized
 }
 
 interface TourPackage {
-  id: number;
-  category_id: number | null;
+  id: number
+  category_id: number | null
 
-  hero_image: string | null;
-  hero_image_title: LocalizedValue | null;
-  hero_image_btn: LocalizedValue | null;
+  package_name: Localized
+  package_price: Localized | null
+  package_duration: Localized | null
+  package_destination: Localized | null
 
-  header: LocalizedValue | null;
-  sub_header: LocalizedValue | null;
+  header: Localized | null
+  sub_header: Localized | null
+  hero_image_title: Localized | null
+  hero_image_btn: Localized | null
+  package_image_title: Localized | null
 
-  package_name: LocalizedValue;
-  slug: string;
+  slug: string
 
-  package_image: string | null;
-  package_price: LocalizedValue | null;
-  package_duration: LocalizedValue | null;
-  package_image_title: LocalizedValue | null;
+  hero_image: string | null
+  package_image: string | null
+  package_map_image: string | null
 
-  package_map_image: string | null;
-  package_destination: LocalizedValue | null;
-
-  order: number;
-  is_active: boolean;
+  order: number
+  is_active: boolean
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| State
-|--------------------------------------------------------------------------
-*/
-
-const loading = ref(false);
-const saving = ref(false);
-
-const showModal = ref(false);
-
-const editingId = ref<number | null>(null);
-
-const search = ref("");
-const filterCategory = ref("");
-
-const tourPackages = ref<TourPackage[]>([]);
-const categories = ref<Category[]>([]);
-
-const successMessage = ref("");
-const errorMessage = ref("");
-
-const errors = ref<Record<string, string>>({});
+type ImageType =
+  | 'hero_image'
+  | 'package_image'
+  | 'package_map_image'
 
 
-/*
-|--------------------------------------------------------------------------
-| Image files
-|--------------------------------------------------------------------------
-*/
+// ======================================================
+// BASIC STATE
+// ======================================================
 
-const heroImageFile = ref<File | null>(null);
-const packageImageFile = ref<File | null>(null);
-const mapImageFile = ref<File | null>(null);
+const loading = ref(false)
+const saving = ref(false)
 
-const heroPreview = ref<string | null>(null);
-const packagePreview = ref<string | null>(null);
-const mapPreview = ref<string | null>(null);
+const showModal = ref(false)
+const editingId = ref<number | null>(null)
+
+const search = ref('')
+const filterCategory = ref('')
+const filterStatus = ref('')
+
+const statusUpdating = ref<number | null>(null)
+
+const successMessage = ref('')
+const errorMessage = ref('')
+
+const errors = ref<Record<string, string>>({})
 
 
-/*
-|--------------------------------------------------------------------------
-| Form
-|--------------------------------------------------------------------------
-*/
+// ======================================================
+// DATA
+// ======================================================
 
-const createEmptyForm = () => ({
-  category_id: "",
+const tourPackages = ref<TourPackage[]>([])
+const categories = ref<Category[]>([])
 
-  hero_image_title: { en: "", bn: ""},
 
-  hero_image_btn: {en: "", bn: "" },
+// ======================================================
+// FORM
+// ======================================================
 
-  header: { en: "", bn: "" },
+const emptyForm = () => ({
+  category_id: '',
 
-  sub_header: { en: "", bn: "" },
+  package_name: {
+    en: '',
+    bn: '',
+  },
 
-  package_name: { en: "", bn: "" },
+  package_price: {
+    en: '',
+    bn: '',
+  },
 
-  slug: "",
+  package_duration: {
+    en: '',
+    bn: '',
+  },
 
-  package_price: { en: "", bn: "" },
+  package_destination: {
+    en: '',
+    bn: '',
+  },
 
-  package_duration: { en: "", bn: "" },
 
-  package_image_title: { en: "", bn: "" },
+  header: {
+    en: '',
+    bn: '',
+  },
 
-  package_destination: { en: "", bn: "" },
+  sub_header: {
+    en: '',
+    bn: '',
+  },
+
+  hero_image_title: {
+    en: '',
+    bn: '',
+  },
+
+  hero_image_btn: {
+    en: '',
+    bn: '',
+  },
+
+  package_image_title: {
+    en: '',
+    bn: '',
+  },
+
+  slug: '',
 
   order: 0,
 
   is_active: true,
-});
+})
 
 
-const form = reactive(createEmptyForm());
+const form = reactive(emptyForm())
 
 
-/*
-|--------------------------------------------------------------------------
-| Localized helper
-|--------------------------------------------------------------------------
-*/
+// ======================================================
+// IMAGES
+// ======================================================
 
-const getLocalized = (
-  value: LocalizedValue | null | undefined
-): string => {
-
-  if (!value) {
-    return "";
-  }
-
-  return value.en || value.bn || "";
-};
+const files = reactive<Record<ImageType, File | null>>({
+  hero_image: null,
+  package_image: null,
+  package_map_image: null,
+})
 
 
-/*
-|--------------------------------------------------------------------------
-| Category name
-|--------------------------------------------------------------------------
-*/
+const previews = reactive<Record<ImageType, string | null>>({
+  hero_image: null,
+  package_image: null,
+  package_map_image: null,
+})
 
-const getCategoryName = (
+
+const imageFields = [
+  {
+    type: 'hero_image' as ImageType,
+    label: 'Hero Image',
+  },
+
+  {
+    type: 'package_image' as ImageType,
+    label: 'Package Image',
+  },
+
+  {
+    type: 'package_map_image' as ImageType,
+    label: 'Map Image',
+  },
+]
+
+
+// ======================================================
+// STYLES
+// ======================================================
+
+const inputClass =
+  'w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-amber-400 focus:ring-4 focus:ring-amber-100'
+
+const labelClass =
+  'mb-1.5 block text-sm font-medium text-slate-700'
+
+const errorClass =
+  'mt-1 text-xs text-red-600'
+
+
+// ======================================================
+// HELPERS
+// ======================================================
+
+function localized(
+  value: Localized | null | undefined
+): string {
+  return value?.en || value?.bn || ''
+}
+
+
+function categoryName(
   categoryId: number | null
-): string => {
-
-  if (!categoryId) {
-    return "-";
-  }
-
+): string {
   const category = categories.value.find(
     item => item.id === categoryId
-  );
+  )
 
   return category
-    ? getLocalized(category.country_name)
-    : "-";
-};
+    ? localized(category.country_name)
+    : '-'
+}
 
 
-/*
-|--------------------------------------------------------------------------
-| Filtered packages
-|--------------------------------------------------------------------------
-*/
+// ======================================================
+// COMPUTED
+// ======================================================
+
+const activePackages = computed(() =>
+  tourPackages.value.filter(
+    item => item.is_active
+  ).length
+)
+
+
+const inactivePackages = computed(() =>
+  tourPackages.value.filter(
+    item => !item.is_active
+  ).length
+)
+
 
 const filteredPackages = computed(() => {
 
   const keyword = search.value
     .trim()
-    .toLowerCase();
+    .toLowerCase()
 
-  return tourPackages.value.filter((item) => {
+  return tourPackages.value.filter(pkg => {
 
-    const packageName = getLocalized(
-      item.package_name
-    ).toLowerCase();
+    const name = localized(
+      pkg.package_name
+    ).toLowerCase()
 
     const matchesSearch =
       !keyword ||
-      packageName.includes(keyword) ||
-      item.slug.toLowerCase().includes(keyword);
+      name.includes(keyword) ||
+      pkg.slug.toLowerCase().includes(keyword)
 
     const matchesCategory =
       !filterCategory.value ||
-      String(item.category_id) === filterCategory.value;
+      String(pkg.category_id) ===
+        filterCategory.value
 
-    return matchesSearch && matchesCategory;
-  });
-});
+    const matchesStatus =
+      !filterStatus.value ||
+      (
+        filterStatus.value === 'active'
+          ? pkg.is_active
+          : !pkg.is_active
+      )
+
+    return (
+      matchesSearch &&
+      matchesCategory &&
+      matchesStatus
+    )
+  })
+})
 
 
-/*
-|--------------------------------------------------------------------------
-| Load Categories
-|--------------------------------------------------------------------------
-*/
+// ======================================================
+// LOAD CATEGORIES
+// ======================================================
 
-const loadCategories = async () => {
+async function loadCategories() {
 
   try {
 
     const response = await api.get(
-      "/admin/category"
-    );
+      '/admin/category'
+    )
 
     categories.value =
-      response.data.data ?? [];
+      response.data?.data ||
+      response.data ||
+      []
 
   } catch (error) {
 
     console.error(
-      "Failed to load categories:",
+      'Category loading failed:',
       error
-    );
+    )
+
   }
-};
+}
 
 
-/*
-|--------------------------------------------------------------------------
-| Load Tour Packages
-|--------------------------------------------------------------------------
-*/
+// ======================================================
+// LOAD PACKAGES
+// ======================================================
 
-const loadPackages = async () => {
+async function loadPackages() {
 
-  loading.value = true;
-
-  errorMessage.value = "";
+  loading.value = true
+  errorMessage.value = ''
 
   try {
 
     const response = await api.get(
-      "/admin/tour-package"
-    );
+      '/admin/tour-package'
+    )
 
     tourPackages.value =
-      response.data.data ?? [];
+      response.data?.data || []
+
+    tourPackages.value.sort(
+      (a, b) =>
+        (a.order ?? 0) -
+        (b.order ?? 0)
+    )
 
   } catch (error: any) {
 
-    console.error(error);
+    console.error(error)
 
     errorMessage.value =
       error?.response?.data?.message ||
-      "Failed to load tour packages.";
+      'Failed to load packages.'
 
   } finally {
 
-    loading.value = false;
+    loading.value = false
+
   }
-};
+}
 
 
-/*
-|--------------------------------------------------------------------------
-| Reset Form
-|--------------------------------------------------------------------------
-*/
+// ======================================================
+// RESET FORM
+// ======================================================
 
-const resetForm = () => {
+function resetForm() {
 
   Object.assign(
     form,
-    createEmptyForm()
-  );
+    emptyForm()
+  )
 
-  editingId.value = null;
+  editingId.value = null
+  errors.value = {}
 
-  errors.value = {};
-
-  heroImageFile.value = null;
-  packageImageFile.value = null;
-  mapImageFile.value = null;
-
-  heroPreview.value = null;
-  packagePreview.value = null;
-  mapPreview.value = null;
-};
+  files.hero_image = null
+  files.package_image = null
+  files.package_map_image = null
 
 
-/*
-|--------------------------------------------------------------------------
-| Open Create Modal
-|--------------------------------------------------------------------------
-*/
-
-const openCreateModal = () => {
-
-  resetForm();
-
-  showModal.value = true;
-};
+  previews.hero_image = null
+  previews.package_image = null
+  previews.package_map_image = null
+}
 
 
-/*
-|--------------------------------------------------------------------------
-| Edit Package
-|--------------------------------------------------------------------------
-*/
+// ======================================================
+// CREATE
+// ======================================================
 
-const editPackage = (
-  tourPackage: TourPackage
-) => {
+function openCreateModal() {
 
-  resetForm();
+  resetForm()
 
-  editingId.value = tourPackage.id;
+  showModal.value = true
+}
+
+
+// ======================================================
+// EDIT
+// ======================================================
+
+function editPackage(pkg: TourPackage) {
+
+  resetForm()
+
+  editingId.value = pkg.id
 
   form.category_id =
-    tourPackage.category_id
-      ? String(tourPackage.category_id)
-      : "";
+    pkg.category_id
+      ? String(pkg.category_id)
+      : ''
 
-  form.hero_image_title = {
-    en: tourPackage.hero_image_title?.en || "",
-    bn: tourPackage.hero_image_title?.bn || "",
-  };
-
-  form.hero_image_btn = {
-    en: tourPackage.hero_image_btn?.en || "",
-    bn: tourPackage.hero_image_btn?.bn || "",
-  };
-
-  form.header = {
-    en: tourPackage.header?.en || "",
-    bn: tourPackage.header?.bn || "",
-  };
-
-  form.sub_header = {
-    en: tourPackage.sub_header?.en || "",
-    bn: tourPackage.sub_header?.bn || "",
-  };
+  form.slug = pkg.slug || ''
+  form.order = pkg.order ?? 0
+  form.is_active = Boolean(
+    pkg.is_active
+  )
 
   form.package_name = {
-    en: tourPackage.package_name?.en || "",
-    bn: tourPackage.package_name?.bn || "",
-  };
-
-  form.slug =
-    tourPackage.slug || "";
+    en: pkg.package_name?.en || '',
+    bn: pkg.package_name?.bn || '',
+  }
 
   form.package_price = {
-    en: tourPackage.package_price?.en || "",
-    bn: tourPackage.package_price?.bn || "",
-  };
+    en: pkg.package_price?.en || '',
+    bn: pkg.package_price?.bn || '',
+  }
 
   form.package_duration = {
-    en: tourPackage.package_duration?.en || "",
-    bn: tourPackage.package_duration?.bn || "",
-  };
-
-  form.package_image_title = {
-    en: tourPackage.package_image_title?.en || "",
-    bn: tourPackage.package_image_title?.bn || "",
-  };
+    en: pkg.package_duration?.en || '',
+    bn: pkg.package_duration?.bn || '',
+  }
 
   form.package_destination = {
-    en: tourPackage.package_destination?.en || "",
-    bn: tourPackage.package_destination?.bn || "",
-  };
+    en: pkg.package_destination?.en || '',
+    bn: pkg.package_destination?.bn || '',
+  }
 
-  form.order =
-    tourPackage.order ?? 0;
+  form.header = {
+    en: pkg.header?.en || '',
+    bn: pkg.header?.bn || '',
+  }
 
-  form.is_active =
-    Boolean(tourPackage.is_active);
+  form.sub_header = {
+    en: pkg.sub_header?.en || '',
+    bn: pkg.sub_header?.bn || '',
+  }
 
-  heroPreview.value =
-    tourPackage.hero_image || null;
+  form.hero_image_title = {
+    en: pkg.hero_image_title?.en || '',
+    bn: pkg.hero_image_title?.bn || '',
+  }
 
-  packagePreview.value =
-    tourPackage.package_image || null;
+  form.hero_image_btn = {
+    en: pkg.hero_image_btn?.en || '',
+    bn: pkg.hero_image_btn?.bn || '',
+  }
 
-  mapPreview.value =
-    tourPackage.package_map_image || null;
+  form.package_image_title = {
+    en: pkg.package_image_title?.en || '',
+    bn: pkg.package_image_title?.bn || '',
+  }
 
-  showModal.value = true;
-};
+  previews.hero_image =
+    pkg.hero_image || null
+
+  previews.package_image =
+    pkg.package_image || null
+
+  previews.package_map_image =
+    pkg.package_map_image || null
+
+  showModal.value = true
+}
 
 
-/*
-|--------------------------------------------------------------------------
-| Image Handler
-|--------------------------------------------------------------------------
-*/
+// ======================================================
+// CLOSE MODAL
+// ======================================================
 
-const handleImage = (
+function closeModal() {
+
+  showModal.value = false
+
+  resetForm()
+}
+
+
+// ======================================================
+// IMAGE SELECT
+// ======================================================
+
+function handleImage(
   event: Event,
-  type:
-    | "hero_image"
-    | "package_image"
-    | "package_map_image"
-) => {
+  type: ImageType
+) {
 
-  const target =
-    event.target as HTMLInputElement;
+  const input =
+    event.target as HTMLInputElement
 
-  const file =
-    target.files?.[0];
+  const file = input.files?.[0]
 
   if (!file) {
-    return;
+    return
   }
 
-  const preview =
-    URL.createObjectURL(file);
+  files[type] = file
 
-  if (type === "hero_image") {
-
-    heroImageFile.value = file;
-    heroPreview.value = preview;
-
-  } else if (type === "package_image") {
-
-    packageImageFile.value = file;
-    packagePreview.value = preview;
-
-  } else {
-
-    mapImageFile.value = file;
-    mapPreview.value = preview;
-  }
-};
+  previews[type] =
+    URL.createObjectURL(file)
+}
 
 
-/*
-|--------------------------------------------------------------------------
-| Build FormData
-|--------------------------------------------------------------------------
-*/
+// ======================================================
+// BUILD FORM DATA
+// ======================================================
 
-const buildFormData = (): FormData => {
+function buildFormData(): FormData {
 
-  const data = new FormData();
-
-  /*
-  |--------------------------------------------------------------------------
-  | Basic fields
-  |--------------------------------------------------------------------------
-  */
+  const data = new FormData()
 
   data.append(
-    "category_id",
+    'category_id',
     form.category_id
-  );
+  )
 
   data.append(
-    "slug",
+    'slug',
     form.slug
-  );
+  )
 
   data.append(
-    "order",
+    'order',
     String(form.order)
-  );
+  )
 
   data.append(
-    "is_active",
-    form.is_active ? "1" : "0"
-  );
+    'is_active',
+    form.is_active ? '1' : '0'
+  )
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Localized fields
-  |--------------------------------------------------------------------------
-  */
+  // Localized fields
 
-  data.append(
-    "package_name[en]",
-    form.package_name.en
-  );
-
-  data.append(
-    "package_name[bn]",
-    form.package_name.bn
-  );
-
-  data.append(
-    "hero_image_title[en]",
-    form.hero_image_title.en
-  );
-
-  data.append(
-    "hero_image_title[bn]",
-    form.hero_image_title.bn
-  );
-
-  data.append(
-    "hero_image_btn[en]",
-    form.hero_image_btn.en
-  );
-
-  data.append(
-    "hero_image_btn[bn]",
-    form.hero_image_btn.bn
-  );
-
-  data.append(
-    "header[en]",
-    form.header.en
-  );
-
-  data.append(
-    "header[bn]",
-    form.header.bn
-  );
-
-  data.append(
-    "sub_header[en]",
-    form.sub_header.en
-  );
-
-  data.append(
-    "sub_header[bn]",
-    form.sub_header.bn
-  );
-
-  data.append(
-    "package_price[en]",
-    form.package_price.en
-  );
-
-  data.append(
-    "package_price[bn]",
-    form.package_price.bn
-  );
-
-  data.append(
-    "package_duration[en]",
-    form.package_duration.en
-  );
-
-  data.append(
-    "package_duration[bn]",
-    form.package_duration.bn
-  );
-
-  data.append(
-    "package_image_title[en]",
-    form.package_image_title.en
-  );
-
-  data.append(
-    "package_image_title[bn]",
-    form.package_image_title.bn
-  );
-
-  data.append(
-    "package_destination[en]",
-    form.package_destination.en
-  );
-
-  data.append(
-    "package_destination[bn]",
-    form.package_destination.bn
-  );
+  const fields = [
+    'package_name',
+    'package_price',
+    'package_duration',
+    'package_destination',
+    'header',
+    'sub_header',
+    'hero_image_title',
+    'hero_image_btn',
+    'package_image_title',
+  ] as const
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | Images
-  |--------------------------------------------------------------------------
-  */
-
-  if (heroImageFile.value) {
+  fields.forEach(field => {
 
     data.append(
-      "hero_image",
-      heroImageFile.value
-    );
-  }
-
-  if (packageImageFile.value) {
+      `${field}[en]`,
+      form[field].en
+    )
 
     data.append(
-      "package_image",
-      packageImageFile.value
-    );
-  }
+      `${field}[bn]`,
+      form[field].bn
+    )
 
-  if (mapImageFile.value) {
+  })
 
+
+  // Images
+
+  if (files.hero_image) {
     data.append(
-      "package_map_image",
-      mapImageFile.value
-    );
+      'hero_image',
+      files.hero_image
+    )
   }
 
-  return data;
-};
+  if (files.package_image) {
+    data.append(
+      'package_image',
+      files.package_image
+    )
+  }
+
+  if (files.package_map_image) {
+    data.append(
+      'package_map_image',
+      files.package_map_image
+    )
+  }
 
 
-/*
-|--------------------------------------------------------------------------
-| Submit Form
-|--------------------------------------------------------------------------
-*/
+  return data
+}
 
-const submitForm = async () => {
 
-  saving.value = true;
+// ======================================================
+// CREATE / UPDATE
+// ======================================================
 
-  errors.value = {};
+async function submitForm() {
 
-  successMessage.value = "";
-  errorMessage.value = "";
+  saving.value = true
+  errors.value = {}
+  errorMessage.value = ''
 
   try {
 
     const data =
-      buildFormData();
+      buildFormData()
 
-    let response;
 
-    /*
-    |--------------------------------------------------------------------------
-    | Create
-    |--------------------------------------------------------------------------
-    */
+    // UPDATE
 
-    if (!editingId.value) {
+    if (editingId.value) {
 
-      response = await api.post(
-        "/admin/tour-package",
+      data.append(
+        '_method',
+        'PUT'
+      )
+
+      await api.post(
+        `/admin/tour-package/${editingId.value}`,
         data
-      );
+      )
 
       successMessage.value =
-        "Tour package created successfully.";
+        'Package updated successfully.'
 
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Update
-    |--------------------------------------------------------------------------
-    */
+    // CREATE
 
     else {
 
-      /*
-       * Laravel handles multipart PUT/PATCH
-       * more reliably using POST + _method.
-       */
-
-      data.append(
-        "_method",
-        "PUT"
-      );
-
-      response = await api.post(
-        `/admin/tour-package/${editingId.value}`,
+      await api.post(
+        '/admin/tour-package',
         data
-      );
+      )
 
       successMessage.value =
-        "Tour package updated successfully.";
+        'Package created successfully.'
     }
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Close + Reload
-    |--------------------------------------------------------------------------
-    */
+    closeModal()
 
-    closeModal();
+    await loadPackages()
 
-    await loadPackages();
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    setTimeout(() => {
+      successMessage.value = ''
+    }, 3000)
 
   } catch (error: any) {
 
-    console.error(error);
+    console.error(error)
 
-    /*
-    |--------------------------------------------------------------------------
-    | Validation Errors
-    |--------------------------------------------------------------------------
-    */
 
     if (
       error?.response?.status === 422
     ) {
 
+      const validationErrors =
+        error.response.data.errors || {}
+
       errors.value =
         Object.fromEntries(
           Object.entries(
-            error.response.data.errors || {}
-          ).map(([key, value]) => [
-            key,
-            Array.isArray(value)
-              ? value[0]
-              : String(value),
-          ])
-        );
+            validationErrors
+          ).map(
+            ([key, value]) => [
+              key,
+              Array.isArray(value)
+                ? String(value[0])
+                : String(value),
+            ]
+          )
+        )
 
       errorMessage.value =
-        "Please check the form fields.";
+        'Please check the form fields.'
 
     } else {
 
       errorMessage.value =
         error?.response?.data?.message ||
-        "Something went wrong.";
+        'Something went wrong.'
     }
 
   } finally {
 
-    saving.value = false;
+    saving.value = false
+
   }
-};
+}
 
 
-/*
-|--------------------------------------------------------------------------
-| Delete Package
-|--------------------------------------------------------------------------
-*/
+// ======================================================
+// DELETE
+// ======================================================
 
-const deletePackage = async (
-  tourPackage: TourPackage
-) => {
+async function deletePackage(
+  pkg: TourPackage
+) {
 
-  const name =
-    getLocalized(
-      tourPackage.package_name
-    );
-
-  if (
-    !confirm(
-      `Are you sure you want to delete "${name}"?`
+  const confirmed =
+    window.confirm(
+      `Delete "${localized(pkg.package_name)}"?`
     )
-  ) {
-    return;
+
+  if (!confirmed) {
+    return
   }
+
 
   try {
 
     await api.delete(
-      `/admin/tour-package/${tourPackage.id}`
-    );
+      `/admin/tour-package/${pkg.id}`
+    )
+
+    await loadPackages()
 
     successMessage.value =
-      "Tour package deleted successfully.";
-
-    await loadPackages();
+      'Package deleted successfully.'
 
   } catch (error: any) {
 
-    console.error(error);
+    console.error(error)
 
     errorMessage.value =
       error?.response?.data?.message ||
-      "Failed to delete tour package.";
+      'Failed to delete package.'
   }
-};
+}
 
 
-/*
-|--------------------------------------------------------------------------
-| Close Modal
-|--------------------------------------------------------------------------
-*/
+// ======================================================
+// STATUS
+// ======================================================
 
-const closeModal = () => {
+async function toggleStatus(
+  pkg: TourPackage
+) {
 
-  showModal.value = false;
+  if (
+    statusUpdating.value !== null
+  ) {
+    return
+  }
 
-  resetForm();
-};
+
+  const oldStatus =
+    pkg.is_active
+
+  pkg.is_active =
+    !oldStatus
+
+  statusUpdating.value =
+    pkg.id
 
 
-/*
-|--------------------------------------------------------------------------
-| Mounted
-|--------------------------------------------------------------------------
-*/
+  try {
 
-onMounted(async () => {
+    const data =
+      new FormData()
 
-  await Promise.all([
-    loadCategories(),
-    loadPackages(),
-  ]);
+    data.append(
+      'category_id',
+      pkg.category_id
+        ? String(pkg.category_id)
+        : ''
+    )
 
-});
+    data.append(
+      'slug',
+      pkg.slug
+    )
+
+    data.append(
+      'package_name[en]',
+      pkg.package_name?.en || ''
+    )
+
+    data.append(
+      'package_name[bn]',
+      pkg.package_name?.bn || ''
+    )
+
+    data.append(
+      'is_active',
+      pkg.is_active ? '1' : '0'
+    )
+
+    data.append(
+      '_method',
+      'PUT'
+    )
+
+
+    await api.post(
+      `/admin/tour-package/${pkg.id}`,
+      data
+    )
+
+    successMessage.value =
+      pkg.is_active
+        ? 'Package activated.'
+        : 'Package deactivated.'
+
+  } catch (error: any) {
+
+    pkg.is_active =
+      oldStatus
+
+    errorMessage.value =
+      error?.response?.data?.message ||
+      'Failed to update status.'
+
+  } finally {
+
+    statusUpdating.value = null
+
+  }
+}
+
+
+// ======================================================
+// START
+// ======================================================
+
+onMounted(() => {
+
+  loadCategories()
+  loadPackages()
+
+})
 
 </script>
-
+```

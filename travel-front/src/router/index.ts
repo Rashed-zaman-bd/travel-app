@@ -27,13 +27,25 @@ const routes = [
       {
         path: 'destination/:slug',
         name: 'destination',
-        component: () => import('@/views/destination/[slug].vue'),
+        component: () => import('@/views/package/[slug].vue'),
       },
 
       {
         path: 'tour/:slug',
         name: 'tour',
         component: () => import('@/views/tour/[slug].vue'),
+      },
+
+      {
+        path: '/tour-package/:slug',
+        name: 'tour-package-details',
+        component: () => import('@/views/TourPackageDetails.vue'),
+      },
+
+      {
+        path: 'tour-package/:slug/book',
+        name: 'tour-booking',
+        component: () => import('@/views/TourBooking.vue'),
       },
     ],
   },

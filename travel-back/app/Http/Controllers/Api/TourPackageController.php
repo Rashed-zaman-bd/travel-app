@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TourPackageRequest;
 use App\Http\Resources\TourPackageResource;
+use App\Models\Category;
 use App\Models\TourPackage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -235,5 +236,38 @@ class TourPackageController extends Controller
             'message' => 'Tour package deleted successfully.',
         ]);
     }
+
+    public function byCategory(string $category): JsonResponse
+{
+    $categoryModel = Category::query()
+        ->where('slug', $category)
+        ->where('is_active', true)
+        ->firstOrFail();
+
+    $image = $categoryModel->image;
+
+    if ($image && !filter_var($image, FILTER_VALIDATE_URL)) {
+        $image = Storage::disk('public')->url($image);
+    }
+
+    $packages = $categoryModel
+        ->tourPackages()
+        ->where('is_active', true)
+        ->orderBy('order', 'asc')
+        ->get();
+
+    return response()->json([
+        'status' => true,
+
+        'category' => [
+            'id' => $categoryModel->id,
+            'slug' => $categoryModel->slug,
+            'image' => $image,
+            'country_name' => $categoryModel->country_name,
+        ],
+
+        'data' => TourPackageResource::collection($packages),
+    ]);
+}
 }
 

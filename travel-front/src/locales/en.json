@@ -2,6 +2,10 @@
   "worldwide_category": {
     "title": "Worldwide Destinations",
     "description": "Book a custom trip to one of our trending destinations! Explore the world by choosing your ideal travel destinations in Asia, Europe, Africa, America, Australia and more with Travaisa.",
-    "more": "More Show"
+    "more": "More Show",
+    "tours_itineraries": "Tours & Itineraries",
+    "cost": "Cost",
+    "book_now": "Book now",
+    "show_details": "Show details"
   }
 }

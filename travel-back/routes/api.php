@@ -110,7 +110,7 @@ Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->
 
 // Category Routes
 Route::get('category', [CategoryController::class, 'index']);
-Route::get('category/{category:id}', [CategoryController::class, 'show']);
+Route::get('category/{category}', [CategoryController::class, 'show']);
 
 // Admin Routes
 Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -120,10 +120,10 @@ Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->
     Route::match(['put', 'patch', 'post'], 'category/{category:id}', [CategoryController::class, 'update']);
     Route::delete('category/{category:id}', [CategoryController::class, 'destroy']);
 });
-
+Route::get('category/{category}/tour-package', [TourPackageController::class, 'byCategory']);
 // Tour Package Routes
 Route::get('tour-package', [TourPackageController::class, 'index']);
-Route::get('tour-package/{tourPackage}', [TourPackageController::class, 'show']);
+Route::get('tour-package/{tourPackage:slug}', [TourPackageController::class, 'show']);
 
 // Admin Routes
 Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->name('admin.')->group(function () {

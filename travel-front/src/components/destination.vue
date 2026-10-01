@@ -1,3 +1,4 @@
+//components/destination.vue
 <template>
   <div class="mx-auto max-w-7xl bg-white py-10">
     <!-- Section Header -->
@@ -37,7 +38,12 @@
       <router-link
         v-for="category in visibleCategories"
         :key="category.id"
-        :to="{ name: 'destination', params: { slug: category.slug ?? String(category.id) } }"
+        :to="{
+          name: 'destination',
+          params: {
+            slug: category.slug
+          }
+        }"
         class="group relative h-40 cursor-pointer overflow-hidden rounded-sm"
       >
         <!-- Image -->
