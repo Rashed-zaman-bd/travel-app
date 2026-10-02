@@ -78,7 +78,7 @@
 
                 <p
                   v-if="tr(pkg.package_destination)"
-                  class="mb-1 line-clamp-10 break-words text-lg text-gray-500"
+                  class="mb-1 line-clamp-7 break-words text-lg text-gray-500"
                 >
                   {{ tr(pkg.package_destination) }}
                 </p>
@@ -106,7 +106,7 @@
                 <div class="flex items-center justify-center">
                   <router-link
                     :to="`/tour-package/${pkg.slug}/book`"
-                    class="mt-5 flex w-1/2 items-center justify-center rounded-lg bg-amber-500 px-4 py-2 text-lg font-semibold text-white hover:bg-amber-600"
+                    class="mt-5 flex w-2/3 items-center justify-center rounded-lg bg-amber-500 px-4 py-2 text-lg font-semibold text-white hover:bg-amber-600"
                   >
                     {{ t('worldwide_category.book_now') }} →
                   </router-link>

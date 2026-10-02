@@ -11,7 +11,7 @@ class TourPackage extends Model
 {
     use HasFactory;
 
-    protected $table = 'tour_package';
+    protected $table = 'tour_packages';
 
     protected $fillable = [
         'category_id',

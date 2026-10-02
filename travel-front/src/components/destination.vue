@@ -1,5 +1,6 @@
 //components/destination.vue
 <template>
+  <section id="destination" class="scroll-mt-20">
   <div class="mx-auto max-w-7xl bg-white py-10">
     <!-- Section Header -->
     <div class="mx-auto mb-10 max-w-5xl px-4 text-center">
@@ -93,6 +94,7 @@
       </button>
     </div>
   </div>
+  </section>
 </template>
 
 <script setup lang="ts">

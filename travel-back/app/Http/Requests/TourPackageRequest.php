@@ -47,7 +47,7 @@ class TourPackageRequest extends FormRequest
 
        
             'slug' => ['nullable', 'string', 'max:255',
-                Rule::unique('tour_package', 'slug')
+                Rule::unique('tour_packages', 'slug')
                     ->ignore(
                         $tourPackage?->id
                     ),

@@ -25,6 +25,12 @@ const routes = [
       },
 
       {
+        path: 'destination',
+        name: 'destination.show',
+        component: () => import('@/components/destination.vue'),
+      },
+
+      {
         path: 'destination/:slug',
         name: 'destination',
         component: () => import('@/views/package/[slug].vue'),
@@ -173,22 +179,23 @@ const router = createRouter({
   // Scroll Behavior
   // =========================================================
   scrollBehavior(to, from, savedPosition) {
-    // Browser Back / Forward
-    // Restore previous scroll position
+    // Browser Back / Forward: restore previous position
     if (savedPosition) {
-      return {
-        ...savedPosition,
-        behavior: 'auto',
-      }
+      return { ...savedPosition, behavior: 'auto' }
     }
 
-    // New route
-    // Scroll to top
-    return {
-      top: 0,
-      left: 0,
-      behavior: 'smooth',
+    // Link with a hash, e.g. /#destination: scroll to that section
+    if (to.hash) {
+      return new Promise((resolve) => {
+        // short wait so the lazy-loaded page has time to render
+        setTimeout(() => {
+          resolve({ el: to.hash, top: 80, behavior: 'smooth' }) // 80 = fixed header height in px
+        }, 150)
+      })
     }
+
+    // Any other new route: go to the top
+    return { top: 0, left: 0, behavior: 'auto' }
   },
 })
 
