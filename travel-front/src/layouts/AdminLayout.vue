@@ -89,6 +89,27 @@
                 Tour Package
               </router-link>
               <router-link
+                to="/admin/tourhighlight"
+                class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                active-class="bg-gray-800 text-emerald-400 font-semibold"
+              >
+                Tour Highlight
+              </router-link>
+              <router-link
+                to="/admin/touritinerary"
+                class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                active-class="bg-gray-800 text-emerald-400 font-semibold"
+              >
+                Tour Itinerary
+              </router-link>
+              <router-link
+                to="/admin/tourdayactivity"
+                class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                active-class="bg-gray-800 text-emerald-400 font-semibold"
+              >
+                Tour Day Activity
+              </router-link>
+              <router-link
                 to="/admin/destination"
                 class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
                 active-class="bg-gray-800 text-emerald-400 font-semibold"

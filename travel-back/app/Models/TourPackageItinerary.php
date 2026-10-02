@@ -16,7 +16,6 @@ class TourPackageItinerary extends Model
     protected $fillable = [
         'tour_package_id',
         'day_number',
-        'title',
         'highlights',
         'overnight',
         'description',
@@ -27,7 +26,6 @@ class TourPackageItinerary extends Model
     ];
 
     protected $casts = [
-        'title' => 'array',
         'highlights' => 'array',
         'overnight' => 'array',
         'description' => 'array',

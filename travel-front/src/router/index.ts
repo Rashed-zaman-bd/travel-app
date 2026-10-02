@@ -162,6 +162,33 @@ const routes = [
           requiresAdmin: true,
         },
       },
+
+      {
+        path: 'tourhighlight',
+        name: 'admin.tourhighlight',
+        component: () => import('@/views/admin/TourHighlight.vue'),
+        meta: {
+          requiresAdmin: true,
+        },
+      },
+
+      {
+        path: 'touritinerary',
+        name: 'admin.touritinerary',
+        component: () => import('@/views/admin/TourItinerary.vue'),
+        meta: {
+          requiresAdmin: true,
+        },
+      },
+
+      {
+        path: 'tourdayactivity',
+        name: 'admin.tourdayactivity',
+        component: () => import('@/views/admin/TourDayActivity.vue'),
+        meta: {
+          requiresAdmin: true,
+        },
+      },
     ],
   },
 ]

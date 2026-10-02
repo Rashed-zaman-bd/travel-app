@@ -48,8 +48,20 @@ class TourPackageResource extends JsonResource
             'package_image_title'=>$this->package_image_title,
             'package_map_image' =>$this->fileUrl($this->package_map_image),
             'package_destination'=>$this->package_destination,
-            'order'              =>(int) $this->order,
-            'is_active'          =>(bool) $this->is_active,
+            'order'     => (int) $this->order,
+            'is_active' => (bool) $this->is_active,
+
+            'highlights' => TourPackageHighlightResource::collection(
+                $this->whenLoaded('highlights')
+            ),
+
+            'days' => TourPackageItineraryResource::collection(
+                $this->whenLoaded('days')
+            ),
+
+            'activities' => TourPackageDayActivityResource::collection(
+                $this->whenLoaded('activities')
+            ),
 
         ];
     }

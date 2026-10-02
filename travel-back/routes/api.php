@@ -10,6 +10,9 @@ use App\Http\Controllers\Api\HowItWorksController;
 use App\Http\Controllers\Api\LogoController;
 use App\Http\Controllers\Api\NavItemController;
 use App\Http\Controllers\Api\TourPackageController;
+use App\Http\Controllers\Api\TourPackageDayActivityController;
+use App\Http\Controllers\Api\TourPackageHighlightController;
+use App\Http\Controllers\Api\TourPackageItineraryController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -120,6 +123,7 @@ Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->
     Route::match(['put', 'patch', 'post'], 'category/{category:id}', [CategoryController::class, 'update']);
     Route::delete('category/{category:id}', [CategoryController::class, 'destroy']);
 });
+
 Route::get('category/{category}/tour-package', [TourPackageController::class, 'byCategory']);
 // Tour Package Routes
 Route::get('tour-package', [TourPackageController::class, 'index']);
@@ -132,6 +136,44 @@ Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->
     Route::post('tour-package', [TourPackageController::class, 'store']);
     Route::match(['put', 'patch', 'post'], 'tour-package/{tourPackage}', [TourPackageController::class, 'update']);
     Route::delete('tour-package/{tourPackage}', [TourPackageController::class, 'destroy']);
+});
+
+// Public
+Route::get('tour-highlight', [TourPackageHighlightController::class, 'index']);
+Route::get('tour-highlight/{tourPackageHighlight}', [TourPackageHighlightController::class, 'show']);
+
+// Admin
+Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::post('tour-highlight', [TourPackageHighlightController::class, 'store']);
+    Route::match(['put', 'patch', 'post'], 'tour-highlight/{tourPackageHighlight}', [TourPackageHighlightController::class, 'update']);
+    Route::delete('tour-highlight/{tourPackageHighlight}', [TourPackageHighlightController::class, 'destroy']);
+});
+
+// Public
+Route::get('tour-itinerary', [TourPackageItineraryController::class, 'index']);
+Route::get('tour-itinerary/{tourPackageItinerary}', [TourPackageItineraryController::class, 'show']);
+
+// Admin
+Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('tour-itinerary', [TourPackageItineraryController::class, 'index'])->name('tour-itinerary.index');
+    Route::get('tour-itinerary/{tourPackageItinerary}', [TourPackageItineraryController::class, 'show'])->name('tour-itinerary.show');
+    Route::post('tour-itinerary', [TourPackageItineraryController::class, 'store']);
+    Route::match(['put', 'patch', 'post'], 'tour-itinerary/{tourPackageItinerary}', [TourPackageItineraryController::class, 'update']);
+    Route::delete('tour-itinerary/{tourPackageItinerary}', [TourPackageItineraryController::class, 'destroy']);
+});
+
+
+// Public
+Route::get('tour-activity', [TourPackageDayActivityController::class, 'index']);
+Route::get('tour-activity/{tourPackageDayActivity}', [TourPackageDayActivityController::class, 'show']);
+
+// Admin (inside your existing admin group)
+Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('tour-activity', [TourPackageDayActivityController::class, 'index'])->name('tour-activity.index');
+    Route::get('tour-activity/{tourPackageDayActivity}', [TourPackageDayActivityController::class, 'show'])->name('tour-activity.show');
+    Route::post('tour-activity', [TourPackageDayActivityController::class, 'store']);
+    Route::match(['put', 'patch', 'post'], 'tour-activity/{tourPackageDayActivity}', [TourPackageDayActivityController::class, 'update']);
+    Route::delete('tour-activity/{tourPackageDayActivity}', [TourPackageDayActivityController::class, 'destroy']);
 });
 
 

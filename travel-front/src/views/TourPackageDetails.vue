@@ -44,7 +44,7 @@
                 </nav>
 
                 <!-- Header -->
-                <h2 v-if="tr(pkg.header)" class="mb-2 text-xl font-semibold text-amber-500 sm:text-3xl">
+                <h2 v-if="tr(pkg.header)" class="mb-4 text-xl font-semibold text-amber-500 sm:text-3xl">
                     {{ tr(pkg.package_name) }}
                 </h2>
 

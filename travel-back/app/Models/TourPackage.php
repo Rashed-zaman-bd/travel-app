@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 class TourPackage extends Model
@@ -133,5 +134,23 @@ class TourPackage extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+     public function highlights(): HasMany
+    {
+        return $this->hasMany(TourPackageHighlight::class)
+            ->orderBy('order');
+    }
+
+    public function days(): HasMany
+    {
+        return $this->hasMany(TourPackageItinerary::class)
+            ->orderBy('day_number');
+    }
+
+    public function activities(): HasMany
+    {
+        return $this->hasMany(TourPackageDayActivity::class)
+            ->orderBy('order');
     }
 }

@@ -35,4 +35,9 @@ class TourPackageDayActivity extends Model
     {
         return $this->belongsTo(TourPackageItinerary::class, 'tour_package_itinerary_id');
     }
+
+    public function tourPackage(): BelongsTo
+    {
+        return $this->belongsTo(TourPackage::class);
+    }
 }
