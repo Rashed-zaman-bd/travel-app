@@ -151,14 +151,70 @@
           </div>
 
           <!-- Active Status Checkbox -->
-          <div class="flex items-center space-x-2">
-            <input
-              id="is_active"
-              v-model="form.is_active"
-              type="checkbox"
-              class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-            />
-            <label for="is_active" class="text-sm font-medium text-gray-700">Is Active</label>
+          <div class=" ">
+            <div class="flex items-center space-x-2">
+              <input
+                id="is_active"
+                v-model="form.is_active"
+                type="checkbox"
+                class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+              />
+              <label for="is_active" class="text-sm font-medium text-gray-700">Is Active</label>
+            </div>
+            <div class="flex items-center space-x-2">
+              <input
+                id="easy_visa_destination"
+                v-model="form.easy_visa_destination"
+                type="checkbox"
+                class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+              />
+              <label for="easy_visa_destination" class="text-sm font-medium text-gray-700">Easy Visa Destination</label>
+            </div>
+            <div class="flex items-center space-x-2">
+              <input
+                id="popular_destination"
+                v-model="form.popular_destination"
+                type="checkbox"
+                class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+              />
+              <label for="popular_destination" class="text-sm font-medium text-gray-700">Popular Destination</label>
+            </div>
+            <div class="flex items-center space-x-2">
+              <input
+                id="honeymoon"
+                v-model="form.honeymoon"
+                type="checkbox"
+                class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+              />
+              <label for="honeymoon" class="text-sm font-medium text-gray-700">Honeymoon</label>
+            </div>
+            <div class="flex items-center space-x-2">
+              <input
+                id="domestic"
+                v-model="form.domestic"
+                type="checkbox"
+                class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+              />
+              <label for="domestic" class="text-sm font-medium text-gray-700">Domestic</label>
+            </div>
+            <div class="flex items-center space-x-2">
+              <input
+                id="worldwide"
+                v-model="form.worldwide"
+                type="checkbox"
+                class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+              />
+              <label for="worldwide" class="text-sm font-medium text-gray-700">Worldwide</label>
+            </div>
+            <div class="flex items-center space-x-2">
+              <input
+                id="featured"
+                v-model="form.featured"
+                type="checkbox"
+                class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+              />
+              <label for="featured" class="text-sm font-medium text-gray-700">Featured</label>
+            </div>
           </div>
 
           <!-- Validation Errors -->
@@ -207,6 +263,12 @@ interface Category {
   image: string | null;
   order: number;
   is_active: boolean;
+  easy_visa_destination: boolean;
+  popular_destination: boolean;
+  honeymoon: boolean;
+  domestic: boolean;
+  featured: boolean;
+  worldwide: boolean;
   created_at?: string;
   updated_at?: string;
 }
@@ -233,6 +295,12 @@ const form = reactive({
   } as CountryName,
   order: 0,
   is_active: true,
+  easy_visa_destination: true,
+  popular_destination: true,
+  honeymoon: true,
+  domestic: true,
+  featured: true,
+  worldwide: true,
 });
 
 // Fetch all categories (requesting all locales for admin edit form)
@@ -267,6 +335,13 @@ const openModal = (category: Category | null = null) => {
     form.slug = category.slug;
     form.order = category.order;
     form.is_active = category.is_active;
+    form.easy_visa_destination = category.easy_visa_destination;
+    form.popular_destination = category.popular_destination;
+    form.honeymoon = category.honeymoon;
+    form.domestic = category.domestic;
+    form.featured = category.featured;
+    form.worldwide = category.worldwide;
+
 
     // Handle string or object structure for country_name
     if (typeof category.country_name === "object" && category.country_name !== null) {
@@ -284,7 +359,13 @@ const openModal = (category: Category | null = null) => {
     editingId.value = null;
     form.slug = "";
     form.order = 0;
-    form.is_active = true;
+    form.is_active = false;
+    form.easy_visa_destination = false;
+    form.popular_destination = false;
+    form.honeymoon = false;
+    form.domestic = false;
+    form.featured = false;
+    form.worldwide = false;
     form.country_name = { en: "", bn: "" };
   }
 
@@ -345,7 +426,38 @@ const saveCategory = async () => {
     // Active
     formData.append(
       "is_active",
-      form.is_active ? "1" : "0"
+      form.is_active ? "1" : "0",
+    );
+
+     // Active
+    formData.append(
+      "easy_visa_destination",
+      form.easy_visa_destination ? "1" : "0",
+    );
+     // Active
+    formData.append(
+      "popular_destination",
+      form.popular_destination ? "1" : "0",
+    );
+    // Active
+    formData.append(
+      "honeymoon",
+      form.honeymoon ? "1" : "0",
+    );
+    // Active
+    formData.append(
+      "domestic",
+      form.domestic ? "1" : "0",
+    );
+    // Active
+    formData.append(
+      "featured",
+      form.featured ? "1" : "0",
+    );
+     // Active
+    formData.append(
+      "worldwide",
+      form.worldwide ? "1" : "0",
     );
 
     // Image

@@ -198,31 +198,53 @@ const routes = [
 // =========================================================
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+    history: createWebHistory(import.meta.env.BASE_URL),
 
-  routes,
+    routes,
 
-  // =========================================================
-  // Scroll Behavior
-  // =========================================================
-  scrollBehavior(to, from, savedPosition) {
-    // Browser Back / Forward: restore previous position
+    // =========================================================
+    // Scroll Behavior
+    // =========================================================
+    scrollBehavior(to, from, savedPosition) {
+    // Browser Back / Forward
     if (savedPosition) {
-      return { ...savedPosition, behavior: 'auto' }
+      return {
+        ...savedPosition,
+        behavior: 'auto',
+      }
     }
 
-    // Link with a hash, e.g. /#destination: scroll to that section
+    // Hash navigation
     if (to.hash) {
       return new Promise((resolve) => {
-        // short wait so the lazy-loaded page has time to render
         setTimeout(() => {
-          resolve({ el: to.hash, top: 80, behavior: 'smooth' }) // 80 = fixed header height in px
-        }, 150)
+          const element = document.querySelector(to.hash)
+
+          if (!element) {
+            resolve({ top: 0 })
+            return
+          }
+
+          // Height of your sticky header + some spacing
+          const headerOffset = 80
+
+          const elementPosition =
+            element.getBoundingClientRect().top + window.scrollY
+
+          resolve({
+            top: elementPosition - headerOffset,
+            behavior: 'smooth',
+          })
+        }, 300)
       })
     }
 
-    // Any other new route: go to the top
-    return { top: 0, left: 0, behavior: 'auto' }
+    // Normal route navigation
+    return {
+      top: 0,
+      left: 0,
+      behavior: 'auto',
+    }
   },
 })
 

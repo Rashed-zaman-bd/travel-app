@@ -7,10 +7,13 @@
     "cost": "খরচ",
     "book_now": "এখনই বুক করুন",
     "show_details": "বিস্তারিত দেখুন",
-    "back": "পিছনে"
+    "back": "পিছনে",
+     "holiday": "ছুটিতে ভ্রমণ"
   },
 
   "package_details": {
-    "more_packages": "এর প্যাকেজ সমূহ"
+    "more_packages": "এর প্যাকেজ সমূহ",
+    "itinerary": "সংক্ষিপ্ত ভ্রমণসূচী",
+    "highlights": "হাইলাইটস"
   }
 }

@@ -1,12 +1,24 @@
 <template>
-    <HeroVideo/>
-    <HowItWork/>
-    <Destination/>
-    
+  
+    <div class="min-h-[2200px]">
+      <HeroImage />
+
+    <HowItWork />
+
+    <section id="mostpopular">
+      <MostPopular />
+    </section>
+
+    <section id="destination">
+      <Destination />
+    </section>
+    </div>
 
 </template>
+
 <script setup lang="ts">
-import HeroVideo from '@/components/hero.vue';
-import HowItWork from '@/components/HowItWork.vue';
-import Destination from '@/components/destination.vue';
+import HeroImage from '@/components/hero.vue'
+import HowItWork from '@/components/HowItWork.vue'
+import Destination from '@/components/destination.vue'
+import MostPopular from '@/components/MostPopular.vue';
 </script>

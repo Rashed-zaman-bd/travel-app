@@ -55,10 +55,14 @@ class CategoryRequest extends FormRequest
                 'min:0',
             ],
 
-            'is_active' => [
-                'nullable',
-                'boolean',
-            ],
+            'is_active' => [ 'nullable', 'boolean' ],
+
+            'easy_visa_destination' => [ 'nullable', 'boolean' ],
+            'popular_destination' => [ 'nullable', 'boolean' ],
+            'honeymoon' => [ 'nullable', 'boolean' ],
+            'domestic' => [ 'nullable', 'boolean' ],
+            'featured' => [ 'nullable', 'boolean' ],
+            'worldwide' => [ 'nullable', 'boolean' ],
         ];
     }
 

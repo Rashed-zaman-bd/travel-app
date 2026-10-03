@@ -58,15 +58,47 @@
             <!-- Image -> details page -->
             <router-link
               :to="`/tour-package/${pkg.slug}`"
-              class="block aspect-[16/10] w-full overflow-hidden bg-gray-200"
+              class="relative block aspect-[8/9] w-full overflow-hidden"
             >
               <img
                 v-if="pkg.package_image"
                 :src="pkg.package_image"
                 :alt="tr(pkg.package_image_title) || tr(pkg.package_name)"
-                class="h-full w-full object-cover transition duration-300 md:group-hover:scale-105"
+                class="absolute inset-0 h-full w-full object-cover transition duration-300 md:group-hover:scale-105"
                 loading="lazy"
               />
+              <!-- Top and bottom gradients keep the text readable on any photo -->
+              <div class="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/60 to-transparent"></div>
+              <div class="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-black/85 via-black/45 to-transparent"></div>
+
+              <!-- Top: duration -->
+              <div
+                v-if="tr(pkg.package_duration)"
+                class="absolute left-4 top-4 flex items-center gap-2 text-white"
+              >
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                  <rect x="3" y="5" width="18" height="16" rx="2" />
+                  <path d="M3 10h18M8 3v4M16 3v4" stroke-linecap="round" />
+                </svg>
+                <span class="text-base font-normal drop-shadow">{{ tr(pkg.package_duration) }}</span>
+              </div>
+               <!-- Bottom: price, name, destination -->
+              <div class="absolute inset-x-0 bottom-0 p-4 text-white">
+                <p class="text-xs sm:text-sm">Price starts from (per person)</p>
+
+                <p v-if="tr(pkg.package_price)" class="text-2xl font-bold leading-tight">
+                  BDT {{ tr(pkg.package_price) }}
+                </p>
+                <p
+                  v-if="tr(pkg.package_destination)"
+                  class="mt-1 flex items-start gap-1 text-sm font-semibold"
+                >
+                  <svg class="mt-0.5 h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z" />
+                  </svg>
+                  <span class="line-clamp-1 break-words">{{ tr(pkg.package_destination) }}</span>
+                </p>
+              </div>
             </router-link>
 
             <div class="flex flex-1 flex-col p-4">

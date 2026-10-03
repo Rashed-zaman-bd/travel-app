@@ -37,6 +37,18 @@ class CategoryResource extends JsonResource
 
             'is_active' => (bool) $this->is_active,
 
+            'easy_visa_destination' => (bool) $this->easy_visa_destination,
+
+            'popular_destination'  => (bool) $this->popular_destination,
+
+            'honeymoon'  => (bool) $this->honeymoon,
+
+            'domestic'  => (bool) $this->domestic,
+            
+            'featured'  => (bool) $this->featured,
+
+            'worldwide'  => (bool) $this->worldwide,
+
             'created_at' => $this->created_at?->toISOString(),
 
             'updated_at' => $this->updated_at?->toISOString(),

@@ -1,6 +1,6 @@
 //components/destination.vue
 <template>
-  <section id="destination" class="scroll-mt-20">
+ <section id="destination">
   <div class="mx-auto max-w-7xl bg-white py-10">
     <!-- Section Header -->
     <div class="mx-auto mb-10 max-w-5xl px-4 text-center">
@@ -108,10 +108,11 @@ interface Category {
   country_name: { en: string; bn?: string | null }
   image: string | null
   order: number | null
-  is_active: boolean | null
+  is_active: boolean | number | string | null
+  worldwide: boolean | number | string | null
 }
 
-const PAGE_SIZE = 9
+const PAGE_SIZE = 6
 
 const { t, locale } = useI18n({ useScope: 'global' })
 
@@ -124,7 +125,10 @@ const visibleCategories = computed(() =>
   categories.value.slice(0, visibleCount.value),
 )
 
-// Picks the current locale's name and falls back to English
+// Accepts true, 1 and "1"
+const isOn = (value: unknown): boolean =>
+  value === true || value === 1 || value === '1'
+
 const getName = (category: Category): string =>
   category.country_name?.[locale.value as 'en' | 'bn'] ||
   category.country_name?.en ||
@@ -141,11 +145,10 @@ const fetchCategories = async () => {
   try {
     const res = await api.get('/category')
 
-    // Supports both { data: [...] } (API Resource) and a plain array
     const list: Category[] = res.data?.data ?? res.data ?? []
 
     categories.value = list
-      .filter((c) => c.is_active !== false)
+      .filter((c) => isOn(c.is_active) && isOn(c.worldwide))
       .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
   } catch (e: any) {
     error.value = e?.response?.data?.message || 'Failed to load categories.'

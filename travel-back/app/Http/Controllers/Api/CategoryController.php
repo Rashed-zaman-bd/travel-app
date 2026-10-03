@@ -35,6 +35,12 @@ class CategoryController extends Controller
 
         $data['order'] = $data['order'] ?? 0;
         $data['is_active'] = $data['is_active'] ?? true;
+        $data['easy_visa_destination'] = $data['easy_visa_destination'] ?? true;
+        $data['popular_destination'] = $data['popular_destination'] ?? true;
+        $data['honeymoon'] = $data['honeymoon'] ?? true;
+        $data['domestic'] = $data['domestic'] ?? true;
+        $data['featured'] = $data['featured'] ?? true;
+        $data['worldwide'] = $data['worldwide'] ?? true;
 
         $category = Category::create($data);
 

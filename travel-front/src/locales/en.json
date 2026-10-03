@@ -7,12 +7,15 @@
     "cost": "Cost",
     "book_now": "Book now",
     "show_details": "Show details",
-    "back": "Back"
+    "back": "Back",
+    "holiday": "Holiday Destination"
     
   },
 
   "package_details": {
-    "more_packages": "More Packages"
+    "more_packages": "More Packages",
+    "itinerary": "Brief itinerary",
+    "highlights": "Highlights"
   }
 }
 

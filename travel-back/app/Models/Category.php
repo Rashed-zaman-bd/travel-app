@@ -20,12 +20,24 @@ class Category extends Model
         'image',
         'order',
         'is_active',
+        'easy_visa_destination',
+        'popular_destination',
+        'honeymoon',
+        'domestic',
+        'featured',
+        'worldwide',
     ];
 
     protected $casts = [
         'country_name' => 'array',
         'order' => 'integer',
         'is_active' => 'boolean',
+        'easy_visa_destination' => 'boolean',
+        'popular_destination' => 'boolean',
+        'honeymoon' => 'boolean',
+        'domestic' => 'boolean',
+        'featured' => 'boolean',
+        'worldwide' => 'boolean',
     ];
 
     /**

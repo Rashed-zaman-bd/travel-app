@@ -34,7 +34,7 @@ class TourPackageHighlightResource extends JsonResource
                 fn () => new TourPackageResource($this->tourPackage)
             ),
 
-            'highlight' => $t($this->highlight),
+            'highlight' => $this->highlight,
 
             'icon' => $this->icon,
 
