@@ -158,4 +158,14 @@ class TourPackage extends Model
     {
         return $this->hasMany( TourPackageInformation::class, 'tour_package_id' );
     }
+
+    public function offers(): HasMany
+    {
+        return $this->hasMany( TourPackageOffer::class, 'tour_package_id' );
+    }
+
+     public function hotels(): HasMany
+    {
+        return $this->hasMany( TourPackageOfferHotel::class, 'tour_package_offer_id' );
+    }
 }

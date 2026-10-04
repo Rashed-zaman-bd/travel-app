@@ -14,6 +14,8 @@ use App\Http\Controllers\Api\TourPackageDayActivityController;
 use App\Http\Controllers\Api\TourPackageHighlightController;
 use App\Http\Controllers\Api\TourPackageInformationController;
 use App\Http\Controllers\Api\TourPackageItineraryController;
+use App\Http\Controllers\Api\TourPackageOfferController;
+use App\Http\Controllers\Api\TourPackageOfferHotelController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -185,12 +187,36 @@ Route::get('tour-information/{tourPackageInformation}', [TourPackageInformationC
 
 Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->name('admin')->group(function () {
     Route::get('tour-information', [TourPackageInformationController::class, 'index'])->name('tour-active.index');
-    Route::get('tour-information/{tourPackageInformation}', [TourPackageInformationController::class, 'index'])->name('tour-active.show');
+    Route::get('tour-information/{tourPackageInformation}', [TourPackageInformationController::class, 'show'])->name('tour-active.show');
     Route::post('tour-information', [TourPackageInformationController::class, 'store']);
     Route::match(['put', 'patch', 'post'],'tour-information/{tourPackageInformation}', [TourPackageInformationController::class, 'update']);
     Route::delete('tour-information/{tourPackageInformation}', [TourPackageInformationController::class, 'destroy']);
 });
 
+
+// Public Tour Offer
+Route::get('tour-price-offer', [TourPackageOfferController::class, 'index']);
+Route::get('tour-price-offer/{tourPackageOffer}', [TourPackageOfferController::class, 'show']);
+
+Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->name('admin')->group(function () {
+    Route::get('tour-price-offer', [TourPackageOfferController::class, 'index'])->name('tour-active.index');
+    Route::get('tour-price-offer/{tourPackageOffer}', [TourPackageOfferController::class, 'show'])->name('tour-active.show');
+    Route::post('tour-price-offer', [TourPackageOfferController::class, 'store']);
+    Route::match(['put', 'patch', 'post'],'tour-price-offer/{tourPackageOffer}', [TourPackageOfferController::class, 'update']);
+    Route::delete('tour-price-offer/{tourPackageOffer}', [TourPackageOfferController::class, 'destroy']);
+});
+
+
+// Public Tour Offer Hotel
+Route::get('tour-hotel', [TourPackageOfferHotelController::class, 'index']);
+Route::get('tour-hotel/{tourPackageOfferHotel}', [TourPackageOfferHotelController::class, 'show']);
+Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->name('admin')->group(function () {
+    Route::get('tour-hotel', [TourPackageOfferHotelController::class, 'index'])->name('tour-active.index');
+    Route::get('tour-hotel/{tourPackageOfferHotel}', [TourPackageOfferHotelController::class, 'show'])->name('tour-active.show');
+    Route::post('tour-hotel', [TourPackageOfferHotelController::class, 'store']);
+    Route::match(['put', 'patch', 'post'],'tour-hotel/{tourPackageOfferHotel}', [TourPackageOfferHotelController::class, 'update']);
+    Route::delete('tour-hotel/{tourPackageOfferHotel}', [TourPackageOfferHotelController::class, 'destroy']);
+});
 
 // Public
 Route::get('destinations', [DestinationController::class, 'index']);

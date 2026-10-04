@@ -89,9 +89,9 @@
 
                         <!-- Book Now -->
                         <div class="flex items-center justify-center pb-10 pt-5">
-                            <router-link :to="`/tour-package/${pkg.slug}/book`"
-                                 class="flex min-h-[46px] w-full sm:w-1/2 items-center justify-center bg-amber-500 px-5 py-3 font-semibold text-white transition hover:bg-amber-600">
-                                    {{ t('worldwide_category.book_now') }} →
+                            <router-link :to="bookRoute"
+                                class="flex min-h-[46px] w-full sm:w-1/2 items-center justify-center bg-amber-500 px-5 py-3 font-semibold text-white transition hover:bg-amber-600">
+                                {{ t('worldwide_category.book_now') }} →
                             </router-link>
                         </div>
 
@@ -131,56 +131,39 @@
 
                         <!-- Tour Information -->
                         <div>
-                            <h1 class=" text-xl sm:text-2xl font-semibold text-gray-800">
+                            <h1 class=" text-xl sm:text-2xl font-semibold text-gray-800 pb-2">
                                 {{ t('package_details.information') }}
                             </h1>
                         </div>
-                        <div
-                            v-if="activeTourInformation.length"
-                            class="pb-2 "
-                        >
+                        <div v-if="activeTourInformation.length" class="pb-2 ">
                             <div class="space-y-1">
 
-                                <div
-                                    v-for="item in activeTourInformation"
-                                    :key="item.id"
-                                    class="overflow-hidden border-b border-gray-200 bg-white"
-                                >
+                                <div v-for="item in activeTourInformation" :key="item.id"
+                                    class="overflow-hidden border-b border-gray-200 bg-white">
 
                                     <!-- Title -->
-                                    <button
-                                        type="button"
+                                    <button type="button"
                                         class="flex w-full items-center justify-between gap-4 px-3 py-4 text-left transition hover:bg-gray-50 cursor-pointer"
-                                        @click="toggleInformation(item.id)"
-                                    >
+                                        @click="toggleInformation(item.id)">
 
-                                        <span
-                                            class="text-sm font-semibold text-gray-800 sm:text-base"
-                                        >
+                                        <span class="text-sm font-semibold text-gray-800 sm:text-base">
                                             {{ triInfo(item.title) }}
                                         </span>
 
-                                        <i
-                                            class="bi shrink-0 text-gray-500"
-                                            :class="
-                                                openInformation.includes(item.id)
-                                                    ? 'bi-chevron-up'
-                                                    : 'bi-chevron-down'
-                                            "
-                                        ></i>
+                                        <i class="bi shrink-0 text-gray-500" :class="openInformation.includes(item.id)
+                                                ? 'bi-chevron-up'
+                                                : 'bi-chevron-down'
+                                            "></i>
 
                                     </button>
 
 
                                     <!-- Content -->
-                                    <div
-                                        v-if="openInformation.includes(item.id)"
-                                        class="border-t border-gray-100 px-3 pb-5 pt-4"
-                                    >
+                                    <div v-if="openInformation.includes(item.id)"
+                                        class="border-t border-gray-100 px-3 pb-5 pt-4">
 
                                         <div
-                                            class="whitespace-pre-line break-words text-sm leading-6 text-gray-700 sm:text-base"
-                                        >
+                                            class="whitespace-pre-line break-words text-sm leading-6 text-gray-700 sm:text-base">
                                             {{ triInfo(item.content) }}
                                         </div>
 
@@ -193,11 +176,10 @@
 
                         <!-- Day Activities -->
                         <div v-if="dayActivitys.length" class="pt-10 pb-10">
-                                                        
+
                             <!-- Activities -->
                             <div class="space-y-8">
-                                <article v-for="activity in dayActivitys" :key="activity.id"
-                                    class="overflow-hidden">
+                                <article v-for="activity in dayActivitys" :key="activity.id" class="overflow-hidden">
                                     <!-- Image -->
                                     <div v-if="activity.image" class="overflow-hidden">
                                         <!-- Activity Title -->
@@ -207,8 +189,7 @@
                                         </h3>
                                         <img :src="activity.image" :alt="trc(activity.title) ||
                                             t('activity.title')
-                                            " class="block h-64 w-full object-cover sm:h-96" loading="lazy" 
-                                        />
+                                            " class="block h-64 w-full object-cover sm:h-96" loading="lazy" />
                                         <!-- Image Caption -->
                                         <p v-if="trc(activity.image_caption)" class="mb-4 text-sm italic text-gray-500">
                                             {{ trc(activity.image_caption) }}
@@ -231,8 +212,8 @@
                         <!-- Book Now -->
                         <div class="flex items-center justify-center pb-10 pt-5">
                             <router-link :to="`/tour-package/${pkg.slug}/book`"
-                                 class="flex min-h-[46px] w-full sm:w-1/2 items-center justify-center bg-amber-500 px-5 py-3 font-semibold text-white transition hover:bg-amber-600">
-                                    {{ t('worldwide_category.book_now') }} →
+                                class="flex min-h-[46px] w-full sm:w-1/2 items-center justify-center bg-amber-500 px-5 py-3 font-semibold text-white transition hover:bg-amber-600">
+                                {{ t('worldwide_category.book_now') }} →
                             </router-link>
                         </div>
 
@@ -265,34 +246,110 @@
                             <div v-if="tr(pkg.package_duration)"
                                 class="mb-4 flex items-center gap-2 font-semibold text-gray-700">
                                 <span>🕒</span>
-
-                                <span>
-                                    {{ tr(pkg.package_duration) }}
-                                </span>
+                                <span>{{ tr(pkg.package_duration) }}</span>
                             </div>
 
-                            <!-- Price -->
-                            <div v-if="tr(pkg.package_price)" class="mb-6 border-b border-gray-100 pb-5">
-                                <span class="text-gray-700">
-                                    {{ t('worldwide_category.cost') }} -
-                                </span>
+                            <!-- ================= Price Offers ================= -->
+                            <div v-if="activeOffers.length" class="mb-2 space-y-4">
+                                <div v-for="offer in activeOffers" :key="offer.id"
+                                    class="rounded-md border border-gray-200 bg-white p-4 shadow-sm">
+                                    <!-- Offer name -->
+                                    <h4 class="mb-4 break-words text-xl font-bold uppercase text-amber-600">
+                                        {{ tr(offer.offer_name) }}
+                                    </h4>
 
-                                <span class="ml-1 text-xl font-bold text-red-600">
-                                    {{ tr(pkg.package_price) }} Tk.
+                                    <!-- Valid From / Valid Till / Departs -->
+                                    <div class="mb-5 flex flex-wrap gap-x-8 gap-y-3">
+                                        <div v-if="offer.valid_from">
+                                            <p class="text-sm text-gray-600">
+                                                {{ t('package_details.valid_from', 'Valid From') }}
+                                            </p>
+                                            <p class="flex items-baseline gap-1 text-gray-900">
+                                                <span class="text-sm leading-none">
+                                                    {{ dateParts(offer.valid_from).day }}
+                                                </span>
+                                                <span class="text-sm ">
+                                                    {{ dateParts(offer.valid_from).month }}'{{
+                                                    dateParts(offer.valid_from).year }}
+                                                </span>
+                                            </p>
+                                        </div>
 
-                                    <span class="ml-1 text-sm font-semibold">
+                                        <div v-if="offer.valid_till">
+                                            <p class="text-sm text-gray-600">
+                                                {{ t('package_details.valid_till', 'Valid Till') }}
+                                            </p>
+                                            <p class="flex items-baseline gap-1 text-gray-900">
+                                                <span class="text-sm  leading-none">
+                                                    {{ dateParts(offer.valid_till).day }}
+                                                </span>
+                                                <span class="text-sm ">
+                                                    {{ dateParts(offer.valid_till).month }}'{{
+                                                    dateParts(offer.valid_till).year }}
+                                                </span>
+                                            </p>
+                                        </div>
 
+                                        <div v-if="tr(offer.departs)">
+                                            <p class="text-sm text-gray-600">
+                                                {{ t('package_details.departs', 'Departs') }}
+                                            </p>
+                                            <p class="text-sm uppercase leading-7 text-gray-900">
+                                                {{ tr(offer.departs) }}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Price -->
+                                    <div v-if="offer.price !== null && offer.price !== ''" class="mb-4">
+                                        <p v-if="tr(offer.price_label)" class="text-sm text-gray-700">
+                                            {{ tr(offer.price_label) }}
+                                        </p>
+                                        <p class="text-sm font-bold text-gray-900">
+                                            {{ t('package_details.currency', 'BDT') }} {{ formatPrice(offer.price) }}
+                                        </p>
+                                    </div>
+
+                                    <!-- Hotels -->
+                                    <!-- Hotels -->
+                                    <ul v-if="activeHotels(offer).length" class="mb-4 space-y-2">
+                                        <li v-for="hotel in activeHotels(offer)" :key="hotel.id"
+                                            class="flex items-start gap-3 text-sm text-gray-700">
+                                            <i class="bi bi-buildings-fill mt-0.5 shrink-0 text-gray-600"></i>
+                                            <span class="break-words">{{ hotelLabel(hotel) }}</span>
+                                        </li>
+                                    </ul>
+
+                                    <!-- Price note -->
+                                    <p v-if="tr(offer.price_note)" class="mb-4 text-sm text-gray-700">
+                                        {{ tr(offer.price_note) }}
+                                    </p>
+
+                                    <!-- Select offer -->
+                                    <router-link
+                                        :to="{ path: `/tour-package/${pkg.slug}/book`, query: { offer: offer.id } }"
+                                        class="flex min-h-[46px] w-full items-center justify-center rounded bg-amber-600 px-5 py-3 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-amber-700">
+                                        {{ t('package_details.select_offer', 'Select Offer') }}
+                                    </router-link>
+                                </div>
+                            </div>
+
+                            <!-- ============ Fallback: no offers for this package ============ -->
+                            <template v-else>
+                                <div v-if="tr(pkg.package_price)" class="mb-6 border-b border-gray-100 pb-5">
+                                    <span class="text-gray-700">{{ t('worldwide_category.cost') }} -</span>
+                                    <span class="ml-1 text-xl font-bold text-red-600">
+                                        {{ tr(pkg.package_price) }} Tk.
                                     </span>
-                                </span>
-                            </div>
+                                </div>
 
-                            <!-- Book Now -->
-                            <div class="flex items-center justify-center">
-                                <router-link :to="`/tour-package/${pkg.slug}/book`"
-                                    class="flex min-h-[46px] w-full sm:w-1/2 items-center justify-center bg-amber-500 px-5 py-3 font-semibold text-white transition hover:bg-amber-600">
-                                    {{ t('worldwide_category.book_now') }} →
-                                </router-link>
-                            </div>
+                                <div class="flex items-center justify-center">
+                                    <router-link :to="`/tour-package/${pkg.slug}/book`"
+                                        class="flex min-h-[46px] w-full sm:w-1/2 items-center justify-center bg-amber-500 px-5 py-3 font-semibold text-white transition hover:bg-amber-600">
+                                        {{ t('worldwide_category.book_now') }} →
+                                    </router-link>
+                                </div>
+                            </template>
 
 
                             <!-- Same-country packages -->
@@ -319,7 +376,7 @@
                                                     class=" line-clamp-2 break-words ml-25 px-3 text-sm font-semibold text-red-500">
                                                     <span class="text-gray-500">{{ t('worldwide_category.cost') }}
                                                         -</span>{{
-                                                    tr(p.package_price) }} Tk.
+                                                            tr(p.package_price) }} Tk.
                                                 </p>
                                             </div>
                                         </router-link>
@@ -426,6 +483,31 @@ interface Activities {
 
     created_at?: string
     updated_at?: string
+}
+
+interface OfferHotel {
+    id: number
+    // adjust to your TourPackageOfferHotel columns
+    hotel_name?: LocalizedValue
+    name?: LocalizedValue
+    location?: LocalizedValue
+    city?: LocalizedValue
+    order?: number
+}
+
+interface TourPackageOffer {
+    id: number
+    tour_package_id: number
+    offer_name: Localized
+    valid_from: string | null
+    valid_till: string | null
+    departs: Localized
+    price: string | number | null
+    price_label: Localized
+    price_note: Localized
+    order: number
+    is_active: boolean
+    hotels?: OfferHotel[]
 }
 
 const route = useRoute()
@@ -574,9 +656,105 @@ const fetchTourInformation = async (
     }
 }
 
+const bookRoute = computed(() => ({
+    path: `/tour-package/${pkg.value?.slug ?? ''}/book`,
+    query:
+        activeOffers.value.length === 1
+            ? {  }
+            : {},
+}))
+
+interface OfferHotel {
+    id: number
+    order?: number
+    is_active?: boolean | number
+    [key: string]: any
+}
+
+const pickText = (hotel: OfferHotel, keys: string[]): string => {
+    for (const key of keys) {
+        const text = tri(hotel[key])
+        if (text) return text
+    }
+    return ''
+}
+
+// "Hotel Arts Kathmandu (Kathmandu)"
+const hotelLabel = (hotel: OfferHotel): string => {
+    const name = pickText(hotel, ['hotel_name', 'name', 'title', 'hotel'])
+    const place = pickText(hotel, ['location', 'city', 'area', 'address'])
+    return place ? `${name} (${place})` : name
+}
+
+const activeHotels = (offer: TourPackageOffer): OfferHotel[] =>
+    (offer.hotels ?? [])
+        .filter((h) => h.is_active === undefined || Boolean(h.is_active))
+        .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+
+
+
+const offers = ref<TourPackageOffer[]>([])
+
+const activeOffers = computed(() =>
+    offers.value
+        .filter((o) => o.is_active)
+        .sort((a, b) => a.order - b.order),
+)
+
+
+// "2026-08-13" -> { day: '13', month: 'Aug', year: '26' }
+const dateParts = (value?: string | null) => {
+    const empty = { day: '', month: '', year: '' }
+    if (!value) return empty
+
+    const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(value)
+    if (!match) return empty
+
+    const y = Number(match[1])
+    const m = Number(match[2])
+    const d = Number(match[3])
+
+    const loc = locale.value === 'bn' ? 'bn-BD' : 'en-US'
+    const date = new Date(y, m - 1, d)
+
+    return {
+        day: new Intl.NumberFormat(loc, { useGrouping: false }).format(d),
+        month: new Intl.DateTimeFormat(loc, { month: 'short' }).format(date),
+        year: new Intl.NumberFormat(loc, {
+            minimumIntegerDigits: 2,
+            useGrouping: false,
+        }).format(y % 100),
+    }
+}
+
+const formatPrice = (value: string | number | null): string => {
+    const n = Number(value)
+    if (Number.isNaN(n)) return ''
+    return n.toLocaleString(locale.value === 'bn' ? 'bn-BD' : 'en-US', {
+        maximumFractionDigits: 2,
+    })
+}
+
+// A failure here must never break the main page
+const fetchOffers = async (tourPackageId: number) => {
+    try {
+        const { data } = await api.get('/tour-price-offer', {
+            params: { tour_package_id: tourPackageId },
+        })
+
+        offers.value = (data.data ?? []).filter(
+            (o: TourPackageOffer) => o.tour_package_id === tourPackageId,
+        )
+    } catch (e) {
+        console.error('Failed to load price offers:', e)
+        offers.value = []
+    }
+}
+
 const fetchData = async () => {
     loading.value = true
     error.value = ''
+    offers.value = []
 
     try {
         const { data } = await api.get(
@@ -585,9 +763,11 @@ const fetchData = async () => {
 
         pkg.value = data.data
 
-        // Load tour information
         if (pkg.value?.id) {
-            await fetchTourInformation(pkg.value.id)
+            await Promise.all([
+                fetchTourInformation(pkg.value.id),
+                fetchOffers(pkg.value.id),
+            ])
         }
 
         // Load related packages

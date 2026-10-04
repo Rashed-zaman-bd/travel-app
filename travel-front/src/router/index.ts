@@ -198,6 +198,24 @@ const routes = [
           requiresAdmin: true,
         },
       },
+
+      {
+        path: 'tourpriceoffer',
+        name: 'admin.tourpriceoffer',
+        component: () => import('@/views/admin/TourPriceOffer.vue'),
+        meta: {
+          requiresAdmin: true,
+        },
+      },
+
+      {
+        path: 'tourhotel',
+        name: 'admin.tourhotel',
+        component: () => import('@/views/admin/TourHotel.vue'),
+        meta: {
+          requiresAdmin: true,
+        },
+      },
     ],
   },
 ]
