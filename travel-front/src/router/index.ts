@@ -189,6 +189,15 @@ const routes = [
           requiresAdmin: true,
         },
       },
+
+      {
+        path: 'tourinformation',
+        name: 'admin.tourinformatin',
+        component: () => import('@/views/admin/TourInformation.vue'),
+        meta: {
+          requiresAdmin: true,
+        },
+      },
     ],
   },
 ]

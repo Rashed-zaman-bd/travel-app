@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\NavItemController;
 use App\Http\Controllers\Api\TourPackageController;
 use App\Http\Controllers\Api\TourPackageDayActivityController;
 use App\Http\Controllers\Api\TourPackageHighlightController;
+use App\Http\Controllers\Api\TourPackageInformationController;
 use App\Http\Controllers\Api\TourPackageItineraryController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use Illuminate\Support\Facades\Route;
@@ -125,6 +126,7 @@ Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->
 });
 
 Route::get('category/{category}/tour-package', [TourPackageController::class, 'byCategory']);
+
 // Tour Package Routes
 Route::get('tour-package', [TourPackageController::class, 'index']);
 Route::get('tour-package/{tourPackage:slug}', [TourPackageController::class, 'show']);
@@ -174,6 +176,19 @@ Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->
     Route::post('tour-activity', [TourPackageDayActivityController::class, 'store']);
     Route::match(['put', 'patch', 'post'], 'tour-activity/{tourPackageDayActivity}', [TourPackageDayActivityController::class, 'update']);
     Route::delete('tour-activity/{tourPackageDayActivity}', [TourPackageDayActivityController::class, 'destroy']);
+});
+
+
+// Public Tour Information
+Route::get('tour-information', [TourPackageInformationController::class, 'index']);
+Route::get('tour-information/{tourPackageInformation}', [TourPackageInformationController::class, 'show']);
+
+Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->name('admin')->group(function () {
+    Route::get('tour-information', [TourPackageInformationController::class, 'index'])->name('tour-active.index');
+    Route::get('tour-information/{tourPackageInformation}', [TourPackageInformationController::class, 'index'])->name('tour-active.show');
+    Route::post('tour-information', [TourPackageInformationController::class, 'store']);
+    Route::match(['put', 'patch', 'post'],'tour-information/{tourPackageInformation}', [TourPackageInformationController::class, 'update']);
+    Route::delete('tour-information/{tourPackageInformation}', [TourPackageInformationController::class, 'destroy']);
 });
 
 

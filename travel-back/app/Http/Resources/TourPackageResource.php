@@ -63,6 +63,10 @@ class TourPackageResource extends JsonResource
                 $this->whenLoaded('activities')
             ),
 
+            'information' => TourPackageInformationResource::collection(
+                $this->whenLoaded('information')
+            ),
+
         ];
     }
 

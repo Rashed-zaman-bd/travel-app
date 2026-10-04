@@ -153,4 +153,9 @@ class TourPackage extends Model
         return $this->hasMany(TourPackageDayActivity::class)
             ->orderBy('order');
     }
+
+    public function information(): HasMany
+    {
+        return $this->hasMany( TourPackageInformation::class, 'tour_package_id' );
+    }
 }

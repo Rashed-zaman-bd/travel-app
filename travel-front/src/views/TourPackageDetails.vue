@@ -104,7 +104,7 @@
                         <!-- Itinerary -->
                         <div v-if="activeDays.length" class="pb-10">
                             <div class="overflow-x-auto">
-                                <table class="min-w-full text-sm sm:text-base">
+                                <table class="min-w-full text-sm sm:text-base ">
                                     <thead class="bg-gray-50 text-left text-gray-700">
                                         <tr>
                                             <th class="px-4 py-3 whitespace-nowrap">Day</th>
@@ -114,7 +114,7 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="day in activeDays" :key="day.id" class="border-t align-top">
-                                            <td class="px-4 py-3 font-semibold whitespace-nowrap text-amber-600">
+                                            <td class="px-4 py-3 font-semibold whitespace-nowrap text-gray-600">
                                                 Day {{ day.day_number }}
                                             </td>
                                             <td class="px-4 py-3 text-gray-700">
@@ -126,6 +126,68 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                            </div>
+                        </div>
+
+                        <!-- Tour Information -->
+                        <div>
+                            <h1 class=" text-xl sm:text-2xl font-semibold text-gray-800">
+                                {{ t('package_details.information') }}
+                            </h1>
+                        </div>
+                        <div
+                            v-if="activeTourInformation.length"
+                            class="pb-2 "
+                        >
+                            <div class="space-y-1">
+
+                                <div
+                                    v-for="item in activeTourInformation"
+                                    :key="item.id"
+                                    class="overflow-hidden border-b border-gray-200 bg-white"
+                                >
+
+                                    <!-- Title -->
+                                    <button
+                                        type="button"
+                                        class="flex w-full items-center justify-between gap-4 px-3 py-4 text-left transition hover:bg-gray-50 cursor-pointer"
+                                        @click="toggleInformation(item.id)"
+                                    >
+
+                                        <span
+                                            class="text-sm font-semibold text-gray-800 sm:text-base"
+                                        >
+                                            {{ triInfo(item.title) }}
+                                        </span>
+
+                                        <i
+                                            class="bi shrink-0 text-gray-500"
+                                            :class="
+                                                openInformation.includes(item.id)
+                                                    ? 'bi-chevron-up'
+                                                    : 'bi-chevron-down'
+                                            "
+                                        ></i>
+
+                                    </button>
+
+
+                                    <!-- Content -->
+                                    <div
+                                        v-if="openInformation.includes(item.id)"
+                                        class="border-t border-gray-100 px-3 pb-5 pt-4"
+                                    >
+
+                                        <div
+                                            class="whitespace-pre-line break-words text-sm leading-6 text-gray-700 sm:text-base"
+                                        >
+                                            {{ triInfo(item.content) }}
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
                             </div>
                         </div>
 
@@ -323,6 +385,18 @@ interface Highlight {
     is_active: boolean
 }
 
+type TourInformationValue =
+    string | Record<string, string | null> | null | undefined
+
+interface TourInformation {
+    id: number
+    tour_package_id: number
+    title: TourInformationValue
+    content: TourInformationValue
+    order: number
+    is_active: boolean
+}
+
 type LocalizedValue = string | Record<string, string | null> | null | undefined
 
 interface Itinerary {
@@ -360,6 +434,10 @@ const { t, locale } = useI18n({ useScope: 'global' })
 const pkg = ref<TourPackage | null>(null)
 const related = ref<RelatedPackage[]>([])
 const relatedTitle = ref('')
+
+const tourInformation = ref<TourInformation[]>([])
+const openInformation = ref<number[]>([])
+
 const loading = ref(true)
 const error = ref('')
 
@@ -378,6 +456,38 @@ const trh = (value: Highlight['highlight']): string => {
 const activeHighlights = computed(() =>
     (pkg.value?.highlights ?? []).filter((h) => h.is_active),
 )
+
+const activeTourInformation = computed(() =>
+    tourInformation.value
+        .filter((item) => item.is_active)
+        .sort((a, b) => a.order - b.order)
+)
+
+const triInfo = (value: TourInformationValue): string => {
+    if (!value) return ''
+
+    if (typeof value === 'string') {
+        return value
+    }
+
+    return (
+        value[locale.value] ||
+        value.en ||
+        value.bn ||
+        ''
+    )
+}
+
+const toggleInformation = (id: number) => {
+    if (openInformation.value.includes(id)) {
+        openInformation.value =
+            openInformation.value.filter(
+                itemId => itemId !== id
+            )
+    } else {
+        openInformation.value.push(id)
+    }
+}
 
 const tri = (value: LocalizedValue): string => {
     if (!value) return ''
@@ -438,13 +548,51 @@ const fetchRelated = async () => {
     }
 }
 
+const fetchTourInformation = async (
+    tourPackageId: number
+) => {
+    try {
+        const { data } = await api.get(
+            '/tour-information',
+            {
+                params: {
+                    tour_package_id: tourPackageId,
+                },
+            }
+        )
+
+        tourInformation.value = data.data ?? []
+
+    } catch (error) {
+        console.error(
+            'Failed to load tour information:',
+            error
+        )
+
+        tourInformation.value = []
+        openInformation.value = []
+    }
+}
+
 const fetchData = async () => {
     loading.value = true
     error.value = ''
+
     try {
-        const { data } = await api.get(`/tour-package/${route.params.slug}`)
+        const { data } = await api.get(
+            `/tour-package/${route.params.slug}`
+        )
+
         pkg.value = data.data
-        fetchRelated() // not awaited, so the page shows immediately
+
+        // Load tour information
+        if (pkg.value?.id) {
+            await fetchTourInformation(pkg.value.id)
+        }
+
+        // Load related packages
+        fetchRelated()
+
     } catch (e: any) {
         error.value =
             e?.response?.status === 404

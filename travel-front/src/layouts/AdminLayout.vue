@@ -110,6 +110,13 @@
                 Tour Day Activity
               </router-link>
               <router-link
+                to="/admin/tourinformation"
+                class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                active-class="bg-gray-800 text-emerald-400 font-semibold"
+              >
+                Tour Information
+              </router-link>
+              <router-link
                 to="/admin/destination"
                 class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
                 active-class="bg-gray-800 text-emerald-400 font-semibold"

@@ -19,7 +19,7 @@ class TourPackageController extends Controller
     public function index(): AnonymousResourceCollection
     {
         $tourPackages = TourPackage::query()
-            ->with(['category', 'highlights', 'days', 'activities'])
+            ->with(['category', 'highlights', 'days', 'activities', 'information'])
             ->orderBy('order')
             ->get();
 
@@ -99,7 +99,7 @@ class TourPackageController extends Controller
         TourPackage $tourPackage
     ): TourPackageResource {
 
-        $tourPackage->load(['category', 'highlights', 'days', 'activities']);
+        $tourPackage->load(['category', 'highlights', 'days', 'activities', 'information']);
 
         return new TourPackageResource($tourPackage);
     }
