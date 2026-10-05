@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class TourPackageOfferHotelRequest extends FormRequest
 {
@@ -25,7 +26,11 @@ class TourPackageOfferHotelRequest extends FormRequest
         return [
             'tour_package_id' => [ 'required', 'integer', 'exists:tour_packages,id' ],
 
-            'tour_package_offer_id' => [ 'required', 'integer', 'exists:tour_package_offers,id' ],
+            'tour_package_offer_id' => [
+                'required', 'integer',
+                Rule::exists('tour_package_offers', 'id')
+                    ->where('tour_package_id', $this->input('tour_package_id')),
+            ],
 
             'hotel_name' => [ 'required', 'array' ],
             'hotel_name.en' => [ 'required', 'string', 'max:100' ],

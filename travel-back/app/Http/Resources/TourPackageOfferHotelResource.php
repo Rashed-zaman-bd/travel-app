@@ -7,10 +7,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class TourPackageOfferHotelResource extends JsonResource
 {
-
     public function toArray(Request $request): array
     {
-
         $all      = $request->boolean('all_locales'); // admin edit form
         $locale   = app()->getLocale();
         $fallback = config('app.fallback_locale', 'en');
@@ -38,17 +36,12 @@ class TourPackageOfferHotelResource extends JsonResource
             'tour_package_offer_id' => $this->tour_package_offer_id,
 
             'tour_package_offer' => $this->whenLoaded(
-                'offers',
-                fn () => new TourPackageOfferResource($this->offers)
+                'offer',
+                fn () => new TourPackageOfferResource($this->offer)
             ),
 
-            'offer_name' => $this->offer_name,
-            'valid_from' => $this->valid_from,
-            'valid_till' => $this->valid_till,
-            'departs'    => $this->departs,
-            'price'      => $this->price,
-            'price_label' => $this->price_label,
-            'price_note' => $this->price_note,
+            'hotel_name' => $t($this->hotel_name),
+            'location'   => $t($this->location),
 
             'order' => (int) $this->order,
 

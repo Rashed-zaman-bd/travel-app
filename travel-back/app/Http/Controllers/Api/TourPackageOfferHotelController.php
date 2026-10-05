@@ -18,7 +18,7 @@ class TourPackageOfferHotelController extends Controller
     public function index(Request $request): AnonymousResourceCollection
     {
         $hotels = TourPackageOfferHotel::query()
-            ->with([ 'tourPackage', 'offer'  ])
+            ->with(['tourPackage', 'offer'])
 
             // Filter by tour package
             ->when(
@@ -42,9 +42,9 @@ class TourPackageOfferHotelController extends Controller
                 }
             )
 
-            // Active only
+            // Active filter (handles 0/1 boolean query params accurately)
             ->when(
-                $request->has('is_active'),
+                $request->filled('is_active'),
                 function ($query) use ($request) {
                     $query->where(
                         'is_active',
@@ -57,9 +57,7 @@ class TourPackageOfferHotelController extends Controller
             ->orderBy('id', 'asc')
             ->get();
 
-        return TourPackageOfferHotelResource::collection(
-            $hotels
-        );
+        return TourPackageOfferHotelResource::collection($hotels);
     }
 
 

@@ -166,6 +166,6 @@ class TourPackage extends Model
 
      public function hotels(): HasMany
     {
-        return $this->hasMany( TourPackageOfferHotel::class, 'tour_package_offer_id' );
+        return $this->hasMany( TourPackageOfferHotel::class, 'tour_package_id' );
     }
 }

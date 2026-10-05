@@ -15,7 +15,7 @@ class TourPackageOfferController extends Controller
     public function index(Request $request): AnonymousResourceCollection
     {
         $offers = TourPackageOffer::query()
-            ->with('tourPackage')
+            ->with('tourPackage', 'hotels')
             ->when(
                 $request->filled('tour_package_id'),
                 function ($query) use ($request) {

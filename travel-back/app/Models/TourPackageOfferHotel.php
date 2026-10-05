@@ -37,4 +37,9 @@ class TourPackageOfferHotel extends Model
     {
         return $this->belongsTo( TourPackageOffer::class, 'tour_package_offer_id' );
     }
+
+    public function tourPackageOffer(): BelongsTo
+    {
+        return $this->belongsTo(TourPackageOffer::class, 'tour_package_offer_id');
+    }
 }

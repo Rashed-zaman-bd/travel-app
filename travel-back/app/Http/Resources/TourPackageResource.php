@@ -8,10 +8,9 @@ use Illuminate\Support\Facades\Storage;
 
 class TourPackageResource extends JsonResource
 {
-    
     public function toArray(Request $request): array
     {
-        $all      = $request->boolean('all_locales'); // admin edit form
+        $all      = $request->boolean('all_locales');
         $locale   = app()->getLocale();
         $fallback = config('app.fallback_locale', 'en');
 
@@ -27,29 +26,29 @@ class TourPackageResource extends JsonResource
 
         return [
             'id' => $this->id,
-            
-            'category_id'       => $this->category_id,
-            'category' => $this->whenLoaded('category', fn () => [
+
+            'category_id' => $this->category_id,
+            'category'    => $this->whenLoaded('category', fn () => [
                 'id'           => $this->category->id,
                 'slug'         => $this->category->slug,
                 'country_name' => $this->category->country_name,
             ]),
 
-            'hero_image'        => $this->fileUrl($this->hero_image),
-            'hero_image_title'  =>$this->hero_image_title,
-            'hero_image_btn'    =>$this->hero_image_btn,
-            'header'            =>$this->header,
-            'sub_header'        =>$this->sub_header,
-            'package_name'      =>$this->package_name,
-            'slug'              =>$this->slug,
-            'package_image'     =>$this->fileUrl($this->package_image),
-            'package_price'     =>$this->package_price,
-            'package_duration'  =>$this->package_duration,
-            'package_image_title'=>$this->package_image_title,
-            'package_map_image' =>$this->fileUrl($this->package_map_image),
-            'package_destination'=>$this->package_destination,
-            'order'     => (int) $this->order,
-            'is_active' => (bool) $this->is_active,
+            'hero_image'          => $this->fileUrl($this->hero_image),
+            'hero_image_title'    => $t($this->hero_image_title),
+            'hero_image_btn'      => $t($this->hero_image_btn),
+            'header'              => $t($this->header),
+            'sub_header'          => $t($this->sub_header),
+            'package_name'        => $t($this->package_name),
+            'slug'                => $this->slug,
+            'package_image'       => $this->fileUrl($this->package_image),
+            'package_price'       => $t($this->package_price),
+            'package_duration'    => $t($this->package_duration),
+            'package_image_title' => $t($this->package_image_title),
+            'package_map_image'   => $this->fileUrl($this->package_map_image),
+            'package_destination' => $t($this->package_destination),
+            'order'               => (int) $this->order,
+            'is_active'           => (bool) $this->is_active,
 
             'highlights' => TourPackageHighlightResource::collection(
                 $this->whenLoaded('highlights')
@@ -74,13 +73,9 @@ class TourPackageResource extends JsonResource
             'hotels' => TourPackageOfferHotelResource::collection(
                 $this->whenLoaded('hotels')
             ),
-
         ];
     }
 
-    /**
-     * Convert storage path to public URL.
-     */
     private function fileUrl(?string $path): ?string
     {
         if (empty($path)) {
