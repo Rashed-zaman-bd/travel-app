@@ -60,7 +60,7 @@
               <div v-if="slide.cta_text" class="slide-anim-cta opacity-0">
                 <route-link
                   :to="{ path: '/', hash: '#destination' }"
-                  class="group inline-flex items-center gap-2.5 px-5 py-2.5 sm:px-7 sm:py-3.5 text-sm sm:text-base font-semibold text-white bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-600 rounded-xl shadow-lg shadow-amber-600/35 hover:shadow-amber-600/50 hover:-translate-y-0.5 transition-all duration-300 ease-out cursor-pointer"
+                  class="group inline-flex items-center gap-2.5 px-5 py-2.5 sm:px-7 sm:py-3.5 text-sm sm:text-base font-semibold text-white bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-600 shadow-lg shadow-amber-600/35 hover:shadow-amber-600/50 hover:-translate-y-0.5 transition-all duration-300 ease-out cursor-pointer"
                 >
                   <span class="botton-text tracking-wider">{{ slide.cta_text }}</span>
                   <svg

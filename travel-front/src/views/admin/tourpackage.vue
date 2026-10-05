@@ -1,4 +1,4 @@
-```vue
+
 <template>
   <div class="min-h-screen bg-stone-100 p-4 md:p-8">
     <div class="mx-auto max-w-7xl">
@@ -497,18 +497,12 @@
                 Select Country
               </option>
 
-              <option
-                v-for="category in categories"
-                :key="category.id"
-                :value="String(category.id)"
-              >
+              <option v-for="category in categories" :key="category.id" :value="String(category.id)" >
                 {{ localized(category.country_name) }}
               </option>
             </select>
 
-            <p
-              v-if="errors.category_id"
-              :class="errorClass"
+            <p v-if="errors.category_id" :class="errorClass"
             >
               {{ errors.category_id }}
             </p>
@@ -523,11 +517,7 @@
                 Package Name (English)
               </label>
 
-              <input
-                v-model="form.package_name.en"
-                type="text"
-                :class="inputClass"
-              />
+              <input v-model="form.package_name.en" type="text" :class="inputClass" />
             </div>
 
             <div>
@@ -535,11 +525,7 @@
                 Package Name (Bangla)
               </label>
 
-              <input
-                v-model="form.package_name.bn"
-                type="text"
-                :class="inputClass"
-              />
+              <input v-model="form.package_name.bn" type="text" :class="inputClass" />
             </div>
 
           </div>
@@ -554,11 +540,7 @@
               </label>
 
               <input
-                v-model="form.package_price.en"
-                type="text"
-                placeholder="$500"
-                :class="inputClass"
-              />
+                v-model="form.package_price.en" type="text" placeholder="$500" :class="inputClass" />
             </div>
 
             <div>
@@ -566,11 +548,7 @@
                 Price (Bangla)
               </label>
 
-              <input
-                v-model="form.package_price.bn"
-                type="text"
-                placeholder="৫০,০০০ টাকা"
-                :class="inputClass"
+              <input v-model="form.package_price.bn" type="text" placeholder="৫০,০০০ টাকা" :class="inputClass"
               />
             </div>
 
@@ -791,6 +769,35 @@
 
           </div>
 
+          <!-- Package Location -->
+          <div class="grid gap-4 md:grid-cols-2">
+
+            <div>
+              <label :class="labelClass">
+                Location (English)
+              </label>
+
+              <input
+                v-model="form.location.en"
+                type="text"
+                :class="inputClass"
+              />
+            </div>
+
+            <div>
+              <label :class="labelClass">
+                Location (Bangla)
+              </label>
+
+              <input
+                v-model="form.location.bn"
+                type="text"
+                :class="inputClass"
+              />
+            </div>
+
+          </div>
+
 
           <!-- Images -->
           <div class="grid gap-4 md:grid-cols-3">
@@ -967,6 +974,7 @@ interface TourPackage {
   hero_image_title: Localized | null
   hero_image_btn: Localized | null
   package_image_title: Localized | null
+  location: Localized | null
 
   slug: string
 
@@ -1064,6 +1072,11 @@ const emptyForm = () => ({
   },
 
   package_image_title: {
+    en: '',
+    bn: '',
+  },
+
+  location: {
     en: '',
     bn: '',
   },
@@ -1295,6 +1308,7 @@ function resetForm() {
   files.hero_image = null
   files.package_image = null
   files.package_map_image = null
+  files.location = null
 
 
   previews.hero_image = null
@@ -1379,6 +1393,11 @@ function editPackage(pkg: TourPackage) {
   form.package_image_title = {
     en: pkg.package_image_title?.en || '',
     bn: pkg.package_image_title?.bn || '',
+  }
+
+  form.location = {
+    en: pkg.location?.en || '',
+    bn: pkg.location?.bn || '',
   }
 
   previews.hero_image =
@@ -1472,6 +1491,7 @@ function buildFormData(): FormData {
     'hero_image_title',
     'hero_image_btn',
     'package_image_title',
+    'location'
   ] as const
 
 
@@ -1761,4 +1781,4 @@ onMounted(() => {
 })
 
 </script>
-```
+

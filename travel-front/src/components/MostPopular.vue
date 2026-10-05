@@ -1,9 +1,9 @@
 <template>
   <section id="mostpopular">
-    <div class="mx-auto max-w-7xl bg-white py-10">
+    <div class="mx-auto max-w-7xl bg-trancparent py-10 border-b border-gray-200">
       <!-- Section Header -->
       <div class="mx-auto mb-6 max-w-5xl px-4 text-center">
-        <h2 class="mb-3 text-2xl font-semibold text-amber-500 md:text-3xl">
+        <h2 class="mb-3 text-2xl font-semibold text-amber-600 md:text-3xl">
           {{ t('worldwide_category.holiday') }}
         </h2>
       </div>
@@ -17,8 +17,8 @@
           class="cursor-pointer rounded-full border px-5 py-2 text-sm font-medium transition duration-300"
           :class="
             activeTab === tab.key
-              ? 'border-amber-500 bg-amber-500 text-white'
-              : 'border-slate-300 bg-white text-slate-600 hover:border-amber-500 hover:text-amber-500'
+              ? 'border-amber-600 bg-amber-600 text-white'
+              : 'border-slate-300 bg-white text-slate-600 hover:border-amber-600 hover:text-amber-700'
           "
           @click="setTab(tab.key)"
         >
@@ -91,7 +91,7 @@
       >
         <button
           type="button"
-          class="cursor-pointer rounded-md bg-amber-500 px-8 py-3 font-medium text-white transition duration-300 hover:bg-amber-600"
+          class="cursor-pointer bg-amber-600 px-8 py-3 font-medium text-white transition duration-300 hover:bg-amber-700"
           @click="showMore"
         >
           {{ t('worldwide_category.more') }}
@@ -107,7 +107,7 @@ import { useI18n } from 'vue-i18n'
 import api from '@/services/api'
 
 type Flag = boolean | number | string | null
-type FlagKey = 'easy_visa_destination' | 'popular_destination' | 'honeymoon'
+type FlagKey = 'easy_visa_destination' | 'popular_destination' | 'honeymoon' | 'featured'
 type TabKey = 'all' | FlagKey
 
 interface Category {
@@ -120,6 +120,7 @@ interface Category {
   easy_visa_destination: Flag
   popular_destination: Flag
   honeymoon: Flag
+  featured: Flag
 }
 
 const PAGE_SIZE = 6
@@ -147,6 +148,10 @@ const tabs = computed<{ key: TabKey; label: string }[]>(() => [
   {
     key: 'honeymoon',
     label: label('worldwide_category.tab_honeymoon', 'Honeymoon'),
+  },
+  {
+    key: 'featured',
+    label: label('worldwide_category.tab_umrah', 'Umrah'),
   },
 ])
 

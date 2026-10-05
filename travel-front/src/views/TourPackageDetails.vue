@@ -24,7 +24,7 @@
                     <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm sm:text-base">
                         <!-- Country (link) -->
                         <li>
-                            <router-link :to="`/destination/${categorySlug}`" class="text-blue-600 hover:underline">
+                            <router-link :to="`/destination/${categorySlug}`" class="text-amber-600 hover:underline">
                                 {{ countryName || t('package_details.back') }}
                             </router-link>
                         </li>
@@ -44,7 +44,7 @@
                 </nav>
 
                 <!-- Header -->
-                <h2 v-if="tr(pkg.header)" class="mb-4 text-xl font-semibold text-amber-500 sm:text-3xl">
+                <h2 v-if="tr(pkg.header)" class="mb-4 text-xl font-semibold text-amber-600 sm:text-3xl">
                     {{ tr(pkg.package_name) }}
                 </h2>
 
@@ -81,8 +81,8 @@
                                 <li v-for="h in activeHighlights" :key="h.id"
                                     class="flex items-start gap-3 text-gray-700">
                                     <span v-if="h.icon" class="text-3xl leading-6">{{ h.icon }}</span>
-                                    <span v-else class="text-amber-500 text-3xl">✔</span>
-                                    <span class="break-words text-base sm:text-xl">{{ trh(h.highlight) }}</span>
+                                    <span v-else class="text-amber-600 text-3xl">✔</span>
+                                    <span class="break-words text-base sm:text-lg">{{ trh(h.highlight) }}</span>
                                 </li>
                             </ul>
                         </div>
@@ -90,7 +90,7 @@
                         <!-- Book Now -->
                         <div class="flex items-center justify-center pb-10 pt-5">
                             <router-link :to="bookRoute"
-                                class="flex min-h-[46px] w-full sm:w-1/2 items-center justify-center bg-amber-500 px-5 py-3 font-semibold text-white transition hover:bg-amber-600">
+                                class="flex min-h-[46px] w-full sm:w-1/2 items-center justify-center bg-amber-600 px-5 py-3 font-semibold text-white transition hover:bg-amber-700">
                                 {{ t('worldwide_category.book_now') }} →
                             </router-link>
                         </div>
@@ -211,8 +211,8 @@
 
                         <!-- Book Now -->
                         <div class="flex items-center justify-center pb-10 pt-5">
-                            <router-link :to="`/tour-package/${pkg.slug}/book`"
-                                class="flex min-h-[46px] w-full sm:w-1/2 items-center justify-center bg-amber-500 px-5 py-3 font-semibold text-white transition hover:bg-amber-600">
+                            <router-link :to="bookRoute"
+                                class="flex min-h-[46px] w-full sm:w-1/2 items-center justify-center bg-amber-600 px-5 py-3 font-semibold text-white transition hover:bg-amber-700">
                                 {{ t('worldwide_category.book_now') }} →
                             </router-link>
                         </div>
@@ -305,7 +305,7 @@
                                         <p v-if="tr(offer.price_label)" class="text-sm text-gray-700">
                                             {{ tr(offer.price_label) }}
                                         </p>
-                                        <p class="text-sm font-bold text-gray-900">
+                                        <p class="text-base font-bold text-gray-900">
                                             {{ t('package_details.currency', 'BDT') }} {{ formatPrice(offer.price) }}
                                         </p>
                                     </div>
@@ -328,7 +328,7 @@
                                     <!-- Select offer -->
                                     <router-link
                                         :to="{ path: `/tour-package/${pkg.slug}/book`, query: { offer: offer.id } }"
-                                        class="flex min-h-[46px] w-full items-center justify-center rounded bg-amber-600 px-5 py-3 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-amber-700">
+                                        class="flex min-h-[46px] w-full items-center justify-center bg-amber-600 px-5 py-3 font-semibold tracking-wide text-white transition hover:bg-amber-700">
                                         {{ t('package_details.select_offer', 'Select Offer') }}
                                     </router-link>
                                 </div>
@@ -373,10 +373,10 @@
                                             </p>
                                             <div>
                                                 <p
-                                                    class=" line-clamp-2 break-words ml-25 px-3 text-sm font-semibold text-red-500">
+                                                    class=" line-clamp-2 break-words ml-25 px-3 text-base font-semibold text-gray-500">
                                                     <span class="text-gray-500">{{ t('worldwide_category.cost') }}
-                                                        -</span>{{
-                                                            tr(p.package_price) }} Tk.
+                                                        -  BDT </span>{{
+                                                           tr(p.package_price) }}
                                                 </p>
                                             </div>
                                         </router-link>
@@ -402,7 +402,8 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import api from '@/services/api'
 
-type Localized = Record<string, string> | null | undefined
+
+type Localized = string | number | Record<string, string> | null | undefined
 
 interface TourPackage {
     id: number
@@ -524,8 +525,10 @@ const loading = ref(true)
 const error = ref('')
 
 const tr = (value: Localized): string => {
-    if (!value) return ''
-    return value[locale.value] || value.en || value.bn || ''
+  if (value === null || value === undefined || value === '') return ''
+  if (typeof value === 'string') return value
+  if (typeof value === 'number') return String(value)
+  return value[locale.value] || value.en || value.bn || ''
 }
 
 // highlight can be a plain string (server-translated) or an {en, bn} object

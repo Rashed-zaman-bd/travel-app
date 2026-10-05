@@ -4,9 +4,9 @@
     "description": "Book a custom trip to one of our trending destinations! Explore the world by choosing your ideal travel destinations in Asia, Europe, Africa, America, Australia and more with Travaisa.",
     "more": "More Show",
     "tours_itineraries": "Tours & Itineraries",
-    "cost": "Cost",
+    "cost": "Price start",
     "book_now": "Book now",
-    "show_details": "Show details",
+    "show_details": "See details",
     "back": "Back",
     "holiday": "Holiday Destination"
     
@@ -16,7 +16,8 @@
     "more_packages": "More Packages",
     "itinerary": "Brief itinerary",
     "highlights": "Highlights",
-    "information": "More Information"
+    "information": "More Information",
+    "map": "Map"
   }
 }
 

@@ -29,6 +29,7 @@ class TourPackage extends Model
         'package_image_title',
         'package_map_image',
         'package_destination',
+        'location',
         'order',
         'is_active',
     ];
@@ -43,6 +44,7 @@ class TourPackage extends Model
         'package_duration' => 'array',
         'package_image_title' => 'array',
         'package_destination' => 'array',
+        'location'  => 'array',
         'order' => 'integer',
         'is_active' => 'boolean',
     ];

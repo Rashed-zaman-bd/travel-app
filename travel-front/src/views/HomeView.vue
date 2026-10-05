@@ -1,6 +1,6 @@
 <template>
   
-    <div class="min-h-[2200px]">
+    <div class="">
       <HeroImage />
 
     <HowItWork />

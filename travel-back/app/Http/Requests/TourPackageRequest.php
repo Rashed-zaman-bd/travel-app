@@ -73,6 +73,10 @@ class TourPackageRequest extends FormRequest
             'package_destination.en' => [ 'nullable', 'string', 'max:1000' ],
             'package_destination.bn' => [ 'nullable', 'string', 'max:1000' ],
 
+            'location' => [ 'nullable', 'array' ],
+            'location.en' => [ 'nullable', 'string', 'max:1000' ],
+            'location.bn' => [ 'nullable', 'string', 'max:1000' ],
+
   
             'order' => [ 'nullable', 'integer', 'min:0' ],
 

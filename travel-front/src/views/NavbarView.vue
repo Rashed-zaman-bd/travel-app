@@ -38,7 +38,7 @@
             @mouseenter="item.children.length && (openDropdownId = item.id)"
             @mouseleave="item.children.length && (openDropdownId = null)">
             <router-link v-if="!item.children.length" :to="item.url || '/'"
-              class="whitespace-nowrap text-base font-medium text-gray-700 transition hover:text-amber-500">
+              class="whitespace-nowrap text-base font-medium text-gray-700 transition hover:text-amber-600">
               {{ item.title }}
             </router-link>
 

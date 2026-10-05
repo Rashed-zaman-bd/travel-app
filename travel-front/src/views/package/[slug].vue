@@ -40,7 +40,7 @@
       <!-- Packages -->
       <section class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
         <div class="mb-6 text-center sm:mb-10">
-          <h2 class="text-xl font-semibold text-amber-500 sm:text-2xl md:text-3xl">
+          <h2 class="text-xl font-semibold text-amber-600 sm:text-2xl md:text-3xl">
             {{ tr(category.country_name) }} {{ t('worldwide_category.tours_itineraries') }}
           </h2>
         </div>
@@ -90,13 +90,13 @@
                   BDT {{ tr(pkg.package_price) }}
                 </p>
                 <p
-                  v-if="tr(pkg.package_destination)"
-                  class="mt-1 flex items-start gap-1 text-sm font-semibold"
+                  v-if="tr(pkg.location)"
+                  class="mt-1 flex items-start text-sm font-normal"
                 >
                   <svg class="mt-0.5 h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z" />
                   </svg>
-                  <span class="line-clamp-1 break-words">{{ tr(pkg.package_destination) }}</span>
+                  <span class="line-clamp-1 break-words">{{ tr(pkg.location) }}</span>
                 </p>
               </div>
             </router-link>
@@ -115,21 +115,17 @@
                   {{ tr(pkg.package_destination) }}
                 </p>
               
-
-              <p
-                v-if="tr(pkg.package_duration)"
-                class="mt-2 pb-2 text-sm font-semibold text-gray-700 sm:text-base"
-              >
-                🕒 {{ tr(pkg.package_duration) }}
-              </p>
-
               <!-- mt-auto pins the footer to the card bottom so cards align in a row -->
               <div class="mt-auto mt-2 flex flex-wrap items-center justify-between gap-x-3  border-gray-100">
-                <span class="text-sm font-semibold text-red-600 sm:text-base">
-                  <span class="text-gray-700">{{ t('worldwide_category.cost') }}-</span>
-                  {{ tr(pkg.package_price) }}<template v-if="tr(pkg.package_price)"> Tk.</template>
+                <span>
+                  <p
+                    v-if="tr(pkg.package_duration)"
+                    class="mt-2 pb-2 text-sm font-semibold text-gray-700"
+                  >
+                    🕒 {{ tr(pkg.package_duration) }}
+                  </p>
                 </span>
-                <span class="text-sm font-semibold text-amber-600 md:group-hover:underline">
+                <span class="text-sm font-semibold text-gray-700 hover:underline">
                   {{ t('worldwide_category.show_details') }} →
                 </span>
               </div>
@@ -138,7 +134,7 @@
                 <div class="flex items-center justify-center">
                   <router-link
                     :to="`/tour-package/${pkg.slug}/book`"
-                    class="mt-5 flex w-2/3 items-center justify-center rounded-lg bg-amber-500 px-4 py-2 text-lg font-semibold text-white hover:bg-amber-600"
+                    class="flex min-h-[46px] w-full items-center justify-center bg-amber-600 px-5 py-3 font-semibold tracking-wide text-white transition hover:bg-amber-700"
                   >
                     {{ t('worldwide_category.book_now') }} →
                   </router-link>
@@ -160,8 +156,6 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import api from '@/services/api'
 
-type Localized = Record<string, string> | null | undefined
-
 interface Category {
   id: number
   slug: string
@@ -179,6 +173,7 @@ interface TourPackage {
   package_price: Localized
   package_duration: Localized
   package_destination: Localized
+  location: Localized
   order: number
   is_active: boolean
 }
@@ -192,8 +187,13 @@ const loading = ref(true)
 const error = ref('')
 
 // Pick current locale, fall back to en, then bn
+type Localized = string | number | Record<string, string> | null | undefined
+
+// Public API may return an already-translated string, or an { en, bn } object
 const tr = (value: Localized): string => {
-  if (!value) return ''
+  if (value === null || value === undefined || value === '') return ''
+  if (typeof value === 'string') return value
+  if (typeof value === 'number') return String(value)
   return value[locale.value] || value.en || value.bn || ''
 }
 
@@ -203,8 +203,8 @@ const fetchData = async () => {
   try {
     const slug = route.params.slug as string
     const { data } = await api.get(`/category/${slug}/tour-package`)
-    category.value = data.category
-    packages.value = data.data
+         category.value = data.category ?? null
+      packages.value = data.data ?? data.packages ?? []
   } catch (e: any) {
     error.value =
       e?.response?.status === 404

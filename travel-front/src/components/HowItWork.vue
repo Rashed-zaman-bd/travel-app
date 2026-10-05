@@ -41,10 +41,10 @@
             <div class="flex flex-col items-center gap-2 sm:flex-row">
               <font-awesome-icon
                 :icon="step.icon"
-                class="text-4xl text-amber-400"
+                class="text-4xl text-amber-600"
               />
 
-              <span class="text-base font-bold tracking-wide text-amber-500">
+              <span class="text-base font-bold tracking-wide text-amber-600">
                 {{ step.topline }} {{ index + 1 }}
               </span>
             </div>
