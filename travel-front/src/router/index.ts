@@ -216,6 +216,15 @@ const routes = [
           requiresAdmin: true,
         },
       },
+
+      {
+        path: 'offershow',
+        name: 'admin.offershow',
+        component: () => import('@/views/admin/OfferShow.vue'),
+        meta: {
+          requiresAdmin: true,
+        },
+      },
     ],
   },
 ]

@@ -1,7 +1,7 @@
 <template>
   <section class="w-full border-y border-gray-200 bg-white">
     <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="flex flex-col gap-8 py-8 lg:flex-row lg:items-center lg:gap-0">
+      <div class="flex flex-col gap-3 py-8 lg:flex-row lg:items-center lg:gap-0">
 
         <!-- =========================
              Left Label
@@ -29,7 +29,7 @@
         ========================== -->
         <div
           v-else
-          class="grid w-full flex-1 grid-cols-1 gap-8 sm:grid-cols-3 lg:pl-10"
+          class="grid w-full flex-1 grid-cols-1 gap-3 sm:grid-cols-3 lg:pl-5"
         >
           <div
             v-for="(step, index) in steps"

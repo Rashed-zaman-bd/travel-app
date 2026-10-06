@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\HeroSlideController;
 use App\Http\Controllers\Api\HowItWorksController;
 use App\Http\Controllers\Api\LogoController;
 use App\Http\Controllers\Api\NavItemController;
+use App\Http\Controllers\Api\OfferShowController;
 use App\Http\Controllers\Api\TourPackageController;
 use App\Http\Controllers\Api\TourPackageDayActivityController;
 use App\Http\Controllers\Api\TourPackageHighlightController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\Api\TourPackageItineraryController;
 use App\Http\Controllers\Api\TourPackageOfferController;
 use App\Http\Controllers\Api\TourPackageOfferHotelController;
 use App\Http\Controllers\Auth\SocialAuthController;
+use App\Models\OfferShow;
 use Illuminate\Support\Facades\Route;
 
 
@@ -216,6 +218,18 @@ Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->
     Route::post('tour-hotel', [TourPackageOfferHotelController::class, 'store']);
     Route::match(['put', 'patch', 'post'],'tour-hotel/{tourPackageOfferHotel}', [TourPackageOfferHotelController::class, 'update']);
     Route::delete('tour-hotel/{tourPackageOfferHotel}', [TourPackageOfferHotelController::class, 'destroy']);
+});
+
+
+// Public Offer Show
+Route::get('offer-show', [OfferShowController::class, 'index']);
+Route::get('offer-show/{offerShow}', [OfferShowController::class, 'show']);
+Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->name('admin')->group(function () {
+    Route::get('offer-show', [OfferShowController::class, 'index'])->name('offer-active.index');
+    Route::get('offer-show/{offerShow}', [OfferShowController::class, 'show'])->name('offer-active.show');
+    Route::post('offer-show', [OfferShowController::class, 'store']);
+    Route::match(['put', 'patch', 'post'],'offer-show/{offerShow}', [OfferShowController::class, 'update']);
+    Route::delete('offer-show/{offerShow}', [OfferShowController::class, 'destroy']);
 });
 
 // Public

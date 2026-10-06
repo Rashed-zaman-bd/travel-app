@@ -3,15 +3,17 @@
     <div class="">
       <HeroImage />
 
-    <HowItWork />
+      <HowItWork />
 
-    <section id="mostpopular">
-      <MostPopular />
-    </section>
+      <OfferShow/>
 
-    <section id="destination">
-      <Destination />
-    </section>
+      <section id="mostpopular">
+        <MostPopular />
+      </section>
+
+      <section id="destination">
+        <Destination />
+      </section>
     </div>
 
 </template>
@@ -21,4 +23,5 @@ import HeroImage from '@/components/hero.vue'
 import HowItWork from '@/components/HowItWork.vue'
 import Destination from '@/components/destination.vue'
 import MostPopular from '@/components/MostPopular.vue';
+import OfferShow from '@/components/OfferShow.vue';
 </script>

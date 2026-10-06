@@ -1,6 +1,6 @@
 <template>
   <section id="mostpopular">
-    <div class="mx-auto max-w-7xl bg-trancparent py-10 border-b border-gray-200">
+    <div class="mx-auto max-w-7xl bg-white py-10 border-b border-gray-200">
       <!-- Section Header -->
       <div class="mx-auto mb-6 max-w-5xl px-4 text-center">
         <h2 class="mb-3 text-2xl font-semibold text-amber-600 md:text-3xl">
