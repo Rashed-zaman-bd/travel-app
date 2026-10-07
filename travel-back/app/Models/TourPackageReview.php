@@ -57,25 +57,33 @@ class TourPackageReview extends Model
     /* -------------------------------------------------------------------------- */
 
     public function formattedTravelInfo(): Attribute
-    {
-        return Attribute::make(
-            get: function () {
-                $parts = [];
+{
+    return Attribute::make(
+        get: function () {
+            $types = [
+                'solo'     => 'solo',
+                'couple'   => 'as a couple',
+                'family'   => 'with family',
+                'group'    => 'with a group',
+                'business' => 'on business',
+            ];
 
-                if ($this->destination_visited) {
-                    $parts[] = "Traveled to {$this->destination_visited}";
-                }
+            $parts = ['Traveled'];
 
-                if ($this->travel_type) {
-                    $parts[] = "as {$this->travel_type}";
-                }
-
-                if ($this->travel_date) {
-                    $parts[] = "in " . $this->travel_date->format('F, Y');
-                }
-
-                return implode(' ', $parts);
+            if ($this->destination_visited) {
+                $parts[] = "to {$this->destination_visited}";
             }
-        );
-    }
+
+            if ($this->travel_type) {
+                $parts[] = $types[$this->travel_type] ?? $this->travel_type;
+            }
+
+            if ($this->travel_date) {
+                $parts[] = 'in ' . $this->travel_date->format('F, Y');
+            }
+
+            return count($parts) > 1 ? implode(' ', $parts) : '';
+        }
+    );
+}
 }

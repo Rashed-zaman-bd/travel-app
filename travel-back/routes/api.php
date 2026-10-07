@@ -235,17 +235,18 @@ Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->
 
 
 // Public
-Route::get('tour-package/{tourPackage:slug}/reviews', [TourPackageReviewController::class, 'index']);
-// Logged-in user
+Route::get('/reviews', [TourPackageReviewController::class, 'index']);
+Route::get('/reviews/{tourPackageReview}', [TourPackageReviewController::class, 'show']);
+// Logged-in users
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('tour-package/{tourPackage:slug}/reviews', [TourPackageReviewController::class, 'store'])
-        ->middleware('throttle:10,1');
+    Route::post('/reviews', [TourPackageReviewController::class, 'store'])->middleware('throttle:10,1');
+    Route::put('/reviews/{tourPackageReview}', [TourPackageReviewController::class, 'update']);
+    Route::delete('/reviews/{tourPackageReview}', [TourPackageReviewController::class, 'destroy']);
 });
-// Inside your existing admin group (auth:sanctum + role:admin,super_admin)
-Route::get('tour-package-review', [TourPackageReviewController::class, 'adminIndex']);
-Route::patch('tour-package-review/{review}/approve', [TourPackageReviewController::class, 'approve']);
-Route::patch('tour-package-review/{review}/unapprove', [TourPackageReviewController::class, 'unapprove']);
-Route::delete('tour-package-review/{review}', [TourPackageReviewController::class, 'destroy']);
+// Admin only
+Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->group(function () {
+    Route::patch('/reviews/{tourPackageReview}/toggle-approval', [TourPackageReviewController::class, 'toggleApproval']);
+});
 
 
 // Public

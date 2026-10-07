@@ -334,6 +334,7 @@
                                 </div>
                             </div>
 
+                           
                             <!-- ============ Fallback: no offers for this package ============ -->
                             <template v-else>
                                 <div v-if="tr(pkg.package_price)" class="mb-6 border-b border-gray-100 pb-5">
@@ -350,6 +351,13 @@
                                     </router-link>
                                 </div>
                             </template>
+
+                            <!-- Reviews -->
+                            <PackageReviewsSidebar
+                                :tour-package-id="pkg.id"
+                                :destination="destinationEn"
+                            />
+
 
 
                             <!-- Same-country packages -->
@@ -401,6 +409,8 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import api from '@/services/api'
+
+import PackageReviewsSidebar from '@/components/PackageReviewsSidebar.vue'
 
 
 type Localized = string | number | Record<string, string> | null | undefined
@@ -510,6 +520,13 @@ interface TourPackageOffer {
     is_active: boolean
     hotels?: OfferHotel[]
 }
+
+// saved with the review, always in English (e.g. "Thailand")
+const destinationEn = computed(() => {
+    const v = pkg.value?.category?.country_name
+    if (!v) return ''
+    return typeof v === 'string' ? v : (v as Record<string, string>).en || ''
+})
 
 const route = useRoute()
 const { t, locale } = useI18n({ useScope: 'global' })

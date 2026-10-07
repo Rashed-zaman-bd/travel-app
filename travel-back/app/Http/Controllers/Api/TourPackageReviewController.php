@@ -5,125 +5,113 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TourPackageReviewRequest;
 use App\Http\Resources\TourPackageReviewResource;
-use App\Models\TourPackage;
 use App\Models\TourPackageReview;
-use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Arr;
 
 class TourPackageReviewController extends Controller
 {
-    private const WITH = [
-        'user:id,name,avatar',
-        'tourPackage:id,slug,package_name,location',
-    ];
-
-    /**
-     * Public: approved reviews of one package + rating summary.
-     */
-    public function index(TourPackage $tourPackage): JsonResponse
+    public function index(Request $request): AnonymousResourceCollection
     {
-        $base = $tourPackage->reviews()->approved();
+        // only admins may see unapproved reviews
+        $showAll = $request->boolean('include_unapproved') && $this->isAdmin($request->user('sanctum'));
 
-        $reviews = (clone $base)
-            ->with(self::WITH)
-            ->latest()
-            ->paginate(10);
-
-        // [5 => 12, 4 => 3, ...]
-        $stats   = (clone $base)->selectRaw('rating, COUNT(*) as total')->groupBy('rating')->pluck('total', 'rating');
-        $count   = (int) $stats->sum();
-        $average = $count
-            ? round($stats->reduce(fn ($carry, $total, $rating) => $carry + ($rating * $total), 0) / $count, 1)
-            : 0;
-
-        return response()->json([
-            'summary' => [
-                'average'   => $average,
-                'count'     => $count,
-                'breakdown' => collect([5, 4, 3, 2, 1])
-                    ->mapWithKeys(fn ($star) => [$star => (int) ($stats[$star] ?? 0)]),
-            ],
-            // keeps the shape { data: [...], links: {...}, meta: {...} } that the Vue component reads
-            'data' => TourPackageReviewResource::collection($reviews)->response()->getData(true),
-        ]);
-    }
-
-    /**
-     * Logged-in user: create or update their own review for this package.
-     * Name and avatar come from the users table through user_id.
-     */
-    public function store(TourPackageReviewRequest $request, TourPackage $tourPackage): JsonResponse
-    {
-        abort_unless($tourPackage->is_active, 404);
-
-        $review = $tourPackage->reviews()->updateOrCreate(
-            ['user_id' => $request->user()->id],
-            $this->prepare($request->validated())
-        );
-
-        $review->load(self::WITH);
-
-        return response()->json([
-            'status'  => true,
-            'message' => $review->is_approved
-                ? 'Thanks! Your review has been published.'
-                : 'Thanks! Your review will appear after approval.',
-            'data'    => new TourPackageReviewResource($review),
-        ], $review->wasRecentlyCreated ? 201 : 200);
-    }
-
-    /**
-     * Admin: all reviews. Filters: ?pending=1, ?package_id=5
-     */
-    public function adminIndex(Request $request): AnonymousResourceCollection
-    {
         $reviews = TourPackageReview::query()
-            ->with(self::WITH)
-            ->when($request->boolean('pending'), fn ($q) => $q->where('is_approved', false))
-            ->when($request->filled('package_id'), fn ($q) => $q->where('tour_package_id', $request->integer('package_id')))
+            ->with('user')
+            ->when(!$showAll, fn ($q) => $q->approved())
+            ->when($request->filled('tour_package_id'), fn ($q) => $q->where('tour_package_id', $request->integer('tour_package_id')))
+            ->when($request->filled('rating'), fn ($q) => $q->where('rating', $request->integer('rating')))
             ->latest()
-            ->paginate(20);
+            ->paginate($request->integer('per_page', 15));
 
         return TourPackageReviewResource::collection($reviews);
     }
 
     /**
-     * Admin: approve or hide a review.
+     * One review per user per package: a second submit updates the first.
      */
-    public function approve(TourPackageReview $review): JsonResponse
+    public function store(TourPackageReviewRequest $request): JsonResponse
     {
-        $review->update(['is_approved' => true]);
+        $data = $request->validated();
 
-        return response()->json(['status' => true, 'message' => 'Review approved.']);
+        $review = TourPackageReview::updateOrCreate(
+            [
+                'tour_package_id' => $data['tour_package_id'],
+                'user_id'         => $request->user()->id,
+            ],
+            [
+                ...Arr::except($data, ['tour_package_id']),
+                'is_approved' => true, // set false here if you want admin moderation
+            ]
+        );
+
+        $review->load('user');
+
+        return response()->json([
+            'message' => $review->wasRecentlyCreated
+                ? 'Review created successfully.'
+                : 'Your review has been updated.',
+            'data'    => new TourPackageReviewResource($review),
+        ], $review->wasRecentlyCreated ? 201 : 200);
     }
 
-    public function unapprove(TourPackageReview $review): JsonResponse
+    public function show(TourPackageReview $tourPackageReview): TourPackageReviewResource
     {
-        $review->update(['is_approved' => false]);
+        abort_unless($tourPackageReview->is_approved, 404);
 
-        return response()->json(['status' => true, 'message' => 'Review hidden.']);
+        return new TourPackageReviewResource($tourPackageReview->load('user'));
     }
 
-    public function destroy(TourPackageReview $review): JsonResponse
+    public function update(TourPackageReviewRequest $request, TourPackageReview $tourPackageReview): JsonResponse
     {
-        $review->delete();
+        if (!$this->canManage($request, $tourPackageReview)) {
+            return response()->json(['message' => 'Unauthorized action.'], 403);
+        }
 
-        return response()->json(['status' => true, 'message' => 'Review deleted.']);
+        // the package of a review can't be changed
+        $tourPackageReview->update(Arr::except($request->validated(), ['tour_package_id']));
+
+        return response()->json([
+            'message' => 'Review updated successfully.',
+            'data'    => new TourPackageReviewResource($tourPackageReview->load('user')),
+        ]);
+    }
+
+    public function destroy(Request $request, TourPackageReview $tourPackageReview): JsonResponse
+    {
+        if (!$this->canManage($request, $tourPackageReview)) {
+            return response()->json(['message' => 'Unauthorized action.'], 403);
+        }
+
+        $tourPackageReview->delete();
+
+        return response()->json(['message' => 'Review deleted successfully.']);
     }
 
     /**
-     * Convert "2026-09" or "Sep-2026" to "2026-09-01" for the `date` column.
+     * Admin only (see routes).
      */
-    private function prepare(array $data): array
+    public function toggleApproval(TourPackageReview $tourPackageReview): JsonResponse
     {
-        if (!empty($data['travel_date'])) {
-            $format = preg_match('/^\d{4}-\d{2}$/', $data['travel_date']) ? '!Y-m' : '!M-Y';
+        $tourPackageReview->update(['is_approved' => !$tourPackageReview->is_approved]);
 
-            $data['travel_date'] = Carbon::createFromFormat($format, $data['travel_date'])->toDateString();
-        }
+        return response()->json([
+            'message'     => 'Review approval status updated.',
+            'is_approved' => $tourPackageReview->is_approved,
+        ]);
+    }
 
-        return $data;
+    private function isAdmin($user): bool
+    {
+        return $user && in_array($user->role, ['admin', 'super_admin'], true);
+    }
+
+    private function canManage(Request $request, TourPackageReview $review): bool
+    {
+        $user = $request->user();
+
+        return $user->id === $review->user_id || $this->isAdmin($user);
     }
 }

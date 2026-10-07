@@ -11,7 +11,7 @@
         <MostPopular />
       </section>
 
-      <PackageReview/>
+      <TravelarReview/>
 
       <section id="destination">
         <Destination />
@@ -26,5 +26,5 @@ import HowItWork from '@/components/HowItWork.vue'
 import Destination from '@/components/destination.vue'
 import MostPopular from '@/components/MostPopular.vue';
 import OfferShow from '@/components/OfferShow.vue';
-import PackageReview from '@/components/PackageReview.vue';
+import TravelarReview from '@/components/TravelarReview.vue';
 </script>

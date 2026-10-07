@@ -255,6 +255,14 @@
         </router-link>
 
         <router-link
+          to="/admin/review"
+          class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
+          active-class="bg-gray-800 text-emerald-400 font-semibold"
+        >
+          <i class="bi bi-image mr-2"></i>Review
+        </router-link>
+
+        <router-link
           to="/admin/video"
           class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
           active-class="bg-gray-800 text-emerald-400 font-semibold"

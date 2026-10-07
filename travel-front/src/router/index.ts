@@ -231,6 +231,15 @@ const routes = [
           requiresAdmin: true,
         },
       },
+
+      {
+        path: 'review',
+        name: 'admin.review',
+        component: () => import('@/views/admin/Review.vue'),
+        meta: {
+          requiresAdmin: true,
+        },
+      },
     ],
   },
 ]

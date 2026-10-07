@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class TourPackageReviewRequest extends FormRequest
 {
@@ -15,22 +15,34 @@ class TourPackageReviewRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'rating'      => ['required', 'integer', 'min:1', 'max:5'],
-            'comment'     => ['nullable', 'string', 'max:2000'],
-            'travel_type' => ['nullable', 'in:solo,couple,family,friends,business'],
-            'travel_date' => ['nullable', 'date_format:Y-m,M-Y'],
+            'tour_package_id'     => ['required', 'integer', 'exists:tour_packages,id'],
+            'rating'              => ['required', 'integer', 'min:1', 'max:5'],
+            'comment'             => ['nullable', 'string', 'max:2000'],
+            'traveler_location'   => ['nullable', 'string', 'max:255'],
+            'destination_visited' => ['nullable', 'string', 'max:255'],
+            'travel_type'         => ['nullable', 'string', Rule::in(['solo', 'couple', 'family', 'group', 'business'])],
+            'travel_date'         => ['nullable', 'date', 'before_or_equal:today'],
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'tour_package_id'     => 'tour package',
+            'traveler_location'   => 'location',
+            'destination_visited' => 'destination',
+            'travel_type'         => 'travel type',
+            'travel_date'         => 'travel date',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'rating.required'         => 'Please select a rating.',
-            'rating.min'              => 'The rating must be between 1 and 5.',
-            'rating.max'              => 'The rating must be between 1 and 5.',
-            'travel_type.in'          => 'The selected travel type is invalid.',
-            'travel_date.date_format' => 'The travel date must be in YYYY-MM format.',
+            'rating.required'          => 'Please select a rating.',
+            'tour_package_id.required' => 'The tour package is missing.',
+            'tour_package_id.exists'   => 'The selected tour package does not exist.',
+            'travel_date.before_or_equal' => 'The travel date cannot be in the future.',
         ];
     }
-
 }

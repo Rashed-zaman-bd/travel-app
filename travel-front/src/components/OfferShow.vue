@@ -1,6 +1,6 @@
 <template>
   <div
-    class="mx-auto max-w-7xl border-b border-gray-200 bg-white p-4 py-6"
+    class="mx-auto max-w-7xl border-b border-gray-200 bg-white p-4 py-14"
   >
     <!-- Loading -->
     <div
