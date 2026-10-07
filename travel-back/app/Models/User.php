@@ -61,4 +61,9 @@ class User extends Authenticatable
     {
         return $this->role === self::ROLE_SUPER_ADMIN;
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(TourPackageReview::class, 'user_id');
+    }
 }

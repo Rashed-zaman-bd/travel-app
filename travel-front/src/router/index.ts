@@ -53,6 +53,12 @@ const routes = [
         name: 'tour-booking',
         component: () => import('@/views/TourBooking.vue'),
       },
+
+      {
+        path: 'all-toure',
+        name: 'all-toure',
+        component: () => import('@/views/ActiveView.vue'),
+      },
     ],
   },
 

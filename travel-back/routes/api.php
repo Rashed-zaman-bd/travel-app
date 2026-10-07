@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\TourPackageInformationController;
 use App\Http\Controllers\Api\TourPackageItineraryController;
 use App\Http\Controllers\Api\TourPackageOfferController;
 use App\Http\Controllers\Api\TourPackageOfferHotelController;
+use App\Http\Controllers\Api\TourPackageReviewController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use App\Models\OfferShow;
 use Illuminate\Support\Facades\Route;
@@ -231,6 +232,21 @@ Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->
     Route::match(['put', 'patch', 'post'],'offer-show/{offerShow}', [OfferShowController::class, 'update']);
     Route::delete('offer-show/{offerShow}', [OfferShowController::class, 'destroy']);
 });
+
+
+// Public
+Route::get('tour-package/{tourPackage:slug}/reviews', [TourPackageReviewController::class, 'index']);
+// Logged-in user
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('tour-package/{tourPackage:slug}/reviews', [TourPackageReviewController::class, 'store'])
+        ->middleware('throttle:10,1');
+});
+// Inside your existing admin group (auth:sanctum + role:admin,super_admin)
+Route::get('tour-package-review', [TourPackageReviewController::class, 'adminIndex']);
+Route::patch('tour-package-review/{review}/approve', [TourPackageReviewController::class, 'approve']);
+Route::patch('tour-package-review/{review}/unapprove', [TourPackageReviewController::class, 'unapprove']);
+Route::delete('tour-package-review/{review}', [TourPackageReviewController::class, 'destroy']);
+
 
 // Public
 Route::get('destinations', [DestinationController::class, 'index']);

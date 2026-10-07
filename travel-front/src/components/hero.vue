@@ -1,5 +1,5 @@
 <template>
-  <section class="relative w-full h-[50vh] min-h-[300px] max-h-[500px] md:max-h-[300px] lg:max-h-[500px] overflow-hidden">
+  <section class="relative w-full h-[40vh] min-h-[250px] max-h-[400px] md:max-h-[300px] lg:max-h-[400px] overflow-hidden">
     <!-- Loading State -->
     <div v-if="loading" class="w-full h-full flex items-center justify-center bg-slate-900 text-white">
       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-400"></div>
@@ -57,12 +57,20 @@
               </p>
 
               <!-- CTA Button -->
-              <div v-if="slide.cta_text" class="slide-anim-cta opacity-0">
-                <route-link
-                  :to="{ path: '/', hash: '#destination' }"
+              <div
+                v-if="slide.cta_text && slide.cta_url"
+                class="slide-anim-cta opacity-0"
+              >
+                <!-- Internal URL -->
+                <RouterLink
+                  v-if="slide.cta_url"
+                  :to="slide.cta_url"
                   class="group inline-flex items-center gap-2.5 px-5 py-2.5 sm:px-7 sm:py-3.5 text-sm sm:text-base font-semibold text-white bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-600 shadow-lg shadow-amber-600/35 hover:shadow-amber-600/50 hover:-translate-y-0.5 transition-all duration-300 ease-out cursor-pointer"
                 >
-                  <span class="botton-text tracking-wider">{{ slide.cta_text }}</span>
+                  <span class="tracking-wider">
+                    {{ slide.cta_text }}
+                  </span>
+
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     class="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-200 group-hover:translate-x-1"
@@ -75,8 +83,35 @@
                       clip-rule="evenodd"
                     />
                   </svg>
-                </route-link>
+                </RouterLink>
+
+                <!-- External URL -->
+                <a
+                  v-else
+                  :href="slide.cta_url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="group inline-flex items-center gap-2.5 px-5 py-2.5 sm:px-7 sm:py-3.5 text-sm sm:text-base font-semibold text-white bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-600 shadow-lg shadow-amber-600/35 hover:shadow-amber-600/50 hover:-translate-y-0.5 transition-all duration-300 ease-out cursor-pointer"
+                >
+                  <span class="tracking-wider">
+                    {{ slide.cta_text }}
+                  </span>
+
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-200 group-hover:translate-x-1"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </a>
               </div>
+
             </div>
           </div>
 
@@ -85,14 +120,14 @@
             v-if="slide.author_name"
             class="absolute bottom-4 right-4 sm:bottom-6 sm:right-2 lg:bottom-8 lg:right-8 z-[2] flex flex-wrap items-center justify-end gap-1 sm:gap-1.5 text-xs sm:text-sm lg:text-base text-right pointer-events-none"
           >
-            <p v-if="slide.photo_text" class="text-slate-100 m-0">{{ slide.photo_text }},</p>
+            <p v-if="slide.photo_text" class="text-white m-0">{{ slide.photo_text }},</p>
             <div class="font-semibold text-white">
               {{ slide.author_name }}<span v-if="slide.location || slide.photo_date">,</span>
             </div>
             <div v-if="slide.location" class="text-amber-400 font-medium">
               {{ slide.location }}<span v-if="slide.photo_date">,</span>
             </div>
-            <div v-if="slide.photo_date" class="text-slate-300/80">{{ slide.photo_date }}</div>
+            <div v-if="slide.photo_date" class="text-white">{{ slide.photo_date }}</div>
           </div>
         </div>
       </swiper-slide>

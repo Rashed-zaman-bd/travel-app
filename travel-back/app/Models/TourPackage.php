@@ -170,4 +170,9 @@ class TourPackage extends Model
     {
         return $this->hasMany( TourPackageOfferHotel::class, 'tour_package_id' );
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(TourPackageReview::class, 'tour_package_id');
+    }
 }

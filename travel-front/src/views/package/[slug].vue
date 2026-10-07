@@ -58,7 +58,7 @@
             <!-- Image -> details page -->
             <router-link
               :to="`/tour-package/${pkg.slug}`"
-              class="relative block aspect-[8/9] w-full overflow-hidden"
+              class="relative block aspect-[9/9] w-full overflow-hidden"
             >
               <img
                 v-if="pkg.package_image"

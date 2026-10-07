@@ -62,7 +62,7 @@
                         <div v-if="pkg.package_image" class="mb-2 overflow-hidden bg-gray-200 shadow">
                             <img :src="pkg.package_image" :alt="tr(pkg.package_image_title) ||
                                 tr(pkg.package_name)
-                                " class="block h-96 w-full object-cover" />
+                                " class="block h-72 sm:h-96 w-full object-cover" />
                         </div>
                         <!-- Descriptiontion -->
                         <div class="">
