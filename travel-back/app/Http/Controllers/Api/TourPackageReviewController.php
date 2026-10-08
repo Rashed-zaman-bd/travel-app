@@ -24,7 +24,7 @@ class TourPackageReviewController extends Controller
             ->when($request->filled('tour_package_id'), fn ($q) => $q->where('tour_package_id', $request->integer('tour_package_id')))
             ->when($request->filled('rating'), fn ($q) => $q->where('rating', $request->integer('rating')))
             ->latest()
-            ->paginate($request->integer('per_page', 15));
+            ->paginate($request->integer('per_page', 10));
 
         return TourPackageReviewResource::collection($reviews);
     }

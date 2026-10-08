@@ -2,7 +2,7 @@
     <div class="min-h-screen w-full bg-gray-50">
         <!-- Loading -->
         <div v-if="loading" class="flex justify-center py-24">
-            <div class="h-10 w-10 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600"></div>
+            <div class="h-10 w-10 animate-spin rounded-full border-4 border-gray-300 border-t-amber-500"></div>
         </div>
 
         <!-- Error -->
@@ -582,7 +582,7 @@ const triInfo = (value: TourInformationValue): string => {
 
 const toggleInformation = (id: number) => {
     if (openInformation.value.includes(id)) {
-        openInformation.value =
+        openInformation.value = 
             openInformation.value.filter(
                 itemId => itemId !== id
             )

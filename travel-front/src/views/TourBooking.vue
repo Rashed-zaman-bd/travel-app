@@ -3,7 +3,7 @@
     <div class="mx-auto max-w-2xl">
       <!-- Loading -->
       <div v-if="loading" class="flex justify-center py-24">
-        <div class="h-10 w-10 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600"></div>
+        <div class="h-10 w-10 animate-spin rounded-full border-4 border-gray-300 border-t-amber-500"></div>
       </div>
 
       <p v-else-if="loadError" class="py-24 text-center text-red-600">{{ loadError }}</p>

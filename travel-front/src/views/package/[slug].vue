@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-50">
     <!-- Loading -->
     <div v-if="loading" class="flex justify-center py-24">
-      <div class="h-10 w-10 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600"></div>
+      <div class="h-10 w-10 animate-spin rounded-full border-4 border-gray-300 border-t-amber-500"></div>
     </div>
 
     <!-- Error -->

@@ -7,7 +7,7 @@
 
     <!-- Loading State -->
     <div v-if="loading" class="flex justify-center items-center py-12">
-      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-amber-600"></div>
     </div>
 
     <!-- Endless slider -->
@@ -335,11 +335,12 @@ const onLeave = (e: PointerEvent) => {
 // swipe on phones
 let touchX = 0
 const onTouchStart = (e: TouchEvent) => {
-  touchX = e.changedTouches[0].clientX
+  touchX = e.changedTouches[0]?.clientX ?? 0
   pause()
 }
 const onTouchEnd = (e: TouchEvent) => {
-  const dx = e.changedTouches[0].clientX - touchX
+  const endX = e.changedTouches[0]?.clientX ?? touchX
+  const dx = endX - touchX
   if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1)
   play()
 }
@@ -352,8 +353,8 @@ watch(viewport, (el) => {
   if (!el) return
   viewW.value = el.clientWidth
   if (typeof ResizeObserver !== 'undefined') {
-    ro = new ResizeObserver(([entry]) => {
-      viewW.value = entry.contentRect.width
+    ro = new ResizeObserver(() => {
+      viewW.value = el.clientWidth
     })
     ro.observe(el)
   }

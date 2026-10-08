@@ -13,6 +13,8 @@
 
       <TravelarReview/>
 
+      <Bangladesh/>
+
       <section id="destination">
         <Destination />
       </section>
@@ -27,4 +29,5 @@ import Destination from '@/components/destination.vue'
 import MostPopular from '@/components/MostPopular.vue';
 import OfferShow from '@/components/OfferShow.vue';
 import TravelarReview from '@/components/TravelarReview.vue';
+import Bangladesh from '@/components/Bangladesh.vue';
 </script>

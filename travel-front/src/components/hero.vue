@@ -2,7 +2,7 @@
   <section class="relative w-full h-[40vh] min-h-[250px] max-h-[400px] md:max-h-[300px] lg:max-h-[400px] overflow-hidden">
     <!-- Loading State -->
     <div v-if="loading" class="w-full h-full flex items-center justify-center bg-slate-900 text-white">
-      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-400"></div>
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500"></div>
     </div>
 
     <!-- Error State -->

@@ -59,6 +59,12 @@ const routes = [
         name: 'all-toure',
         component: () => import('@/views/ActiveView.vue'),
       },
+
+      {
+        path: 'visa-application',
+        name: 'visa-application',
+        component: () => import('@/views/VisaApplication.vue')
+      },
     ],
   },
 
