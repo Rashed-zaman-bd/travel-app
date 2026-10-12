@@ -4,39 +4,72 @@ import router from './router'
 import './assets/css/main.css'
 import { createPinia } from 'pinia'
 import i18n from './i18n'
+
 import 'swiper/css'
 import 'swiper/css/effect-coverflow'
 import 'swiper/css/pagination'
-
-// Bootstrap Icons
 import 'bootstrap-icons/font/bootstrap-icons.css'
 
 // Font Awesome
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
+// Solid Icons
 import {
   faUserSecret,
   faThumbsUp,
   faHouse,
   faPhone,
   faSearch,
-  faComments,      // added — chat step icon
-  faCreditCard,    // added — booking step icon
+  faComments,
+  faCreditCard,
+  faLocationDot,
+  faEnvelope,
+  faArrowUpRightFromSquare,
+  faPaperPlane,
+  faArrowRight,
+  faPhoneVolume,
 } from '@fortawesome/free-solid-svg-icons'
-import { faCircleUser } from '@fortawesome/free-regular-svg-icons'
-import { faFacebook } from '@fortawesome/free-brands-svg-icons'
 
+// Regular Icons
+import { faCircleUser } from '@fortawesome/free-regular-svg-icons'
+
+// Brand Icons
+import {
+  faFacebook,
+  faFacebookF,
+  faFacebookMessenger,
+  faTwitter,
+  faInstagram,
+  faYoutube,
+  faLinkedinIn,
+  faWhatsapp,
+} from '@fortawesome/free-brands-svg-icons'
+
+// Register all icons
 library.add(
   faUserSecret,
   faThumbsUp,
   faHouse,
   faPhone,
   faSearch,
-  faCircleUser,
-  faFacebook,
   faComments,
   faCreditCard,
+  faCircleUser,
+  faLocationDot,
+  faEnvelope,
+  faArrowUpRightFromSquare,
+  faPaperPlane,
+  faArrowRight,
+  faPhoneVolume,
+  faFacebook,
+  faFacebookF,
+  faFacebookMessenger,
+  faTwitter,
+  faInstagram,
+  faYoutube,
+  faLinkedinIn,
+  faWhatsapp,
 )
 
 const pinia = createPinia()
