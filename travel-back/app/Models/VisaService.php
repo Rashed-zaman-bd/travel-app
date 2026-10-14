@@ -61,4 +61,9 @@ class VisaService extends Model
     {
         return $this->hasMany( VisaFeeOption::class, 'visa_fee_option_id' );
     }
+
+    public function visaAssistance(): HasMany
+    {
+        return $this->hasMany( VisaAssistanceRequest::class, 'visa_assistance_request_id' );
+    }
 }
