@@ -13,6 +13,16 @@ return new class extends Migration
     {
         Schema::create('visa_services', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('visa_country_id')->constrained('visa_countries')->cascadeOnDelete();
+            $table->foreignId('visa_type_id')->constrained('visa_types')->cascadeOnDelete();
+            $table->json('title')->nullable();
+            $table->json('description')->nullable();
+            $table->json('processing_time')->nullable();
+            $table->json('currency')->nullable();
+            $table->decimal('base_fee', 10, 2)->nullable(); // Added scale/precision best practice
+            $table->json('eligibility')->nullable();
+            $table->string('application_url')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
