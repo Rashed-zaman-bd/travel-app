@@ -1,5 +1,5 @@
 <template>
-  <section v-if="loading || error || packages.length" class="w-full py-10 overflow-hidden">
+  <section v-if="loading || error || packages.length" class="w-full p overflow-hidden">
     <div class="mx-auto max-w-7xl px-4 border-b border-gray-200">
       <div class="flex items-center justify-center mb-6">
         <h2 class="mb-3 text-2xl font-semibold text-amber-600 md:text-3xl">

@@ -3,7 +3,7 @@
  <section id="destination">
   <div class="mx-auto max-w-7xl bg-white py-10">
     <!-- Section Header -->
-    <div class="mx-auto mb-10 max-w-5xl px-4 text-center">
+    <div class="mx-auto mb-3 text-center">
       <h2 class="mb-3 text-2xl font-semibold text-amber-600 md:text-3xl">
         {{ t('worldwide_category.title') }}
       </h2>

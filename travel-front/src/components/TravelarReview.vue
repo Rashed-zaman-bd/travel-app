@@ -2,11 +2,11 @@
   <div class="max-w-7xl mx-auto py-10 border-b border-gray-200">
     <!-- Header Section -->
     <div class="flex items-center justify-center mb-6">
-      <h2 class="mb-3 text-2xl font-semibold text-amber-600 md:text-3xl">{{ t('worldwide_category.whatsay') }}</h2>
+      <h2 class=" text-2xl font-semibold text-amber-600 md:text-3xl">{{ t('worldwide_category.whatsay') }}</h2>
     </div>
 
     <!-- Loading State -->
-    <div v-if="loading" class="flex justify-center items-center py-12">
+    <div v-if="loading" class="flex justify-center items-center py-10">
       <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-amber-600"></div>
     </div>
 
