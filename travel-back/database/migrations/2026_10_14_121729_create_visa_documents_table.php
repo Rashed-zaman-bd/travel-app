@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('visa_documents', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('visa_service_id')->constrained('visa_services')->cascadeOnDelete();
+            $table->json('applicant_category')->nullable();
+            $table->json('document_name')->nullable();
+            $table->json('description')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->integer('sort_order')->default(0);
             $table->timestamps();
         });
     }

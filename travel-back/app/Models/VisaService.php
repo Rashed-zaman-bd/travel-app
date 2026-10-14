@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class VisaService extends Model
 {
@@ -49,5 +50,15 @@ class VisaService extends Model
     public function visaType(): BelongsTo
     {
         return $this->belongsTo(VisaType::class);
+    }
+
+    public function visaDocument(): HasMany
+    {
+        return $this->hasMany( VisaDocument::class, 'visa_document_id' );
+    }
+
+    public function visaFee(): HasMany
+    {
+        return $this->hasMany( VisaFeeOption::class, 'visa_fee_option_id' );
     }
 }
