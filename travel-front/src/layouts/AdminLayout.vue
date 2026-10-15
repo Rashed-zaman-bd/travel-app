@@ -198,6 +198,51 @@
           </Transition>
         </div>
 
+        <!-- Visa Applicant-->
+         <div>
+          <button
+            type="button"
+            @click="toggleMenu('visa')"
+            class="w-full flex items-center justify-between px-4 py-2 rounded hover:bg-gray-700 transition-colors"
+          >
+            <span class="flex items-center gap-2">
+              <i class="bi bi-newspaper"></i>
+              Visa Application
+            </span>
+            <i class="bi bi-chevron-down transition-transform" :class="{ 'rotate-180': openMenus.visa }"></i>
+          </button>
+
+          <Transition
+            enter-active-class="transition-all duration-200 ease-out"
+            enter-from-class="opacity-0 max-h-0"
+            enter-to-class="opacity-100 max-h-96"
+            leave-active-class="transition-all duration-200 ease-in"
+            leave-from-class="opacity-100 max-h-96"
+            leave-to-class="opacity-0 max-h-0"
+          >
+           <div v-if="openMenus.visa" class="ml-6 mt-1 space-y-1 overflow-hidden">
+            <router-link
+              :to="{ name: 'admin.visa.country' }"
+              custom
+              v-slot="{ href, navigate, isActive }"
+            >
+              <a
+                :href="href"
+                @click="navigate"
+                class="block px-4 py-2 rounded text-sm transition-colors"
+                :class="
+                  isActive
+                    ? 'bg-gray-800 text-emerald-400 font-semibold'
+                    : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                "
+              >
+                Visa Country
+              </a>
+            </router-link>
+           </div>
+          </Transition>
+        </div>
+
         <router-link
           to="/admin/comments"
           class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
@@ -373,6 +418,7 @@ const openMenus = reactive({
   menu: false,
   destinations: false,
   ads: false,
+  visa: false,
 })
 
 const toggleMenu = (key: keyof typeof openMenus) => {

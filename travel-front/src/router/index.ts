@@ -246,6 +246,16 @@ const routes = [
           requiresAdmin: true,
         },
       },
+
+      {
+        path: 'country',
+        name: 'admin.visa.country',
+        component: () => import('@/views/admin/visa/Country.vue'),
+        meta: {
+          requiresAdmin: true,
+          title: 'Visa Country',
+        },
+      },
     ],
   },
 ]
