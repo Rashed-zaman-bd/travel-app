@@ -250,7 +250,7 @@ const routes = [
       {
         path: 'country',
         name: 'admin.visa.country',
-        component: () => import('@/views/admin/visa/Country.vue'),
+        component: () => import('@/views/admin/visa/country.vue'),
         meta: {
           requiresAdmin: true,
           title: 'Visa Country',
