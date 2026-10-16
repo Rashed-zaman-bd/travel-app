@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\TourPackageItineraryController;
 use App\Http\Controllers\Api\TourPackageOfferController;
 use App\Http\Controllers\Api\TourPackageOfferHotelController;
 use App\Http\Controllers\Api\TourPackageReviewController;
+use App\Http\Controllers\Api\VisaCountryController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use App\Models\OfferShow;
 use Illuminate\Support\Facades\Route;
@@ -246,6 +247,20 @@ Route::middleware('auth:sanctum')->group(function () {
 // Admin only
 Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->group(function () {
     Route::patch('/reviews/{tourPackageReview}/toggle-approval', [TourPackageReviewController::class, 'toggleApproval']);
+});
+
+
+// Visa country route
+Route::get('visa-countries', [VisaCountryController::class, 'index']);
+Route::get('visa-countries/{visaCountry:slug}', [VisaCountryController::class, 'show']);
+
+// Admin
+Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->name('admin')->group(function () {
+    Route::get('visa-countries', [VisaCountryController::class, 'index']);
+    Route::get('visa-countries/{visaCountry:slug}', [VisaCountryController::class, 'show']);
+    Route::post('visa-countries', [VisaCountryController::class, 'store']);
+    Route::match(['put', 'patch', 'post'], 'visa-countries/{visaCountry}', [VisaCountryController::class, 'update']);
+    Route::delete('visa-countries/{visaCountry}', [VisaCountryController::class, 'destroy']);
 });
 
 

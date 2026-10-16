@@ -42,7 +42,7 @@
               :aria-expanded="countryOpen"
             >
               <span class="font-semibold text-gray-900">
-                {{ selectedCountry || 'Select country' }}
+                {{ selectedCountry ? countryLabel(selectedCountry) : 'Select country' }}
               </span>
 
               <i
@@ -78,33 +78,33 @@
 
               <!-- Country List -->
               <ul class="max-h-64 overflow-y-auto py-1">
-                <li
-                  v-for="country in filteredCountries"
-                  :key="country"
-                >
-                  <button
-                    type="button"
-                    @click="selectCountry(country)"
-                    class="flex w-full items-center gap-3 px-4 py-3 text-left text-sm text-gray-900 transition hover:bg-gray-100"
-                    :class="{
-                      'bg-slate-200':
-                        selectedCountry === country,
-                    }"
+                <li v-if="loadingCountries" class="px-4 py-4 text-center text-sm text-gray-500">
+                  Loading...
+                </li>
+                <li v-else-if="countriesError" class="px-4 py-4 text-center text-sm text-red-600">
+                  {{ countriesError }}
+                </li>
+
+                <template v-else>
+                  <li v-for="country in filteredCountries" :key="country.id">
+                    <button
+                      type="button"
+                      @click="selectCountry(country)"
+                      class="flex w-full items-center gap-3 px-4 py-3 text-left text-sm text-gray-900 transition hover:bg-gray-100"
+                      :class="{ 'bg-slate-200': selectedCountry?.id === country.id }"
+                    >
+                      <i class="bi bi-geo-alt-fill text-gray-500"></i>
+                      <span>{{ countryLabel(country) }}</span>
+                    </button>
+                  </li>
+
+                  <li
+                    v-if="filteredCountries.length === 0"
+                    class="px-4 py-4 text-center text-sm text-gray-500"
                   >
-                    <i
-                      class="bi bi-geo-alt-fill text-gray-500"
-                    ></i>
-
-                    <span>{{ country }}</span>
-                  </button>
-                </li>
-
-                <li
-                  v-if="filteredCountries.length === 0"
-                  class="px-4 py-4 text-center text-sm text-gray-500"
-                >
-                  No countries found.
-                </li>
+                    No countries found.
+                  </li>
+                </template>
               </ul>
             </div>
           </div>
@@ -155,46 +155,65 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import api from '@/services/api'
+
+interface Country {
+  id: number
+  slug: string
+  name: { en: string; bn?: string | null }
+}
+
+// Replace with your i18n locale if you use vue-i18n, e.g. useI18n().locale
+const locale = ref<'en' | 'bn'>('en')
 
 const countryOpen = ref(false)
 const searchCountry = ref('')
-const selectedCountry = ref('Singapore')
+const countries = ref<Country[]>([])
+const loadingCountries = ref(false)
+const countriesError = ref('')
+
+const selectedCountry = ref<Country | null>(null)
 const selectedVisaType = ref('Tourist')
 
-const countries = [
-  'Sri Lanka',
-  'Thailand',
-  'China',
-  'Malaysia',
-  'Singapore',
-]
+const visaTypes = ['Tourist', 'Business', 'Student', 'Transit', 'Work']
 
-const visaTypes = [
-  'Tourist',
-  'Business',
-  'Student',
-  'Transit',
-  'Work',
-]
+function countryLabel(c: Country): string {
+  return c.name?.[locale.value] || c.name?.en || ''
+}
 
 const filteredCountries = computed(() => {
   const search = searchCountry.value.trim().toLowerCase()
+  if (!search) return countries.value
 
-  return countries.filter((country) =>
-    country.toLowerCase().includes(search),
+  return countries.value.filter(
+    (c) =>
+      (c.name?.en ?? '').toLowerCase().includes(search) ||
+      (c.name?.bn ?? '').toLowerCase().includes(search),
   )
 })
 
-function toggleCountryDropdown() {
-  countryOpen.value = !countryOpen.value
-
-  if (countryOpen.value) {
-    searchCountry.value = ''
+async function fetchCountries() {
+  loadingCountries.value = true
+  countriesError.value = ''
+  try {
+    const { data } = await api.get('/visa-countries', {
+      params: { all: 1, is_active: 1, all_locales: 1 },
+    })
+    countries.value = data.data
+  } catch {
+    countriesError.value = 'Could not load countries. Please try again.'
+  } finally {
+    loadingCountries.value = false
   }
 }
 
-function selectCountry(country: string) {
+function toggleCountryDropdown() {
+  countryOpen.value = !countryOpen.value
+  if (countryOpen.value) searchCountry.value = ''
+}
+
+function selectCountry(country: Country) {
   selectedCountry.value = country
   countryOpen.value = false
   searchCountry.value = ''
@@ -206,7 +225,13 @@ function searchVisa() {
     return
   }
 
-
-  // Connect your Laravel API or Vue Router here.
+  // Example with Vue Router:
+  // router.push({
+  //   name: 'visa-country',
+  //   params: { slug: selectedCountry.value.slug },
+  //   query: { type: selectedVisaType.value },
+  // })
 }
+
+onMounted(fetchCountries)
 </script>

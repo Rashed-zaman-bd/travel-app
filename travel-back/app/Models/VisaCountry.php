@@ -73,8 +73,9 @@ class VisaCountry extends Model
         return $slug;
     }
 
-    public function visaService(): HasMany
+    public function visaServices(): HasMany
     {
-        return $this->hasMany( VisaService::class, 'visa_service_id' );
+        return $this->hasMany(VisaService::class);
     }
+    
 }
