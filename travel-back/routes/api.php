@@ -20,7 +20,6 @@ use App\Http\Controllers\Api\TourPackageOfferHotelController;
 use App\Http\Controllers\Api\TourPackageReviewController;
 use App\Http\Controllers\Api\VisaCountryController;
 use App\Http\Controllers\Auth\SocialAuthController;
-use App\Models\OfferShow;
 use Illuminate\Support\Facades\Route;
 
 
