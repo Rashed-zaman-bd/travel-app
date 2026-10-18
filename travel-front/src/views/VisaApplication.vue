@@ -150,6 +150,11 @@
         </div>
       </div>
     </section>
+    <VisaServiceResult
+      v-if="result"
+      :country-id="result.countryId"
+      :type-id="result.typeId"
+    />
   </div>
 </template>
 
@@ -157,6 +162,11 @@
 import { ref, computed, onMounted } from 'vue'
 import api from '@/services/api'
 import { useI18n } from 'vue-i18n'
+
+import VisaServiceResult from '@/components/visa/VisaServiceResult.vue'
+
+// set when the user clicks Search Visa
+const result = ref<{ countryId: number; typeId: number } | null>(null)
 
 type Localized = Record<string, string | null | undefined>
 
@@ -260,12 +270,7 @@ function searchVisa() {
     return
   }
 
-  // Example with Vue Router (use your own route name):
-  // router.push({
-  //   name: 'visa-country',
-  //   params: { slug: selectedCountry.value.slug },
-  //   query: { type: type.slug },
-  // })
+  result.value = { countryId: selectedCountry.value.id, typeId: type.id }
 }
 
 onMounted(() => {
