@@ -120,21 +120,20 @@
 
             <select
               id="visaType"
-              v-model="selectedVisaType"
-              class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 font-semibold text-gray-900 outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-200"
+              v-model="selectedVisaTypeId"
+              :disabled="loadingTypes"
+              class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 font-semibold text-gray-900 outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-200 disabled:opacity-60"
             >
               <option value="" disabled>
-                Select visa type
+                {{ loadingTypes ? 'Loading...' : 'Select visa type' }}
               </option>
 
-              <option
-                v-for="type in visaTypes"
-                :key="type"
-                :value="type"
-              >
-                {{ type }}
+              <option v-for="type in visaTypes" :key="type.id" :value="type.id">
+                {{ localized(type.name) }}
               </option>
             </select>
+
+            <p v-if="typesError" class="mt-1 text-xs text-red-600">{{ typesError }}</p>
           </div>
         </div>
 
@@ -143,7 +142,7 @@
           <button
             type="button"
             @click="searchVisa"
-            class="inline-flex items-center justify-center rounded-lg bg-amber-600 px-6 py-3 font-semibold text-white transition hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2"
+            class="inline-flex items-center justify-center rounded-lg bg-amber-600 px-6 py-3 font-semibold text-black transition hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2"
           >
             <i class="bi bi-search mr-2"></i>
             Search Visa
@@ -157,30 +156,44 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import api from '@/services/api'
+import { useI18n } from 'vue-i18n'
+
+type Localized = Record<string, string | null | undefined>
 
 interface Country {
   id: number
   slug: string
-  name: { en: string; bn?: string | null }
+  name: Localized
 }
 
-// Replace with your i18n locale if you use vue-i18n, e.g. useI18n().locale
-const locale = ref<'en' | 'bn'>('en')
+interface VisaType {
+  id: number
+  slug: string
+  name: Localized
+}
 
+const { locale } = useI18n()
+
+// Pick the current language, fall back to English
+function localized(value?: Localized | null): string {
+  return value?.[locale.value] || value?.en || ''
+}
+
+// Countries
 const countryOpen = ref(false)
 const searchCountry = ref('')
 const countries = ref<Country[]>([])
 const loadingCountries = ref(false)
 const countriesError = ref('')
-
 const selectedCountry = ref<Country | null>(null)
-const selectedVisaType = ref('Tourist')
 
-const visaTypes = ['Tourist', 'Business', 'Student', 'Transit', 'Work']
+// Visa types
+const visaTypes = ref<VisaType[]>([])
+const loadingTypes = ref(false)
+const typesError = ref('')
+const selectedVisaTypeId = ref<number | ''>('')
 
-function countryLabel(c: Country): string {
-  return c.name?.[locale.value] || c.name?.en || ''
-}
+const countryLabel = (c: Country) => localized(c.name)
 
 const filteredCountries = computed(() => {
   const search = searchCountry.value.trim().toLowerCase()
@@ -208,6 +221,26 @@ async function fetchCountries() {
   }
 }
 
+async function fetchVisaTypes() {
+  loadingTypes.value = true
+  typesError.value = ''
+  try {
+    const { data } = await api.get('/visa-types', {
+      params: { paginate: 0, is_active: 1, all_locales: 1 },
+    })
+    visaTypes.value = data.data
+
+    // Preselect the first type
+    if (visaTypes.value.length && selectedVisaTypeId.value === '') {
+      selectedVisaTypeId.value = visaTypes.value[0]!.id
+    }
+  } catch {
+    typesError.value = 'Could not load visa types. Please try again.'
+  } finally {
+    loadingTypes.value = false
+  }
+}
+
 function toggleCountryDropdown() {
   countryOpen.value = !countryOpen.value
   if (countryOpen.value) searchCountry.value = ''
@@ -220,18 +253,23 @@ function selectCountry(country: Country) {
 }
 
 function searchVisa() {
-  if (!selectedCountry.value || !selectedVisaType.value) {
+  const type = visaTypes.value.find((t) => t.id === selectedVisaTypeId.value)
+
+  if (!selectedCountry.value || !type) {
     alert('Please select a country and visa type.')
     return
   }
 
-  // Example with Vue Router:
+  // Example with Vue Router (use your own route name):
   // router.push({
   //   name: 'visa-country',
   //   params: { slug: selectedCountry.value.slug },
-  //   query: { type: selectedVisaType.value },
+  //   query: { type: type.slug },
   // })
 }
 
-onMounted(fetchCountries)
+onMounted(() => {
+  fetchCountries()
+  fetchVisaTypes()
+})
 </script>
