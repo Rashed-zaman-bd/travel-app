@@ -36,34 +36,28 @@ class VisaService extends Model
         'is_active' => 'boolean',
     ];
 
-    /**
-     * Get the country associated with the visa service.
-     */
     public function visaCountry(): BelongsTo
     {
-        return $this->belongsTo(VisaCountry::class);
+        return $this->belongsTo(VisaCountry::class, 'visa_country_id');
     }
 
-    /**
-     * Get the type associated with the visa service.
-     */
     public function visaType(): BelongsTo
     {
-        return $this->belongsTo(VisaType::class);
+        return $this->belongsTo(VisaType::class, 'visa_type_id');
     }
 
-    public function visaDocument(): HasMany
+    public function visaDocuments(): HasMany
     {
-        return $this->hasMany( VisaDocument::class, 'visa_document_id' );
+        return $this->hasMany(VisaDocument::class, 'visa_service_id');
     }
 
-    public function visaFee(): HasMany
+    public function visaFees(): HasMany
     {
-        return $this->hasMany( VisaFeeOption::class, 'visa_fee_option_id' );
+        return $this->hasMany(VisaFeeOption::class, 'visa_service_id');
     }
 
-    public function visaAssistance(): HasMany
+    public function visaAssistances(): HasMany
     {
-        return $this->hasMany( VisaAssistanceRequest::class, 'visa_assistance_request_id' );
+        return $this->hasMany(VisaAssistanceRequest::class, 'visa_service_id');
     }
 }

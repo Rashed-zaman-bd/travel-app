@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\TourPackageOfferController;
 use App\Http\Controllers\Api\TourPackageOfferHotelController;
 use App\Http\Controllers\Api\TourPackageReviewController;
 use App\Http\Controllers\Api\VisaCountryController;
+use App\Http\Controllers\Api\VisaServiceController;
 use App\Http\Controllers\Api\VisaTypeController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use Illuminate\Support\Facades\Route;
@@ -267,18 +268,27 @@ Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->
 // Public
 Route::get('visa-types', [VisaTypeController::class, 'index']);
 Route::get('visa-types/{visa_type}', [VisaTypeController::class, 'show']);
-
 // Admin
-Route::middleware(['auth:sanctum', 'role:admin,super_admin'])
-    ->prefix('admin')
-    ->name('admin.')
-    ->group(function () {
+Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('visa-types', [VisaTypeController::class, 'index']);
         Route::get('visa-types/{visa_type}', [VisaTypeController::class, 'show']);
         Route::post('visa-types', [VisaTypeController::class, 'store']);
         Route::match(['put', 'patch', 'post'], 'visa-types/{visa_type}', [VisaTypeController::class, 'update']);
         Route::delete('visa-types/{visa_type}', [VisaTypeController::class, 'destroy']);
-    });
+});
+
+
+// Visa Service Route
+Route::get('visa-services', [VisaServiceController::class, 'index']);
+Route::get('visa-services/{visa_service}', [VisaServiceController::class, 'show']);
+Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Admin (inside your existing admin group)
+    Route::get('visa-services', [VisaServiceController::class, 'index']);
+    Route::get('visa-services/{visa_service}', [VisaServiceController::class, 'show']);
+    Route::post('visa-services', [VisaServiceController::class, 'store']);
+    Route::match(['put', 'patch', 'post'], 'visa-services/{visa_service}', [VisaServiceController::class, 'update']);
+    Route::delete('visa-services/{visa_service}', [VisaServiceController::class, 'destroy']);
+});
 
 
 // Public
