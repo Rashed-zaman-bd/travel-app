@@ -247,14 +247,17 @@ const routes = [
         },
       },
 
-      {
-        path: 'country',
+     {
+        path: 'visa/country',
         name: 'admin.visa.country',
         component: () => import('@/views/admin/visa/country.vue'),
-        meta: {
-          requiresAdmin: true,
-          title: 'Visa Country',
-        },
+        meta: { requiresAdmin: true, title: 'Visa Country' },
+      },
+      {
+        path: 'visa/type',
+        name: 'admin.visa.type',
+        component: () => import('@/views/admin/visa/type.vue'),
+        meta: { requiresAdmin: true, title: 'Visa Type' },
       },
     ],
   },

@@ -41,7 +41,7 @@
             <div v-if="openMenus.menu" class="ml-6 mt-1 space-y-1 overflow-hidden">
               <router-link
                 to="/admin/menu"
-                class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
                 active-class="bg-gray-800 text-emerald-400 font-semibold"
               >
                 All Menu
@@ -49,7 +49,7 @@
 
               <router-link
                 to="/admin/category"
-                class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
                 active-class="bg-gray-800 text-emerald-400 font-semibold"
               >
                 Category
@@ -83,35 +83,35 @@
             <div v-if="openMenus.destinations" class="ml-6 mt-1 space-y-1 overflow-hidden">
               <router-link
                 to="/admin/tourpackage"
-                class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
                 active-class="bg-gray-800 text-emerald-400 font-semibold"
               >
                 Tour Package
               </router-link>
               <router-link
                 to="/admin/tourhighlight"
-                class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
                 active-class="bg-gray-800 text-emerald-400 font-semibold"
               >
                 Tour Highlight
               </router-link>
               <router-link
                 to="/admin/touritinerary"
-                class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
                 active-class="bg-gray-800 text-emerald-400 font-semibold"
               >
                 Tour Itinerary
               </router-link>
               <router-link
                 to="/admin/tourdayactivity"
-                class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
                 active-class="bg-gray-800 text-emerald-400 font-semibold"
               >
                 Tour Day Activity
               </router-link>
               <router-link
                 to="/admin/tourinformation"
-                class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
                 active-class="bg-gray-800 text-emerald-400 font-semibold"
               >
                 Tour Information
@@ -119,42 +119,42 @@
 
               <router-link
                 to="/admin/tourpriceoffer"
-                class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
                 active-class="bg-gray-800 text-emerald-400 font-semibold"
               >
                 Tour Price Offer
               </router-link>
               <router-link
                 to="/admin/tourhotel"
-                class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
                 active-class="bg-gray-800 text-emerald-400 font-semibold"
               >
                 Tour Hotel
               </router-link>
               <router-link
                 to="/admin/destination"
-                class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
                 active-class="bg-gray-800 text-emerald-400 font-semibold"
               >
                 Destination
               </router-link>
               <router-link
                 to="/admin/article/create"
-                class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
                 active-class="bg-gray-800 text-emerald-400 font-semibold"
               >
                 Destination Details
               </router-link>
               <router-link
                 to="/admin/article/pending"
-                class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
                 active-class="bg-gray-800 text-emerald-400 font-semibold"
               >
                 Destination Advice
               </router-link>
               <router-link
                 to="/admin/tags"
-                class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
                 active-class="bg-gray-800 text-emerald-400 font-semibold"
               >
                 Travel Specialists
@@ -206,7 +206,7 @@
             class="w-full flex items-center justify-between px-4 py-2 rounded hover:bg-gray-700 transition-colors"
           >
             <span class="flex items-center gap-2">
-              <i class="bi bi-newspaper"></i>
+              <i class="bi bi-airplane"></i>
               Visa Application
             </span>
             <i class="bi bi-chevron-down transition-transform" :class="{ 'rotate-180': openMenus.visa }"></i>
@@ -220,26 +220,23 @@
             leave-from-class="opacity-100 max-h-96"
             leave-to-class="opacity-0 max-h-0"
           >
-           <div v-if="openMenus.visa" class="ml-6 mt-1 space-y-1 overflow-hidden">
-            <router-link
-              :to="{ name: 'admin.visa.country' }"
-              custom
-              v-slot="{ href, navigate, isActive }"
-            >
-              <a
-                :href="href"
-                @click="navigate"
-                class="block px-4 py-2 rounded text-sm transition-colors"
-                :class="
-                  isActive
-                    ? 'bg-gray-800 text-emerald-400 font-semibold'
-                    : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                "
+            <div v-if="openMenus.visa" class="ml-6 mt-1 space-y-1 overflow-hidden">
+              <router-link
+                to="/admin/visa/country"
+                class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
+                active-class="bg-gray-800 text-emerald-400 font-semibold"
               >
                 Visa Country
-              </a>
-            </router-link>
-           </div>
+              </router-link>
+
+              <router-link
+                to="/admin/visa/type"
+                class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
+                active-class="bg-gray-800 text-emerald-400 font-semibold"
+              >
+                Visa Type
+              </router-link>
+            </div>
           </Transition>
         </div>
 

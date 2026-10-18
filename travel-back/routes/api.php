@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\TourPackageOfferController;
 use App\Http\Controllers\Api\TourPackageOfferHotelController;
 use App\Http\Controllers\Api\TourPackageReviewController;
 use App\Http\Controllers\Api\VisaCountryController;
+use App\Http\Controllers\Api\VisaTypeController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -261,6 +262,23 @@ Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->
     Route::match(['put', 'patch', 'post'], 'visa-countries/{visaCountry}', [VisaCountryController::class, 'update']);
     Route::delete('visa-countries/{visaCountry}', [VisaCountryController::class, 'destroy']);
 });
+
+
+// Public
+Route::get('visa-types', [VisaTypeController::class, 'index']);
+Route::get('visa-types/{visa_type}', [VisaTypeController::class, 'show']);
+
+// Admin
+Route::middleware(['auth:sanctum', 'role:admin,super_admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::get('visa-types', [VisaTypeController::class, 'index']);
+        Route::get('visa-types/{visa_type}', [VisaTypeController::class, 'show']);
+        Route::post('visa-types', [VisaTypeController::class, 'store']);
+        Route::match(['put', 'patch', 'post'], 'visa-types/{visa_type}', [VisaTypeController::class, 'update']);
+        Route::delete('visa-types/{visa_type}', [VisaTypeController::class, 'destroy']);
+    });
 
 
 // Public

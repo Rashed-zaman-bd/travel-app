@@ -70,8 +70,8 @@ class VisaType extends Model
     }
 
 
-    public function visaService(): HasMany
+    public function visaServices(): HasMany
     {
-        return $this->hasMany( VisaService::class, 'visa_service_id' );
+        return $this->hasMany(VisaService::class, 'visa_type_id');
     }
 }
