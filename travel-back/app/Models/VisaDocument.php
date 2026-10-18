@@ -13,8 +13,9 @@ class VisaDocument extends Model
     protected $table = 'visa_documents';
 
     protected $fillable = [
-        'visa_service_id',
-        'applicant_category',
+        'visa_country_id',
+        'visa_type_id',
+        'visa_document_category_id',
         'document_name',
         'description',
         'is_active',
@@ -22,19 +23,24 @@ class VisaDocument extends Model
     ];
 
     protected $casts = [
-        'applicant_category' => 'array',
         'document_name' => 'array',
-        'is_active' => 'boolean',
-        'sort_order' => 'integer',
+        'description'   => 'array',
+        'is_active'     => 'boolean',
+        'sort_order'    => 'integer',
     ];
 
-    /**
-     * Get the visa service associated with the document.
-     */
-    public function visaService(): BelongsTo
+    public function visaCountry(): BelongsTo
     {
-        return $this->belongsTo(VisaService::class);
+        return $this->belongsTo(VisaCountry::class, 'visa_country_id');
     }
 
-    
+    public function visaType(): BelongsTo
+    {
+        return $this->belongsTo(VisaType::class, 'visa_type_id');
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(VisaDocumentCategory::class, 'visa_document_category_id');
+    }
 }

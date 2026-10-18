@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\TourPackageItineraryController;
 use App\Http\Controllers\Api\TourPackageOfferController;
 use App\Http\Controllers\Api\TourPackageOfferHotelController;
 use App\Http\Controllers\Api\TourPackageReviewController;
+use App\Http\Controllers\Api\VisaAssistanceRequestController;
 use App\Http\Controllers\Api\VisaCountryController;
 use App\Http\Controllers\Api\VisaServiceController;
 use App\Http\Controllers\Api\VisaTypeController;
@@ -288,6 +289,19 @@ Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->
     Route::post('visa-services', [VisaServiceController::class, 'store']);
     Route::match(['put', 'patch', 'post'], 'visa-services/{visa_service}', [VisaServiceController::class, 'update']);
     Route::delete('visa-services/{visa_service}', [VisaServiceController::class, 'destroy']);
+});
+
+
+// Public: submit the form (rate limited: 5 per minute per IP)
+Route::post('visa-assistance-requests', [VisaAssistanceRequestController::class, 'store'])
+    ->middleware('throttle:5,1');
+
+// Admin (inside your existing admin group)
+Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('visa-assistance-requests', [VisaAssistanceRequestController::class, 'index']);
+    Route::get('visa-assistance-requests/{visa_assistance_request}', [VisaAssistanceRequestController::class, 'show']);
+    Route::match(['put', 'patch'], 'visa-assistance-requests/{visa_assistance_request}', [VisaAssistanceRequestController::class, 'update']);
+    Route::delete('visa-assistance-requests/{visa_assistance_request}', [VisaAssistanceRequestController::class, 'destroy']);
 });
 
 

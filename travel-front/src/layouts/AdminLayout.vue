@@ -244,6 +244,14 @@
               >
                 Visa Service
               </router-link>
+
+              <router-link
+                to="/admin/visa/assistance"
+                class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
+                active-class="bg-gray-800 text-emerald-400 font-semibold"
+              >
+                Assistance Request
+              </router-link>
             </div>
           </Transition>
         </div>
