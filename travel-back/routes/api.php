@@ -20,6 +20,8 @@ use App\Http\Controllers\Api\TourPackageOfferHotelController;
 use App\Http\Controllers\Api\TourPackageReviewController;
 use App\Http\Controllers\Api\VisaAssistanceRequestController;
 use App\Http\Controllers\Api\VisaCountryController;
+use App\Http\Controllers\Api\VisaDocumentCategoryController;
+use App\Http\Controllers\Api\VisaDocumentController;
 use App\Http\Controllers\Api\VisaServiceController;
 use App\Http\Controllers\Api\VisaTypeController;
 use App\Http\Controllers\Auth\SocialAuthController;
@@ -295,13 +297,37 @@ Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->
 // Public: submit the form (rate limited: 5 per minute per IP)
 Route::post('visa-assistance-requests', [VisaAssistanceRequestController::class, 'store'])
     ->middleware('throttle:5,1');
-
 // Admin (inside your existing admin group)
 Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('visa-assistance-requests', [VisaAssistanceRequestController::class, 'index']);
     Route::get('visa-assistance-requests/{visa_assistance_request}', [VisaAssistanceRequestController::class, 'show']);
     Route::match(['put', 'patch'], 'visa-assistance-requests/{visa_assistance_request}', [VisaAssistanceRequestController::class, 'update']);
     Route::delete('visa-assistance-requests/{visa_assistance_request}', [VisaAssistanceRequestController::class, 'destroy']);
+});
+
+
+// Visa Document Category
+Route::get('visa-document-categories', [VisaDocumentCategoryController::class, 'index']);
+// Admin
+Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('visa-document-categories', [VisaDocumentCategoryController::class, 'index']);
+    Route::get('visa-document-categories/{visa_document_category}', [VisaDocumentCategoryController::class, 'show']);
+    Route::post('visa-document-categories', [VisaDocumentCategoryController::class, 'store']);
+    Route::match(['put', 'patch'], 'visa-document-categories/{visa_document_category}', [VisaDocumentCategoryController::class, 'update']);
+    Route::delete('visa-document-categories/{visa_document_category}', [VisaDocumentCategoryController::class, 'destroy']);
+});
+
+
+
+// Visa Document Category
+Route::get('visa-documents/grouped', [VisaDocumentController::class, 'grouped']);
+// Admin
+Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('visa-documents', [VisaDocumentController::class, 'index']);
+    Route::get('visa-documents/{visa_document}', [VisaDocumentController::class, 'show']);
+    Route::post('visa-documents', [VisaDocumentController::class, 'store']);
+    Route::match(['put', 'patch'], 'visa-documents/{visa_document}', [VisaDocumentController::class, 'update']);
+    Route::delete('visa-documents/{visa_document}', [VisaDocumentController::class, 'destroy']);
 });
 
 
