@@ -155,6 +155,12 @@
       :country-id="result.countryId"
       :type-id="result.typeId"
     />
+
+    <VisaDocumentList
+      v-if="result"
+      :country-id="result.countryId"
+      :type-id="result.typeId"
+    />
   </div>
 </template>
 
@@ -164,6 +170,7 @@ import api from '@/services/api'
 import { useI18n } from 'vue-i18n'
 
 import VisaServiceResult from '@/components/visa/VisaServiceResult.vue'
+import VisaDocumentList from '@/components/visa/VisaDocumentList.vue'
 
 // set when the user clicks Search Visa
 const result = ref<{ countryId: number; typeId: number } | null>(null)
