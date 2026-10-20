@@ -318,7 +318,6 @@ Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->
 });
 
 
-
 // Visa Document Category
 Route::get('visa-documents/grouped', [VisaDocumentController::class, 'grouped']);
 // Admin

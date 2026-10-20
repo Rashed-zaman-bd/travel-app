@@ -271,6 +271,18 @@ const routes = [
         component: () => import('@/views/admin/visa/assistance.vue'),
         meta: { requiresAdmin: true, title: 'Visa Assistance' },
       },
+      {
+        path: 'visa/documentcategory',
+        name: 'admin.visa.documentcategory',
+        component: () => import('@/views/admin/visa/documentcategory.vue'),
+        meta: { requiresAdmin: true, title: 'Document Category' },
+      },
+      {
+        path: 'visa/document',
+        name: 'admin.visa.document',
+        component: () => import('@/views/admin/visa/document.vue'),
+        meta: { requiresAdmin: true, title: 'Document List' },
+      },
     ],
   },
 ]

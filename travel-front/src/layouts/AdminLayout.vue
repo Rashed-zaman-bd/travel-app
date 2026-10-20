@@ -252,6 +252,22 @@
               >
                 Assistance Request
               </router-link>
+
+              <router-link
+                to="/admin/visa/documentcategory"
+                class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
+                active-class="bg-gray-800 text-emerald-400 font-semibold"
+              >
+                Document Category
+              </router-link>
+
+              <router-link
+                to="/admin/visa/document"
+                class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
+                active-class="bg-gray-800 text-emerald-400 font-semibold"
+              >
+                Document List
+              </router-link>
             </div>
           </Transition>
         </div>
