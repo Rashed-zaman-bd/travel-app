@@ -161,6 +161,8 @@
       :country-id="result.countryId"
       :type-id="result.typeId"
     />
+
+    
   </div>
 </template>
 

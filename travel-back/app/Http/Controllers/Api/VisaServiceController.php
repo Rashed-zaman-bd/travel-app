@@ -23,12 +23,8 @@ class VisaServiceController extends Controller
                       ->orWhere('title->bn', 'like', $term);
                 });
             })
-            ->when($request->filled('visa_country_id'), fn ($q) =>
-                $q->where('visa_country_id', $request->integer('visa_country_id'))
-            )
-            ->when($request->filled('visa_type_id'), fn ($q) =>
-                $q->where('visa_type_id', $request->integer('visa_type_id'))
-            )
+            ->when($request->filled('visa_country_id'), fn ($q) => $q->where('visa_country_id', $request->integer('visa_country_id')))
+            ->when($request->filled('visa_type_id'), fn ($q) => $q->where('visa_type_id', $request->integer('visa_type_id')))
             ->when($request->filled('is_active'), fn ($q) =>
                 $q->where('is_active', $request->boolean('is_active'))
             )

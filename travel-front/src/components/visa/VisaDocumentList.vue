@@ -1,5 +1,5 @@
 <template>
-    <section class="mx-auto max-w-7xl px-4 py-8 md:px-6">
+    <section class="mx-auto max-w-7xl px-2 py-8 md:px-6">
         <h2 class="text-2xl font-bold text-blue-950">List of Documents Needed</h2>
 
         <!-- Loading -->
@@ -38,6 +38,10 @@
                     </li>
                 </ol>
             </article>
+        </div>
+
+        <div class="pt-6">
+            <p class="text-gray-600"><span class="text-black">N.B</span>: All documents must be submitted in physical form, in person at our office.</p>
         </div>
     </section>
 </template>

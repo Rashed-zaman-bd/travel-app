@@ -169,7 +169,7 @@
         <button
           type="submit"
           :disabled="submitting"
-          class="min-h-[44px] w-full rounded-lg bg-blue-600 px-6 py-2 font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
+          class="min-h-[44px] w-full rounded-lg bg-amber-600 px-6 py-2 font-semibold text-white hover:bg-amber-700 disabled:opacity-60"
         >
           {{ submitting ? t('booking.submitting') : t('booking.submit') }}
         </button>

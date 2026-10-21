@@ -51,7 +51,7 @@
 
         <template v-if="notes.length">
           <h2 class="mb-3 mt-8 text-xl font-bold text-black">Important Notes</h2>
-          <ul class="list-disc space-y-1.5 pl-2 text-base text-gray-600">
+          <ul class="list-disc space-y-1.5 pl-7 text-base text-gray-600">
             <li v-for="(note, i) in notes" :key="i">{{ note }}</li>
           </ul>
         </template>
@@ -172,6 +172,19 @@ const notes = computed(() =>
     .filter(Boolean),
 )
 
+
+watch(() => [props.countryId, props.typeId], fetchService, { immediate: true })
+
+// ----- assistance form -----
+// ----- assistance form state (must be declared BEFORE the immediate watch) -----
+const phoneCodes = ['+880', '+91', '+1', '+44', '+971', '+966', '+65']
+const errors = ref<Record<string, string[]>>({})
+const submitting = ref(false)
+const success = ref('')
+const form = reactive({ name: '', phone_code: '+880', phone: '', email: '' })
+
+
+
 async function fetchService() {
   loading.value = true
   error.value = ''
@@ -194,15 +207,8 @@ async function fetchService() {
   }
 }
 
+// Keep the watch AFTER everything fetchService touches
 watch(() => [props.countryId, props.typeId], fetchService, { immediate: true })
-
-// ----- assistance form -----
-const phoneCodes = ['+880', '+91', '+1', '+44', '+971', '+966', '+65']
-
-const form = reactive({ name: '', phone_code: '+880', phone: '', email: '' })
-const errors = ref<Record<string, string[]>>({})
-const submitting = ref(false)
-const success = ref('')
 
 async function submit() {
   if (!service.value) return
