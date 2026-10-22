@@ -26,11 +26,11 @@
             {{ localized(service.processing_time) }}
           </p>
           <template v-if="service.base_fee !== null">
-            <p><span class="font-semibold text-gray-800"> Processing Fee:
-            {{ localized(service.currency) }} {{ formatFee(service.base_fee) }}</span> <span class="text-base">(Without Airport Transfer)</span></p>
+            <p><span class="font-semibold text-gray-800"> Processing Fee:</span>
+            {{ localized(service.currency) }} {{ formatFee(service.base_fee) }} <span class="text-base">(Without Airport Transfer)</span></p>
           </template>
           <p v-if="service.application_url">
-            <span class="font-semibold text-gray-800">Apply Online:</span>
+            <span class="font-semibold text-gray-800">Visa Add-on Service:</span>
             <a
               :href="service.application_url"
               target="_blank"

@@ -13,12 +13,9 @@ return new class extends Migration
     {
         Schema::create('visa_fee_options', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('visa_service_id')->constrained('visa_services')->cascadeOnDelete();
-            $table->json('option_name')->nullable();
-            $table->json('eligibility_description')->nullable();
+            $table->json('name')->nullable();
+            $table->json('description')->nullable();
             $table->decimal('fee', 10, 2)->nullable();
-            $table->json('processing_time')->nullable();
-            $table->boolean('interview_required')->default(false);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
