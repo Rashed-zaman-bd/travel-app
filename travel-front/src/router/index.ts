@@ -283,6 +283,12 @@ const routes = [
         component: () => import('@/views/admin/visa/document.vue'),
         meta: { requiresAdmin: true, title: 'Document List' },
       },
+      {
+        path: 'visa/fee',
+        name: 'admin.visa.fee',
+        component: () => import('@/views/admin/visa/fee.vue'),
+        meta: { requiresAdmin: true, title: 'Visa Fee Details' },
+      },
     ],
   },
 ]

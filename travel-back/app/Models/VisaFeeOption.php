@@ -13,29 +13,30 @@ class VisaFeeOption extends Model
     protected $table = 'visa_fee_options';
 
     protected $fillable = [
-        'visa_service_id',
-        'option_name',
-        'eligibility_description',
+        'visa_country_id',
+        'visa_type_id',
+        'name',
+        'description',
         'fee',
-        'processing_time',
-        'interview_required',
         'is_active',
     ];
 
-    protected $casts = [
-        'option_name' => 'array',
-        'eligibility_description' => 'array',
-        'processing_time' => 'array',
+     protected $casts = [
+        'name' => 'array',
+        'description' => 'array',
         'fee' => 'decimal:2',
-        'interview_required' => 'boolean',
         'is_active' => 'boolean',
     ];
 
-    /**
-     * Get the visa service associated with this fee option.
-     */
-    public function visaService(): BelongsTo
+     public function visaCountry(): BelongsTo
     {
-        return $this->belongsTo(VisaService::class);
+        return $this->belongsTo(VisaCountry::class, 'visa_country_id');
     }
+
+    public function visaType(): BelongsTo
+    {
+        return $this->belongsTo(VisaType::class, 'visa_type_id');
+    }
+
+
 }

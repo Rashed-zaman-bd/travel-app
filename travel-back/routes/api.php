@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\VisaAssistanceRequestController;
 use App\Http\Controllers\Api\VisaCountryController;
 use App\Http\Controllers\Api\VisaDocumentCategoryController;
 use App\Http\Controllers\Api\VisaDocumentController;
+use App\Http\Controllers\Api\VisaFeeOptionController;
 use App\Http\Controllers\Api\VisaServiceController;
 use App\Http\Controllers\Api\VisaTypeController;
 use App\Http\Controllers\Auth\SocialAuthController;
@@ -328,6 +329,20 @@ Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->
     Route::match(['put', 'patch'], 'visa-documents/{visa_document}', [VisaDocumentController::class, 'update']);
     Route::delete('visa-documents/{visa_document}', [VisaDocumentController::class, 'destroy']);
 });
+
+
+
+// Visa Fee option routes
+Route::get('visa-fee', [VisaFeeOptionController::class, 'index']);
+// Admin
+Route::middleware(['auth:sanctum', 'role:admin,super_admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('visa-fee', [VisaFeeOptionController::class, 'index']);
+    Route::get('visa-fee/{visa_fee_option}', [VisaFeeOptionController::class, 'show']);
+    Route::post('visa-fee', [VisaFeeOptionController::class, 'store']);
+    Route::match(['put', 'patch'], 'visa-fee/{visa_fee_option}', [VisaFeeOptionController::class, 'update']);
+    Route::delete('visa-fee/{visa_fee_option}', [VisaFeeOptionController::class, 'destroy']);
+});
+
 
 
 // Public

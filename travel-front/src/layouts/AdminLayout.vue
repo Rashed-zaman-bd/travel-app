@@ -138,27 +138,7 @@
               >
                 Destination
               </router-link>
-              <router-link
-                to="/admin/article/create"
-                class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
-                active-class="bg-gray-800 text-emerald-400 font-semibold"
-              >
-                Destination Details
-              </router-link>
-              <router-link
-                to="/admin/article/pending"
-                class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
-                active-class="bg-gray-800 text-emerald-400 font-semibold"
-              >
-                Destination Advice
-              </router-link>
-              <router-link
-                to="/admin/tags"
-                class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
-                active-class="bg-gray-800 text-emerald-400 font-semibold"
-              >
-                Travel Specialists
-              </router-link>
+
             </div>
           </Transition>
         </div>
@@ -268,25 +248,17 @@
               >
                 Document List
               </router-link>
+
+              <router-link
+                to="/admin/visa/fee"
+                class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
+                active-class="bg-gray-800 text-emerald-400 font-semibold"
+              >
+                Visa fee Details
+              </router-link>
             </div>
           </Transition>
         </div>
-
-        <router-link
-          to="/admin/comments"
-          class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
-          active-class="bg-gray-800 text-emerald-400 font-semibold"
-        >
-          <i class="bi bi-chat-dots mr-2"></i>Comments
-        </router-link>
-
-        <router-link
-          to="/admin/opinions"
-          class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
-          active-class="bg-gray-800 text-emerald-400 font-semibold"
-        >
-          <i class="bi bi-pen mr-2"></i>Opinions
-        </router-link>
 
         <router-link
           to="/admin/user"
@@ -336,13 +308,6 @@
           <i class="bi bi-image mr-2"></i>Review
         </router-link>
 
-        <router-link
-          to="/admin/video"
-          class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
-          active-class="bg-gray-800 text-emerald-400 font-semibold"
-        >
-          <i class="bi bi-camera-reels-fill mr-2"></i>Video
-        </router-link>
       </nav>
     </aside>
 

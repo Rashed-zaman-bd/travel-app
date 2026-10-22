@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('visa_fee_options', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('visa_country_id')->constrained('visa_countries')->cascadeOnDelete();
+            $table->foreignId('visa_type_id')->constrained('visa_types')->cascadeOnDelete();
             $table->json('name')->nullable();
             $table->json('description')->nullable();
             $table->decimal('fee', 10, 2)->nullable();

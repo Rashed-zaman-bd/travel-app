@@ -29,16 +29,14 @@
             <p><span class="font-semibold text-gray-800"> Processing Fee:</span>
             {{ localized(service.currency) }} {{ formatFee(service.base_fee) }} <span class="text-base">(Without Airport Transfer)</span></p>
           </template>
-          <p v-if="service.application_url">
-            <span class="font-semibold text-gray-800">Visa Add-on Service:</span>
-            <a
-              :href="service.application_url"
-              target="_blank"
-              rel="noopener noreferrer"
+          <p><span class="font-semibold text-gray-800">Visa Add-on Service: </span>
+            <button
+              type="button"
               class="font-semibold text-violet-600 hover:underline"
+              @click="showAddons = true"
             >
               Details
-            </a>
+            </button>
           </p>
         </div>
 
@@ -124,6 +122,12 @@
         </div>
       </aside>
     </div>
+    <VisaFee
+      v-model="showAddons"
+      :country-id="countryId"
+      :type-id="typeId"
+      :currency="localized(service?.currency)"
+    />
   </section>
 </template>
 
@@ -131,6 +135,9 @@
 import { ref, reactive, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import api from '@/services/api'
+import VisaFee from '@/components/visa/VisaFee.vue'
+
+const showAddons = ref(false)
 
 type Localized = Record<string, string | null | undefined>
 
