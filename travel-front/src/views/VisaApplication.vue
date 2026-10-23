@@ -142,7 +142,7 @@
           <button
             type="button"
             @click="searchVisa"
-            class="inline-flex items-center justify-center rounded-lg bg-amber-600 px-6 py-3 font-semibold text-black transition hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2"
+            class="inline-flex items-center justify-center rounded-lg bg-amber-600 px-6 py-3 font-semibold text-black transition hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 cursor-pointer"
           >
             <i class="bi bi-search mr-2"></i>
             Search Visa

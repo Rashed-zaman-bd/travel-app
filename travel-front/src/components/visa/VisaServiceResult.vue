@@ -32,7 +32,7 @@
           <p><span class="font-semibold text-gray-800">Visa Add-on Service: </span>
             <button
               type="button"
-              class="font-semibold text-violet-600 hover:underline"
+              class="font-semibold text-violet-600 hover:underline cursor-pointer"
               @click="showAddons = true"
             >
               Details
@@ -114,7 +114,7 @@
           <button
             type="button"
             :disabled="submitting"
-            class="w-full rounded bg-yellow-400 py-2.5 text-sm font-semibold text-indigo-950 hover:bg-yellow-300 disabled:opacity-60"
+            class="w-full rounded bg-yellow-400 py-2.5 text-sm font-semibold text-indigo-950 hover:bg-yellow-300 disabled:opacity-60 cursor-pointer"
             @click="submit"
           >
             {{ submitting ? 'Submitting...' : 'Submit' }}
