@@ -122,7 +122,7 @@
 
               <span
                 v-if="getText(offer.discount)"
-                class="rounded bg-orange-500 px-2 py-1 text-xs font-semibold"
+                class="rounded bg-blue-500 px-2 py-1 text-sm font-semibold"
               >
                 {{ getText(offer.discount) }}
               </span>
