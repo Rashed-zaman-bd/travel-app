@@ -75,6 +75,11 @@ class TourPackageResource extends JsonResource
             'hotels' => TourPackageOfferHotelResource::collection(
                 $this->whenLoaded('hotels')
             ),
+            
+            'reviews_count'      => (int) ($this->reviews_count ?? 0),
+            'reviews_avg_rating' => $this->reviews_avg_rating !== null
+                ? round((float) $this->reviews_avg_rating, 1)
+                : null,
 
         ];
     }

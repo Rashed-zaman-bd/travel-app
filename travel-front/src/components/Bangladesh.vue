@@ -80,6 +80,29 @@
                 loading="lazy"
             />
 
+            <!-- Top gradient + rating -->
+            <div class="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/60 to-transparent"></div>
+
+            <div class="absolute left-0 top-0 z-10 flex w-full items-center p-3">
+              <div class="flex items-center gap-2 rounded-full bg-black/40 px-3 py-1 backdrop-blur-sm">
+                <!-- 5 stars, partially filled by average -->
+                <div class="relative inline-block text-base leading-none" aria-hidden="true">
+                  <span class="text-white/40">★★★★★</span>
+                  <span
+                    class="absolute left-0 top-0 overflow-hidden whitespace-nowrap text-amber-400"
+                    :style="{ width: starWidth(pkg) }"
+                  >★★★★★</span>
+                </div>
+
+                <span class="text-xs font-medium text-white">
+                  <template v-if="countOf(pkg)">
+                    {{ ratingOf(pkg).toFixed(1) }} ({{ countOf(pkg) }} review)
+                  </template>
+                  <template v-else>No reviews</template>
+                </span>
+              </div>
+            </div>
+
             <div
                 class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"
             ></div>
@@ -153,6 +176,8 @@ interface TourPackage {
   package_image_title?: Localized
   is_active?: boolean
   category?: { slug: string | null; country_name: Localized } | null
+  reviews_count?: number | string | null
+  reviews_avg_rating?: number | string | null
 }
 
 const isOn = (v: Flag): boolean => v === true || v === 1 || v === '1' || v === 'true'
@@ -163,6 +188,10 @@ const tr = (value: Localized): string => {
   if (typeof value === 'number') return String(value)
   return value[locale.value] || value.en || value.bn || ''
 }
+
+const ratingOf = (p: TourPackage): number => Number(p.reviews_avg_rating) || 0
+const countOf = (p: TourPackage): number => Number(p.reviews_count) || 0
+const starWidth = (p: TourPackage): string => `${(ratingOf(p) / 5) * 100}%`
 
 const packages = ref<TourPackage[]>([])
 const loading = ref(true)

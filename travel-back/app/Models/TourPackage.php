@@ -175,4 +175,5 @@ class TourPackage extends Model
     {
         return $this->hasMany(TourPackageReview::class, 'tour_package_id');
     }
+
 }

@@ -20,6 +20,8 @@ class TourPackageController extends Controller
     {
         $tourPackages = TourPackage::query()
             ->with(['category', 'highlights', 'days', 'activities', 'information', 'offers', 'hotels'])
+            ->withCount('reviews')
+            ->withAvg('reviews', 'rating')
             ->orderBy('order')
             ->get();
 
@@ -252,9 +254,12 @@ class TourPackageController extends Controller
 
     $packages = $categoryModel
         ->tourPackages()
+        ->withCount(['reviews' => fn ($q) => $q->approved()])
+        ->withAvg(['reviews' => fn ($q) => $q->approved()], 'rating')
         ->where('is_active', true)
         ->orderBy('order', 'asc')
         ->get();
+
 
     return response()->json([
         'status' => true,
