@@ -305,7 +305,7 @@ const L = computed(() => messages[locale.value as keyof typeof messages] ?? mess
 /** "2026-09-01" -> "September, 2026" (follows the site language) */
 const monthYear = (iso: string | null): string => {
   if (!iso) return ''
-  const [y, m] = iso.split('-').map(Number)
+  const [y = 0, m = 1] = iso.split('-').map(Number)
   const d = new Date(y, m - 1, 1)
   const loc = locale.value === 'bn' ? 'bn-BD' : 'en-US'
   return `${d.toLocaleDateString(loc, { month: 'long' })}, ${d.toLocaleDateString(loc, { year: 'numeric' })}`
@@ -467,11 +467,13 @@ const play = () => {
 // swipe on mobile
 let touchX = 0
 const onTouchStart = (e: TouchEvent) => {
-  touchX = e.changedTouches[0].clientX
+  touchX = e.changedTouches[0]?.clientX ?? 0
   pause()
 }
+
 const onTouchEnd = (e: TouchEvent) => {
-  const dx = e.changedTouches[0].clientX - touchX
+  const endX = e.changedTouches[0]?.clientX ?? touchX
+  const dx = endX - touchX
   if (Math.abs(dx) > 40) {
     if (dx < 0) next()
     else prev()

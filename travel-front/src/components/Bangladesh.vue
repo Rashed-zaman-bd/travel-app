@@ -220,9 +220,10 @@ const fetchData = async () => {
 
     const items: TourPackage[] = []
     results.forEach((r, i) => {
-      if (r.status !== 'fulfilled') return
-      const rows: TourPackage[] = r.value.data?.data ?? []
       const cat = domestic[i]
+      if (r.status !== 'fulfilled' || !cat) return
+
+      const rows: TourPackage[] = r.value.data?.data ?? []
       rows.forEach((p) =>
         items.push({
           ...p,
